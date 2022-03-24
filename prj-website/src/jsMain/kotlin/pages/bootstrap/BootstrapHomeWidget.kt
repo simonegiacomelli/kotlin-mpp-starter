@@ -14,7 +14,7 @@ class BootstrapHomeWidget : Widget(//language=HTML
 
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark" aria-label="Main navigation">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Github search $version</a>
+        <a class="navbar-brand" href="#">Kotlin-mpp-starter $version</a>
         <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse"
                 aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -52,12 +52,11 @@ class BootstrapHomeWidget : Widget(//language=HTML
     </div>
 </nav>
 <!-- div class="nav-scroller bg-body shadow-sm" id="navBand" w-expand></div -->        
-<main class="container" id="mainHolder" w-expand></main>        
+<main class="container" id="mainHolder"></main>        
     """.trimIndent()
 ) {
     private val mainHolder by this { HolderWidget() }
 
-    //    private val navBand by this { NavBandWidget() }
     private val navbarSideCollapse: HTMLElement by this
     private val navbarsExampleDefault: HTMLElement by this
     private val menuHtml1: HTMLElement by this
