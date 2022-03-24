@@ -40,6 +40,7 @@ class MainWidget : Widget(//language=HTML
     }
 
     private fun calculate() = launchJs {
+        inputResult.value = ""
         val response = Api.send(ApiAddRequest(inputA.value.toInt(), inputB.value.toInt()))
         inputResult.value = response.result.toString()
     }
