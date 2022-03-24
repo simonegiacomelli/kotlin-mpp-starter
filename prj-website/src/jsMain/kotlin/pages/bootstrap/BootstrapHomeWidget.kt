@@ -1,0 +1,90 @@
+package pages.bootstrap
+
+import keyboard.HotkeyWindow
+import org.w3c.dom.HTMLElement
+import pages.LoaderWidget
+import pages.forms.DesignerWidget
+import pages.forms.HtmlSignalWidget
+import version
+import widget.HolderWidget
+import widget.Widget
+
+class BootstrapHomeWidget : Widget(//language=HTML
+    """
+
+<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark" aria-label="Main navigation">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Github search $version</a>
+        <button class="navbar-toggler p-0 border-0" type="button" id="navbarSideCollapse"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="navbar-collapse offcanvas-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Notifications</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" >Menu item1</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-bs-toggle="dropdown"
+                       aria-expanded="false">Settings</a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdown01">
+                        <li><a class="dropdown-item" href="#" id="menuHtml1">Toggle html host</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</nav>
+<!-- div class="nav-scroller bg-body shadow-sm" id="navBand" w-expand></div -->        
+<main class="container" id="mainHolder" w-expand></main>        
+    """.trimIndent()
+) {
+    private val mainHolder by this { HolderWidget() }
+
+    //    private val navBand by this { NavBandWidget() }
+    private val navbarSideCollapse: HTMLElement by this
+    private val navbarsExampleDefault: HTMLElement by this
+    private val menuHtml1: HTMLElement by this
+
+    override fun afterRender() {
+
+        navbarSideCollapse.onclick = {
+            navbarsExampleDefault.classList.toggle("open")
+        }
+        menuHtml1.onclick = { toggle() }
+
+        mainHolder.show(MainWidget())
+        val designerWidget = DesignerWidget()
+        container.append(LoaderWidget.shared.container)
+
+        HotkeyWindow
+            .add("F2") { mainHolder.show(designerWidget) }
+            .add("F3", "~", "SHIFT-~") { it.stopPropagation(); it.preventDefault(); toggle() }
+            .add("F4") { mainHolder.container.classList.toggle("container") }
+            .add("Escape") { mainHolder.closeCurrent() }
+    }
+
+    private fun toggle() {
+        if (mainHolder.stack.lastOrNull() == HtmlSignalWidget.shared)
+            mainHolder.closeCurrent()
+        else mainHolder.show(HtmlSignalWidget.shared)
+
+    }
+}
+
