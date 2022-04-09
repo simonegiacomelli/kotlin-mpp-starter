@@ -1,11 +1,12 @@
 import java.nio.file.Paths
 
-
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
 }
+
 val ktor_version = "1.6.4"
+val exposed_version: String = "0.37.3"
 
 repositories {
 }
@@ -31,6 +32,12 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.1")
                 implementation("org.jetbrains.kotlinx:kotlinx-html:0.7.3")
+
+                implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
+                implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
+                implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+                implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")
+
                 implementation(project(":prj-common"))
             }
         }
