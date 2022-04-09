@@ -1,0 +1,8 @@
+todo Config files
+todo copy data-dev/etc/hostname to /data/etc
+todo jdbc conf
+todo waitJdbc
+todo exposed setup
+todo setup auth
+todo dynamic menu voices
+todo user/roles to shield server apis
