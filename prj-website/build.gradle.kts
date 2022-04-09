@@ -33,11 +33,6 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.3.1")
                 implementation("org.jetbrains.kotlinx:kotlinx-html:0.7.3")
 
-                implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
-                implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
-                implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
-                implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")
-
                 implementation(project(":prj-common"))
             }
         }
@@ -54,6 +49,12 @@ kotlin {
                 implementation("io.ktor:ktor-websockets:$ktor_version")
                 implementation("io.ktor:ktor-html-builder:$ktor_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2")
+
+                implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
+                implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
+                implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
+                implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")
+
                 implementation("org.slf4j:slf4j-simple:1.7.30")
             }
         }
