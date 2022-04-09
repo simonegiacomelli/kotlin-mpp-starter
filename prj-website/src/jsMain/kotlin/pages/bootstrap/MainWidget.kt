@@ -8,7 +8,7 @@ import widget.Widget
 
 class MainWidget : Widget(//language=HTML
     """
-<div class="mt-2 form-check form-switch">
+<div class="mt-2">
     <div class="input-group mb-3">
         <span class="input-group-text" id="basic-addon1">A</span>
         <input id='inputA' type="text" class="form-control" placeholder="an integer A" aria-label="Username"
