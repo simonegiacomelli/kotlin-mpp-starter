@@ -6,11 +6,9 @@ import rpc.OnewayContextHandlers
 import rpc.oneway.*
 
 
-private val reg1 = setupTopicInfrastructure(onewayContextHandler)
-
 private typealias SubscriptionMap = MutableMap<String, MutableSet<WsEndpoint>>
 
-private fun setupTopicInfrastructure(contextOnewayHandlerJvm: OnewayContextHandlers<OnewayContext>) {
+fun setupTopicInfrastructure(folders: Folders, contextOnewayHandlerJvm: OnewayContextHandlers<OnewayContext>) {
     val L = Logger()
     val lock = Any()
     val subscriptions: SubscriptionMap = mutableMapOf()
@@ -25,7 +23,7 @@ private fun setupTopicInfrastructure(contextOnewayHandlerJvm: OnewayContextHandl
     }
 
     fun changed() {
-        val proc = Folders.data.resolve("proc")
+        val proc = folders.data.resolve("proc")
         proc.mkdirs()
         proc.resolve("topic-subscriptions.txt").writeText(
             "Composed ${Clock.System.now()} \n\n" +

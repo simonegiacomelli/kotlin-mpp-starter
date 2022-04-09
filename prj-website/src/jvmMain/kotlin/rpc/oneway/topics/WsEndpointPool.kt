@@ -1,25 +1,29 @@
 package rpc.oneway.topics
 
-import Folders
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
+import log.logger
+
 import java.io.File
 
 open class PoolChange(val wsEndpoint: WsEndpoint)
 class Add(ep: WsEndpoint) : PoolChange(ep)
 class Remove(ep: WsEndpoint) : PoolChange(ep)
 
-class WsEndpointPool {
+class WsEndpointPool(procFolder: File) {
+    private val L = logger()
     private val lock = Any()
-    private val watchdog = Watchdog()
+    private val watchdog = Watchdog(procFolder)
 
     private val pool = mutableSetOf<WsEndpoint>()
     val listeners = mutableSetOf<(PoolChange) -> Unit>()
 
     fun initialize() {
+        L.i("initialize()")
         writeSummaryFile()
     }
 
@@ -28,7 +32,7 @@ class WsEndpointPool {
 
     private fun notify(change: PoolChange) {
         writeSummaryFile()
-        listeners.forEach { kotlin.runCatching { it(change) } }
+        listeners.forEach { runCatching<Unit> { it(change) } }
     }
 
     private fun <T> lock(function: () -> T): T {
@@ -44,30 +48,45 @@ class WsEndpointPool {
         runBlocking { watchdog.writeSummaryAsync(text) }
     }
 
+    fun destroy() = run { L.i("WsEndpointPool.destroy()"); watchdog.destroy() }
+
+
 }
 
 
-class Watchdog() {
+class Watchdog(private val procFolder: File) {
+    private val L = logger()
     private val writeFileChannel = Channel<String>(capacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST) {
-
+        L.i("Dropping requests")
     }
-    var stop = false
 
-    init {
-        Thread { runBlocking { processLoop() } }
-            .apply {
-                name = this::class.simpleName
-                isDaemon = true
-            }.start()
-    }
+    private val thread =
+        Thread {
+            try {
+                runBlocking { processLoop() }
+            } catch (ignore: InterruptedException) {
+                L.i("ignoring InterruptedException")
+            }
+            L.i("Exiting...")
+        }.apply {
+            name = L.fullName
+            isDaemon = true
+            start()
+        }
+
 
     private suspend fun processLoop() {
-        while (!stop) {
+        L.i("processLoop()")
+        while (!thread.isInterrupted) {
             try {
                 process()
             } catch (ex: Throwable) {
-                println(ex.stackTraceToString())
-                delay(60000)
+                val stop = ex is CancellationException || ex is InterruptedException
+                L.i("processLoop() catch{} stop=$stop " + ex.stackTraceToString().replace("\n", "\\n"))
+                if (stop)
+                    return
+                else
+                    delay(60000)
             }
 
         }
@@ -79,14 +98,19 @@ class Watchdog() {
     }
 
     private fun txtPoolFile(): File {
-        val proc = Folders.data.resolve("proc")
-        proc.mkdirs()
-        return proc.resolve("websocket-pool.txt")
+        procFolder.mkdirs()
+        return procFolder.resolve("websocket-pool.txt")
     }
 
     suspend fun writeSummaryAsync(text: String) {
         writeFileChannel.send(text)
     }
+
+    fun destroy() {
+        thread.interrupt()
+        thread.join()
+    }
 }
 
-val wsEndpointPool = WsEndpointPool()
+var wsEndpointPoolBacking: WsEndpointPool? = null
+val wsEndpointPool get() = wsEndpointPoolBacking ?: error("Istanza WsEndpointPool non valorizzata")

@@ -9,7 +9,7 @@ import rpc.oneway.onewayContextHandler
 import rpc.oneway.topics.BrowserTopic
 import rpc.oneway.topics.WsEndpoint
 
-fun signalHtml() {
+fun signalHtml(folders: Folders) {
     val endPoint = WsEndpoint()
 
     val transport = object : Transport() {
@@ -19,7 +19,7 @@ fun signalHtml() {
     }
     val browserTopic = BrowserTopic<OnewayContext>(transport)
 
-    val file = Folders.data.resolve("html/design.html")
+    val file = folders.data.resolve("html/design.html")
     file.parentFile.mkdirs()
     if (!file.exists()) file.writeText("<h1>hello</h1>")
     val watch = Watch(file)

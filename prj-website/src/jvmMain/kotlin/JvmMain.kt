@@ -17,6 +17,7 @@ import rpc.oneway.OnewayContextHandler
 import rpc.oneway.onewayContextHandler
 import rpc.oneway.topics.WsEndpoint
 import rpc.oneway.topics.WsEndpointAnswerable
+import rpc.oneway.topics.setupTopicInfrastructure
 import rpc.oneway.topics.wsEndpointPool
 import rpc.rpcHttpHandlerName
 import rpc.server.ContextHandler
@@ -33,12 +34,14 @@ fun main() {
     AutoLoadPackage().loadClasses(OnewayContextHandler::class.java.`package`.name)
     AutoLoadPackage().loadClasses(WsEndpoint::class.java.`package`.name)
     embeddedServer(CIO, port = 8080, module = Application::module).apply { start(wait = false) }
-    signalHtml()
 }
 
 fun Application.module() {
-    val webDir = Folders.data.resolve("wwwroot")
+    val folders = Folders(Data(File("./data")))
+    signalHtml(folders)
+    setupTopicInfrastructure(folders, onewayContextHandler)
 
+    val webDir = folders.data.resolve("wwwroot")
     install(WebSockets)
     install(Compression)
     install(CORS) {
