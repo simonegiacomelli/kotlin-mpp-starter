@@ -1,3 +1,4 @@
+import heap.HeapDumper
 import html.signalHtml
 import io.ktor.application.*
 import io.ktor.features.*
@@ -38,6 +39,7 @@ fun main() {
 
 fun Application.module() {
     val folders = Folders(Data(File("./data")))
+    HeapDumper.enableHeapDump(folders.data.heapdump)
     signalHtml(folders)
     setupTopicInfrastructure(folders, onewayContextHandler)
 
