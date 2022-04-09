@@ -95,15 +95,20 @@ tasks.register("appJsProd") {
 }
 
 
-tasks.createJavaExec("JvmMainKt", "appJvmExec")
+tasks.createJavaExec("JvmMainKt", "appJvmExec", listOf("-Dio.ktor.development=true"))
 
-fun TaskContainer.createJavaExec(mainClassFqdn: String, taskName: String? = null) {
+fun TaskContainer.createJavaExec(
+    mainClassFqdn: String,
+    taskName: String? = null,
+    pJvmArgs: List<String>? = null
+) {
     create<JavaExec>(taskName ?: mainClassFqdn) {
         group = "app-" + project.name
         classpath = sourceSets["main"].runtimeClasspath
         mainClass.set(mainClassFqdn)
         standardInput = System.`in`
         workingDir = projectDir
+        if (pJvmArgs != null) jvmArgs = pJvmArgs
 //        standardOutput = System.out
 //        errorOutput = System.err
     }

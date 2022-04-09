@@ -70,6 +70,9 @@ fun Application.module() {
             files(webDir)
             default(webDir.resolve("index.html"))
         }
+        get("/health") {
+            call.respondText { "RESULT=OK2" }
+        }
         post("$rpcHttpHandlerName") {
             try {
                 val apiName = call.parameters["api_name"]!!
