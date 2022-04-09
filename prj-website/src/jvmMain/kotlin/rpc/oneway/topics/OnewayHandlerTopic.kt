@@ -8,7 +8,7 @@ import rpc.oneway.*
 
 private typealias SubscriptionMap = MutableMap<String, MutableSet<WsEndpoint>>
 
-fun setupTopicInfrastructure(folders: Folders, contextOnewayHandlerJvm: OnewayContextHandlers<OnewayContext>) {
+fun setupTopicInfrastructure(contextOnewayHandlerJvm: OnewayContextHandlers<OnewayContext>, folders: Folders) {
     val L = Logger()
     val lock = Any()
     val subscriptions: SubscriptionMap = mutableMapOf()

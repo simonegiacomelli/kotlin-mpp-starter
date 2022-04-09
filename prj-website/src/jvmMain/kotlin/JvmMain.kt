@@ -1,5 +1,3 @@
-import heap.HeapDumper
-import html.signalHtml
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
@@ -14,16 +12,14 @@ import io.ktor.websocket.*
 import kotlinx.coroutines.runBlocking
 import rpc.RpcMessage
 import rpc.oneway.OnewayContext
-import rpc.oneway.OnewayContextHandler
 import rpc.oneway.onewayContextHandler
-import rpc.oneway.topics.WsEndpoint
 import rpc.oneway.topics.WsEndpointAnswerable
-import rpc.oneway.topics.setupTopicInfrastructure
 import rpc.oneway.topics.wsEndpointPool
 import rpc.rpcHttpHandlerName
-import rpc.server.ContextHandler
 import rpc.server.contextHandler
-import utils.AutoLoadPackage
+import webcontext.ContextInit
+import webcontext.destroy
+import webcontext.init
 import java.io.File
 import java.util.*
 
@@ -31,17 +27,16 @@ import java.util.*
 fun main() {
     println("=".repeat(50))
     println("Working folder ${File(".").canonicalPath}")
-    AutoLoadPackage().loadClasses(ContextHandler::class.java.`package`.name)
-    AutoLoadPackage().loadClasses(OnewayContextHandler::class.java.`package`.name)
-    AutoLoadPackage().loadClasses(WsEndpoint::class.java.`package`.name)
-    embeddedServer(CIO, port = 8080, module = Application::module).apply { start(wait = false) }
+    embeddedServer(CIO, port = 8080, module = Application::module).apply { start(wait = true) }
 }
 
 fun Application.module() {
+
     val folders = Folders(Data(File("./data")))
-    HeapDumper.enableHeapDump(folders.data.heapdump)
-    signalHtml(folders)
-    setupTopicInfrastructure(folders, onewayContextHandler)
+    val contextInit = ContextInit(folders)
+
+    contextInit.init()
+    environment.monitor.subscribe(ApplicationStopped) { contextInit.destroy() }
 
     val webDir = folders.data.resolve("wwwroot")
     install(WebSockets)
