@@ -32,7 +32,7 @@ fun main() {
 
 fun Application.module() {
 
-    val folders = Folders(Data(File("./data")))
+    val folders = Folders(File("."))
     val contextInit = ContextInit(folders)
 
     contextInit.init()
