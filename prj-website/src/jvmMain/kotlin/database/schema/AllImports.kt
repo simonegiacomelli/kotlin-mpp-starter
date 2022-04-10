@@ -11,15 +11,16 @@ fun Table.datetime(name: String, highResolution: Boolean = false) = datetime(nam
 typealias Table = Table
 typealias LongIdTable = LongIdTable
 
-interface ModelCreated {
+interface CreatedAt {
     val created_at: Column<LocalDateTime>
+}
+
+interface UpdatedAt {
     val updated_at: Column<LocalDateTime>
 }
 
-interface ModelUpdated {
-    val created_at: Column<LocalDateTime>
-}
-
-interface ModelDeleted {
+interface DeletedAt {
     val deleted_at: Column<LocalDateTime>
 }
+
+

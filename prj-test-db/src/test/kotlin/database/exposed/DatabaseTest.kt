@@ -10,7 +10,7 @@ import kotlin.test.BeforeTest
 abstract class DatabaseTest {
 
     private val dbClearable = ClearableLazy({ it.remove() }) { SqliteTempDb() }
-    protected val db by dbClearable
+    protected val temp by dbClearable
 
     @BeforeTest
     fun databaseTestBeforeTest() {
@@ -19,14 +19,14 @@ abstract class DatabaseTest {
     }
 
     open fun createDatabase() {
-        db.create()
+        temp.create()
     }
 
     abstract fun setupExposed()
 
     fun tables(vararg tables: Table) {
         println("setupExposed()")
-        transaction(db.database) { SchemaUtils.createMissingTablesAndColumns(*tables) }
+        transaction(temp.database) { SchemaUtils.createMissingTablesAndColumns(*tables) }
     }
 
     @AfterTest
