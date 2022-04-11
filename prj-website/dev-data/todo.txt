@@ -1,5 +1,4 @@
-todo Config files
-todo copy data-dev/etc/hostname to /data/etc
+todo telemetry: Api for client invocation
 todo jdbc conf
 todo waitJdbc
 todo exposed setup

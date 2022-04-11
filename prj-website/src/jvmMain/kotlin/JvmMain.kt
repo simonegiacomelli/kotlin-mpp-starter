@@ -1,3 +1,5 @@
+import folders.Folders
+import folders.data.etc.config
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
@@ -33,7 +35,8 @@ fun main() {
 fun Application.module() {
 
     val folders = Folders(File("."))
-    val contextInit = ContextInit(folders)
+    val config = folders.config()
+    val contextInit = ContextInit(folders, config)
 
     contextInit.init()
     environment.monitor.subscribe(ApplicationStopped) { contextInit.destroy() }

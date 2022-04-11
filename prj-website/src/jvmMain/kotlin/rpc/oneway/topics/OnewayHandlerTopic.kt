@@ -1,6 +1,6 @@
 package rpc.oneway.topics
 
-import Folders
+import folders.Folders
 import kotlinx.datetime.Clock
 import rpc.OnewayContextHandlers
 import rpc.oneway.*

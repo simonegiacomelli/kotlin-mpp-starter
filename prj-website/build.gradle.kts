@@ -94,23 +94,34 @@ tasks.register("appJsProd") {
     doLast { copyJsToWebContent("distributions") }
 }
 
+val appEtcCopy = "appEtcCopy"
 
-tasks.createJavaExec("JvmMainKt", "appJvmExec", listOf("-Dio.ktor.development=true"))
+tasks.createJavaExec(
+    "JvmMainKt", "appJvmExec",
+    listOf("-Dio.ktor.development=true")
+).apply {
+    dependsOn(appEtcCopy)
+}
 
+tasks.register<JavaExec>(appEtcCopy) {
+    group = "app-" + project.name
+    dependsOn(tasks.getByName("compileJava"))
+    main = "folders.data.etc.CopyConfigKt"
+    classpath = sourceSets["main"].runtimeClasspath
+}
 fun TaskContainer.createJavaExec(
     mainClassFqdn: String,
     taskName: String? = null,
     pJvmArgs: List<String>? = null
-) {
-    create<JavaExec>(taskName ?: mainClassFqdn) {
-        group = "app-" + project.name
-        classpath = sourceSets["main"].runtimeClasspath
-        mainClass.set(mainClassFqdn)
-        standardInput = System.`in`
-        workingDir = projectDir
-        if (pJvmArgs != null) jvmArgs = pJvmArgs
+) = create<JavaExec>(taskName ?: mainClassFqdn) {
+    group = "app-" + project.name
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set(mainClassFqdn)
+    standardInput = System.`in`
+    workingDir = projectDir
+    if (pJvmArgs != null) jvmArgs = pJvmArgs
 //        standardOutput = System.out
 //        errorOutput = System.err
-    }
 }
+
 

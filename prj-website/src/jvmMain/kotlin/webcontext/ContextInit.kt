@@ -1,11 +1,12 @@
 package webcontext
 
-import Folders
+import folders.Folders
+import folders.data.etc.Config
 import heap.HeapDumper
 
 class ContextInit(
     val folders: Folders,
-//    val config: Config,
+    val config: Config,
 //    val jdbc: Jdbc,
 //    val exposed: Exposed,
     val destroyCallback: MutableList<() -> Unit> = mutableListOf()

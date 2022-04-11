@@ -1,6 +1,8 @@
+package folders
+
 import java.io.File
 
-class Folders(root: File) {
+class Folders(root: File) : File(root.canonicalPath) {
     val data: Data = Data(root.resolve("data").canonicalFile)
 }
 

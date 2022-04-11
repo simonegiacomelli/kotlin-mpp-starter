@@ -12,7 +12,7 @@ internal fun ContextInit.initKotlinPart() {
     loadHandlersClasses()
     wsEndpointPoolBacking = WsEndpointPool(folders.data.proc)
     setupTopicInfrastructure(onewayContextHandler, folders)
-    startDesignWatcher()
+    if (config.watch_design_html) startDesignWatcher()
 }
 
 private fun ContextInit.startDesignWatcher() {

@@ -1,7 +1,7 @@
 package database.exposed
 
-import Folders
 import database.jdbc.JdbcInfo
+import folders.Folders
 import org.jetbrains.exposed.sql.Database
 import java.io.File
 import java.sql.Connection
