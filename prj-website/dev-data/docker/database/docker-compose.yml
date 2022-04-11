@@ -4,10 +4,12 @@ services:
     image: postgres:14.2-bullseye
     #    image: postgres:13.4-bullseye
     restart: always
+    command: postgres -c 'max_connections=20000'
     ports:
       - "15432:5432"
     environment:
       POSTGRES_DATABASE: app_db
+      POSTGRES_DB: app_db
       POSTGRES_USER: andromeda
       POSTGRES_PASSWORD: andromedagoodstar
     # Uncomment this if you want to persist the data.

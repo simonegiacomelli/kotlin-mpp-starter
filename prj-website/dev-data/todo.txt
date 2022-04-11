@@ -1,4 +1,4 @@
-todo fix localdatetime for pgsql
+todo fix create database app_db (ENCODING, LC_COLLATE, LC_CTYPE,  CONNECTION LIMIT)
 todo setup auth
 todo dynamic menu voices
 todo user/roles to shield server apis
