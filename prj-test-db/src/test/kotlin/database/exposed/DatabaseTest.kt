@@ -9,7 +9,10 @@ import kotlin.test.BeforeTest
 
 abstract class DatabaseTest {
 
-    private val dbClearable = ClearableLazy({ it.remove() }) { PgsqlTempDb() }
+    private val dbClearable = ClearableLazy({ it.remove() }) {
+        PgsqlTempDb()
+        //SqliteTempDb()
+    }
     protected val temp by dbClearable
 
     @BeforeTest

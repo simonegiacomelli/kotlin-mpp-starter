@@ -13,6 +13,7 @@ typealias LongIdTable = LongIdTable
 
 interface CreatedAt {
     val created_at: Column<LocalDateTime>
+    fun Table.createdAt() = datetime("created_at", highResolution = true)
 }
 
 interface UpdatedAt {

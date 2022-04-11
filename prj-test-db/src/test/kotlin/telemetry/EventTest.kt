@@ -29,7 +29,7 @@ class EventTest : DatabaseTest() {
     }
 
     @Test
-    fun test_new_event_with_type_as_string() = transaction {
+    fun test_new_event_with_type_as_string() {
         // GIVEN
         data class ET(override val id: Int, override val name: String) : EventType
 
@@ -42,10 +42,12 @@ class EventTest : DatabaseTest() {
         newEvent(temp.database, et42)
 
         // THEN
-        val events = tm_events.run { selectAll().sortedBy { it[id] }.map { it[type_id] } }
-        assertEquals(listOf(42, 56, 42), events)
+        transaction {
+            val events = tm_events.run { selectAll().sortedBy { it[id] }.map { it[type_id] } }
+            assertEquals(listOf(42, 56, 42), events)
 
-        val types = tm_types.run { selectAll().sortedBy { it[id] }.map { ET(it[id], it[name]) } }
-        assertEquals(listOf(et42, et56), types)
+            val types = tm_types.run { selectAll().sortedBy { it[id] }.map { ET(it[id], it[name]) } }
+            assertEquals(listOf(et42, et56), types)
+        }
     }
 }
