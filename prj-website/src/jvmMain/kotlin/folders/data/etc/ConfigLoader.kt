@@ -37,6 +37,6 @@ fun Folders.config(): Config {
     val configFile = data.etc.resolve(configFilename).canonicalFile
     if (!configFile.exists())
         error("Il file di configurazione non esiste: `$configFile`")
-    val config = Config().apply { prop.load(data.etc.toPath(), Hostname.get()) }
+    val config = Config().apply { load(data.etc.toPath(), Hostname.get()) }
     return config
 }

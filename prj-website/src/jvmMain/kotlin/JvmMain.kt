@@ -1,5 +1,6 @@
 import folders.Folders
 import folders.data.etc.config
+import folders.data.etc.database
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
@@ -22,6 +23,7 @@ import rpc.server.contextHandler
 import webcontext.ContextInit
 import webcontext.destroy
 import webcontext.init
+import webcontext.waitJdbcInfo
 import java.io.File
 import java.util.*
 
@@ -36,7 +38,9 @@ fun Application.module() {
 
     val folders = Folders(File("."))
     val config = folders.config()
-    val contextInit = ContextInit(folders, config)
+    val jdbc = config.waitJdbcInfo()
+    val database = config.database()
+    val contextInit = ContextInit(folders, config, jdbc, database)
 
     contextInit.init()
     environment.monitor.subscribe(ApplicationStopped) { contextInit.destroy() }

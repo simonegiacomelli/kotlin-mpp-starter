@@ -55,6 +55,8 @@ kotlin {
                 implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
                 implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")
 
+                implementation("org.postgresql:postgresql:42.3.3")
+
                 implementation("org.slf4j:slf4j-simple:1.7.30")
             }
         }

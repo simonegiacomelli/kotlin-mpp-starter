@@ -1,7 +1,10 @@
 package folders.data.etc
 
-import config.ConfigBase
+import config.booleanProperty
+import config.jdbcProperty
+import java.util.*
 
-class Config : ConfigBase() {
-    val watch_design_html by BooleanProp("watch_design_html", false)
+class Config : Properties() {
+    val watch_design_html by booleanProperty("watch_design_html", false)
+    val database by jdbcProperty("database")
 }

@@ -1,6 +1,7 @@
 package config
 
 import java.io.StringReader
+import java.util.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -8,14 +9,14 @@ import kotlin.test.assertTrue
 
 class ConfigBaseTest {
 
-    class ConfigMock : ConfigBase() {
+    class ConfigMock : Properties() {
         companion object {
             operator fun invoke(content: String) =
-                ConfigMock().apply { prop.load(StringReader(content)) }
+                ConfigMock().apply { load(StringReader(content)) }
         }
 
-        val foo: Boolean by BooleanProp("foo", false)
-        val bar: String by StringProp("bar", "1234")
+        val foo: Boolean by booleanProperty("foo", false)
+        val bar: String by stringProperty("bar", "1234")
     }
 
     @Test
@@ -45,7 +46,7 @@ class ConfigBaseTest {
     @Test
     fun externaLoad() {
         val target = ConfigMock()
-        target.prop["bar"] = "external"
+        target["bar"] = "external"
         assertEquals("external", target.bar)
     }
 

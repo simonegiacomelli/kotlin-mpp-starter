@@ -3,3 +3,4 @@ proc
 html
 tmp
 etc
+database/pgdata

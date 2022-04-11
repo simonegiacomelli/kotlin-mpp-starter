@@ -11,4 +11,4 @@ services:
       POSTGRES_PASSWORD: andromedagoodstar
     # Uncomment this if you want to persist the data.
     volumes:
-      - "../../database/pgdata:/var/lib/postgresql/data"
+      - "../../../data/database/pgdata:/var/lib/postgresql/data"

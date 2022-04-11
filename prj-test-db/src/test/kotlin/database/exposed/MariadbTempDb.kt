@@ -1,6 +1,6 @@
 package database.exposed
 
-import database.jdbc.JdbcInfo
+import jdbc.Jdbc
 import org.jetbrains.exposed.sql.Database
 import java.sql.Connection
 
@@ -11,14 +11,14 @@ class MariadbTempDb(private val randomDbName: String = randomDatabaseName()) : T
         }
     }
 
-    private val jdbcTest: JdbcInfo by lazy {
-        JdbcInfo("sqlite", "org.sqlite.JDBC", "jdbc:sqlite:{dbname}?mode=memory&cache=shared", "", "")
+    private val jdbcTest: Jdbc by lazy {
+        Jdbc("sqlite", "org.sqlite.JDBC", "jdbc:sqlite:{dbname}?mode=memory&cache=shared", "", "")
     }
     private val jdbcRoot by lazy { jdbcResolve("") }
 
     private val jdbc by lazy { jdbcResolve(randomDbName) }
 
-    private fun jdbcResolve(dbName: String): JdbcInfo {
+    private fun jdbcResolve(dbName: String): Jdbc {
         return jdbcTest.copy(url = jdbcTest.url.replace("{dbname}", dbName))
     }
 

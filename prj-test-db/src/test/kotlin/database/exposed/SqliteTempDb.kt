@@ -1,7 +1,7 @@
 package database.exposed
 
-import database.jdbc.JdbcInfo
 import folders.Folders
+import jdbc.Jdbc
 import org.jetbrains.exposed.sql.Database
 import java.io.File
 import java.sql.Connection
@@ -15,8 +15,8 @@ class SqliteTempDb(private val randomDbName: String = randomDatabaseName()) : Te
 
     private val tempFolder = Folders(File(".")).data.tmp.resolve("sqlite-test-db").canonicalFile
 
-    private val jdbcTest: JdbcInfo by lazy {
-        JdbcInfo(
+    private val jdbcTest: Jdbc by lazy {
+        Jdbc(
             "sqlite",
             "org.sqlite.JDBC",
             "jdbc:sqlite:{dbname}",
@@ -29,7 +29,7 @@ class SqliteTempDb(private val randomDbName: String = randomDatabaseName()) : Te
     private val databaseFile = tempFolder.resolve(randomDbName)
     private val jdbc by lazy { jdbcResolve(databaseFile.canonicalPath) }
 
-    private fun jdbcResolve(dbName: String): JdbcInfo {
+    private fun jdbcResolve(dbName: String): Jdbc {
         return jdbcTest.copy(url = jdbcTest.url.replace("{dbname}", dbName))
     }
 

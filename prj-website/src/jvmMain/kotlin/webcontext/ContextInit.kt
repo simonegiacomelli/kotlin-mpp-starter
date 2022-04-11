@@ -3,12 +3,15 @@ package webcontext
 import folders.Folders
 import folders.data.etc.Config
 import heap.HeapDumper
+import jdbc.Jdbc
+import org.jetbrains.exposed.sql.Database
 
 class ContextInit(
     val folders: Folders,
     val config: Config,
-//    val jdbc: Jdbc,
+    val jdbc: Jdbc,
 //    val exposed: Exposed,
+    val database: Database,
     val destroyCallback: MutableList<() -> Unit> = mutableListOf()
 )
 
