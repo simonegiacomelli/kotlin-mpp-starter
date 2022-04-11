@@ -1,0 +1,16 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "25432:5432"
+    environment:
+      POSTGRES_DB: app_db
+      POSTGRES_USER: andromeda
+      POSTGRES_PASSWORD: andromedagoodstar
+    # Uncomment this if you want to persist the data.
+    #    volumes:
+    #      - "../../../data/database/pgdata:/var/lib/postgresql/data"
+    tmpfs:
+      - /var/lib/postgresql/data
