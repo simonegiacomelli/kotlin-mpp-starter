@@ -30,7 +30,10 @@ class ContextHandlers<Context> {
     fun dispatch(m: RpcMessage, context: Context) = dispatch(m.simpleName, m.payload, context)
     fun dispatch(simpleName: String, payload: String, context: Context): String {
 
-        val handler = contextHandlers[simpleName] ?: throw MissingHandler("no handler registered for `$simpleName`")
+        val handler = contextHandlers[simpleName] ?: throw MissingHandler(
+            "no handler registered for `$simpleName`\n" +
+                    "    " + registeredHandlerString()
+        )
 
         handler.apply {
             val r = requestSerializer.deserializer(payload)
@@ -38,6 +41,9 @@ class ContextHandlers<Context> {
             return responseSerializer.serializer(res)
         }
     }
+
+    fun registeredHandlerString() =
+        "registered handlers are: ${contextHandlers.map { "\n   " + it.key }.joinToString("")}"
 
 }
 
