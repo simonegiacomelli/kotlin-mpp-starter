@@ -1,4 +1,4 @@
-package webcontext
+package appinit
 
 import folders.data.etc.Config
 import jdbc.Jdbc

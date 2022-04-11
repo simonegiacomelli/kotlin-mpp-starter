@@ -1,4 +1,4 @@
-package webcontext
+package appinit
 
 import folders.Folders
 import folders.data.etc.Config
@@ -6,7 +6,7 @@ import heap.HeapDumper
 import jdbc.Jdbc
 import org.jetbrains.exposed.sql.Database
 
-class ContextInit(
+class AppInit(
     val folders: Folders,
     val config: Config,
     val jdbc: Jdbc,
@@ -15,13 +15,13 @@ class ContextInit(
     val destroyCallback: MutableList<() -> Unit> = mutableListOf()
 )
 
-fun ContextInit.init() {
+fun AppInit.init() {
     HeapDumper.enableHeapDump(folders.data.heapdump)
 
     initKotlinPart()
 }
 
-fun ContextInit.destroy() {
+fun AppInit.destroy() {
     destroyCallback.forEachIndexed { index, callback ->
         log.i("Running destroy callback ${index + 1}/${destroyCallback.size}")
         kotlin.runCatching { callback() }

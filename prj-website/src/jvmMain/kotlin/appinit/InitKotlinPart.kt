@@ -1,4 +1,4 @@
-package webcontext
+package appinit
 
 import html.SignalHtmlThread
 import rpc.oneway.OnewayContextHandler
@@ -7,7 +7,7 @@ import rpc.oneway.topics.*
 import rpc.server.ContextHandler
 import utils.AutoLoadPackage
 
-internal fun ContextInit.initKotlinPart() {
+internal fun AppInit.initKotlinPart() {
     destroyCallback.add { wsEndpointPool.destroy() }
     loadHandlersClasses()
     wsEndpointPoolBacking = WsEndpointPool(folders.data.proc)
@@ -15,7 +15,7 @@ internal fun ContextInit.initKotlinPart() {
     if (config.watch_design_html) startDesignWatcher()
 }
 
-private fun ContextInit.startDesignWatcher() {
+private fun AppInit.startDesignWatcher() {
     val sign = SignalHtmlThread(folders.data.html.resolve("design.html"))
     destroyCallback.add { sign.destroy() }
 }

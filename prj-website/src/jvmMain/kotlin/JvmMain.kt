@@ -1,3 +1,7 @@
+import appinit.AppInit
+import appinit.destroy
+import appinit.init
+import appinit.waitJdbcInfo
 import folders.Folders
 import folders.data.etc.config
 import folders.data.etc.database
@@ -20,10 +24,6 @@ import rpc.oneway.topics.WsEndpointAnswerable
 import rpc.oneway.topics.wsEndpointPool
 import rpc.rpcHttpHandlerName
 import rpc.server.contextHandler
-import webcontext.ContextInit
-import webcontext.destroy
-import webcontext.init
-import webcontext.waitJdbcInfo
 import java.io.File
 import java.util.*
 
@@ -40,7 +40,7 @@ fun Application.module() {
     val config = folders.config()
     val jdbc = config.waitJdbcInfo()
     val database = config.database()
-    val contextInit = ContextInit(folders, config, jdbc, database)
+    val contextInit = AppInit(folders, config, jdbc, database)
 
     contextInit.init()
     environment.monitor.subscribe(ApplicationStopped) { contextInit.destroy() }
