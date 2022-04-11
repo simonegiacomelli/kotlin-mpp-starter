@@ -100,7 +100,8 @@ val appEtcCopy = "appEtcCopy"
 
 tasks.createJavaExec(
     "JvmMainKt", "appJvmExec",
-    listOf("-Dio.ktor.development=true")
+//    listOf("-Dio.ktor.development=true")
+    listOf()
 ).apply {
     dependsOn(appEtcCopy)
 }
