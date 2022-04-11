@@ -57,6 +57,7 @@ kotlin {
                 implementation("ch.qos.logback:logback-classic:1.2.3")
 
                 implementation("org.postgresql:postgresql:42.3.3")
+                implementation("org.xerial:sqlite-jdbc:3.36.0.3")
 
                 implementation("org.slf4j:slf4j-simple:1.7.30")
             }
