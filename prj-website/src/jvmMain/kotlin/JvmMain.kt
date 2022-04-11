@@ -1,10 +1,7 @@
 import appinit.AppInit
 import appinit.destroy
 import appinit.init
-import appinit.waitJdbcInfo
 import folders.Folders
-import folders.data.etc.config
-import folders.data.etc.database
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
@@ -37,13 +34,9 @@ fun main() {
 fun Application.module() {
 
     val folders = Folders(File("."))
-    val config = folders.config()
-    val jdbc = config.waitJdbcInfo()
-    val database = config.database()
-    val contextInit = AppInit(folders, config, jdbc, database)
+    val appInit = AppInit(folders).apply { init() }
 
-    contextInit.init()
-    environment.monitor.subscribe(ApplicationStopped) { contextInit.destroy() }
+    environment.monitor.subscribe(ApplicationStopped) { appInit.destroy() }
 
     val webDir = folders.data.resolve("wwwroot")
     install(WebSockets)

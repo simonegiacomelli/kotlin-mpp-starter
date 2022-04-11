@@ -7,4 +7,5 @@ import java.util.*
 class Config : Properties() {
     val watch_design_html by booleanProperty("watch_design_html", false)
     val database by jdbcProperty("database")
+    val databaseTest by jdbcProperty("database.Test")
 }

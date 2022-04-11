@@ -54,6 +54,7 @@ kotlin {
                 implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
                 implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
                 implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")
+                implementation("ch.qos.logback:logback-classic:1.2.3")
 
                 implementation("org.postgresql:postgresql:42.3.3")
 

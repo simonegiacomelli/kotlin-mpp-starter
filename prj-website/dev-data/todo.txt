@@ -1,4 +1,4 @@
-todo telemetry: Api for client invocation
+todo fix localdatetime for pgsql
 todo setup auth
 todo dynamic menu voices
 todo user/roles to shield server apis

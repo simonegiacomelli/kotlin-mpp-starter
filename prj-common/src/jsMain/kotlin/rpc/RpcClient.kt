@@ -12,6 +12,8 @@ object Api {
     }
 }
 
+suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> Req.send(): Resp = Api.send(this)
+
 var ApiBaseUrl = ""
 suspend fun dispatcher(apiName: String, payload: String): String {
     val url = "$ApiBaseUrl$rpcHttpHandlerName?api_name=$apiName"
