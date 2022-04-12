@@ -18,6 +18,7 @@ interface CreatedAt {
 
 interface UpdatedAt {
     val updated_at: Column<LocalDateTime>
+    fun Table.updatedAt() = datetime("updated_at", highResolution = true)
 }
 
 interface DeletedAt {
