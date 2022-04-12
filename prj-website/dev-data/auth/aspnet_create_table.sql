@@ -1,81 +1,50 @@
-CREATE TABLE [dbo].[AspNetRoles](
-    [Id] [nvarchar](128) NOT NULL,
-    [Name] [nvarchar](256) NOT NULL,
-    CONSTRAINT [PK_dbo.AspNetRoles] PRIMARY KEY CLUSTERED
-(    [Id] ASC)
+-- Microsoft AspNet identity
+-- see https://docs.microsoft.com/en-us/aspnet/identity/overview/getting-started/introduction-to-aspnet-identity
 
-    GO
-/****** Object:  Table [dbo].[AspNetUserClaims]    Script Date: 15-Mar-17 10:27:06 PM ******/
-    SET ANSI_NULLS ON
-    GO
-    SET QUOTED_IDENTIFIER ON
-    GO
-    CREATE TABLE [dbo].[AspNetUserClaims](
-    [Id] [int] IDENTITY(1,1) NOT NULL,
-    [UserId] [nvarchar](128) NOT NULL,
-    [ClaimType] [nvarchar](max) NULL,
-    [ClaimValue] [nvarchar](max) NULL,
-    CONSTRAINT [PK_dbo.AspNetUserClaims] PRIMARY KEY CLUSTERED
+CREATE TABLE AspNetRoles
 (
-[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-    ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+    Id   nvarchar(128) NOT NULL,
+    Name nvarchar(256) NOT NULL,
+    PRIMARY KEY (Id)
+);
 
-    GO
-/****** Object:  Table [dbo].[AspNetUserLogins]    Script Date: 15-Mar-17 10:27:06 PM ******/
-    SET ANSI_NULLS ON
-    GO
-    SET QUOTED_IDENTIFIER ON
-    GO
-    CREATE TABLE [dbo].[AspNetUserLogins](
-    [LoginProvider] [nvarchar](128) NOT NULL,
-    [ProviderKey] [nvarchar](128) NOT NULL,
-    [UserId] [nvarchar](128) NOT NULL,
-    CONSTRAINT [PK_dbo.AspNetUserLogins] PRIMARY KEY CLUSTERED
+CREATE TABLE AspNetUserClaims
 (
-    [LoginProvider] ASC,
-    [ProviderKey] ASC,
-[UserId] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-    ) ON [PRIMARY]
+    Id         int IDENTITY(1,1) NOT NULL,
+    UserId     nvarchar(128) NOT NULL,
+    ClaimType  nvarchar( max) NULL,
+    ClaimValue nvarchar( max) NULL,
+    PRIMARY KEY (Id)
+);
 
-    GO
-/****** Object:  Table [dbo].[AspNetUserRoles]    Script Date: 15-Mar-17 10:27:06 PM ******/
-    SET ANSI_NULLS ON
-    GO
-    SET QUOTED_IDENTIFIER ON
-    GO
-    CREATE TABLE [dbo].[AspNetUserRoles](
-    [UserId] [nvarchar](128) NOT NULL,
-    [RoleId] [nvarchar](128) NOT NULL,
-    CONSTRAINT [PK_dbo.AspNetUserRoles] PRIMARY KEY CLUSTERED
+CREATE TABLE AspNetUserLogins
 (
-    [UserId] ASC,
-[RoleId] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-    ) ON [PRIMARY]
+    LoginProvider nvarchar(128) NOT NULL,
+    ProviderKey   nvarchar(128) NOT NULL,
+    UserId        nvarchar(128) NOT NULL,
+    PRIMARY KEY (LoginProvider, ProviderKey, UserId)
+);
 
-    GO
-/****** Object:  Table [dbo].[AspNetUsers]    Script Date: 15-Mar-17 10:27:06 PM ******/
-    SET ANSI_NULLS ON
-    GO
-    SET QUOTED_IDENTIFIER ON
-    GO
-    CREATE TABLE [dbo].[AspNetUsers](
-    [Id] [nvarchar](128) NOT NULL,
-    [Email] [nvarchar](256) NULL,
-    [EmailConfirmed] [bit] NOT NULL,
-    [PasswordHash] [nvarchar](max) NULL,
-    [SecurityStamp] [nvarchar](max) NULL,
-    [PhoneNumber] [nvarchar](max) NULL,
-    [PhoneNumberConfirmed] [bit] NOT NULL,
-    [TwoFactorEnabled] [bit] NOT NULL,
-    [LockoutEndDateUtc] [datetime] NULL,
-    [LockoutEnabled] [bit] NOT NULL,
-    [AccessFailedCount] [int] NOT NULL,
-    [UserName] [nvarchar](256) NOT NULL,
-    CONSTRAINT [PK_dbo.AspNetUsers] PRIMARY KEY CLUSTERED
+CREATE TABLE AspNetUserRoles
 (
-[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-    ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+    UserId nvarchar(128) NOT NULL,
+    RoleId nvarchar(128) NOT NULL,
+    PRIMARY KEY (UserId, RoleId)
+);
+
+CREATE TABLE AspNetUsers
+(
+    Id                   nvarchar(128) NOT NULL,
+    Email                nvarchar(256) NULL,
+    EmailConfirmed       bit NOT NULL,
+    PasswordHash         nvarchar( max) NULL,
+    SecurityStamp        nvarchar( max) NULL,
+    PhoneNumber          nvarchar( max) NULL,
+    PhoneNumberConfirmed bit NOT NULL,
+    TwoFactorEnabled     bit NOT NULL,
+    LockoutEndDateUtc    datetime NULL,
+    LockoutEnabled       bit NOT NULL,
+    AccessFailedCount    int NOT NULL,
+    UserName             nvarchar(256) NOT NULL,
+    PRIMARY KEY (Id)
+);
