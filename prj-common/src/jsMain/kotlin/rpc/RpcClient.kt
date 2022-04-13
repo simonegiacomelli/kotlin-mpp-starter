@@ -2,6 +2,8 @@ package rpc
 
 import kotlinx.browser.window
 import kotlinx.coroutines.await
+import kotlinx.datetime.Clock
+import org.w3c.fetch.Headers
 import org.w3c.fetch.RequestInit
 
 object Api {
@@ -20,7 +22,13 @@ suspend fun dispatcher(apiName: String, payload: String): String {
     val request = RequestInit()
     request.method = "POST"
     request.body = payload
+    request.headers = Headers().apply {
+        append("x-header-1", "yepa")
+        append("x-header-2", Clock.System.now().toString())
+    }
     val resp = window.fetch(url, request).await()
+    console.log("resp.headers.asDynamic().keys()")
+    console.log(resp.headers.asDynamic().keys())
     val response = resp.text().await().split("\n\n", limit = 2)
     if (response[0] == "success=1")
         return response[1]

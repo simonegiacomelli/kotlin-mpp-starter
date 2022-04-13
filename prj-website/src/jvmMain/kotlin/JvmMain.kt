@@ -77,8 +77,12 @@ fun Application.module() {
             try {
                 val apiName = call.parameters["api_name"]!!
                 println("dispatching $apiName")
+                call.request.headers.entries().forEach {
+                    println("  " + it.key + "=" + it.value)
+                }
                 val serializedResponse =
                     contextHandler.dispatch(apiName, call.receiveText(), Any())
+                call.response.headers.append("x-from-simonserv-1", "yea");
                 call.respondText("success=1\n\n$serializedResponse", ContentType.Text.Plain)
             } catch (ex: Exception) {
                 val text = "success=0\n\n${ex.stackTraceToString()}"

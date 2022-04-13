@@ -1,9 +1,9 @@
 import api.names.ApiTmEventRequest
-import forms.login.LoginWidget
 import keyboard.HotkeyWindow
 import kotlinx.browser.document
 import kotlinx.datetime.Clock
 import pages.bootstrap.BootstrapHomeWidget
+import pages.bootstrap.MainWidget
 import pages.forms.HtmlSignalWidget
 import rpc.send
 import utils.launchJs
@@ -20,7 +20,8 @@ private fun loadRootWidget() {
     val container = document.getElementById("root") ?: document.body!!
     val holder = HolderWidget()
     container.append(holder.container)
-    val rootWidget = LoginWidget() //MainWidget()
+//    val rootWidget = LoginWidget()
+    val rootWidget = MainWidget()
     holder.show(BootstrapHomeWidget(rootWidget))
     HotkeyWindow.log_prefix = "HotkeyWindow"
     HotkeyWindow.add("SHIFT-F3") { holder.show(HtmlSignalWidget.shared) }
