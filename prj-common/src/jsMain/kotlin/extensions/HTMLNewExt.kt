@@ -28,5 +28,6 @@ fun input(builder: HTMLInputElement.() -> Unit) = input().apply { builder(this) 
 fun code(builder: HTMLElement.() -> Unit) = code().apply { builder(this) }
 fun code(html: String) = code().apply { innerHTML = html }
 fun span(html: String) = span().apply { innerHTML = html }
+fun span(builder: HTMLElement.() -> Unit) = span().apply { builder(this) }
 fun button(html: String) = button().apply { innerHTML = html }
 fun span(html: String, builder: HTMLSpanElement.() -> Unit) = span(html).apply { builder(this) }

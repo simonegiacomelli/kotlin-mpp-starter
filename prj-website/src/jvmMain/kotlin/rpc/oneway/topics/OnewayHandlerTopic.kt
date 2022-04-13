@@ -49,7 +49,7 @@ fun setupTopicInfrastructure(contextOnewayHandlerJvm: OnewayContextHandlers<Onew
     }
     contextOnewayHandlerJvm.register { req: OnewayApiTopicSubscribe, context ->
         L.request(req)
-        check(context.wsEndpoint is WsEndpointAnswerable)
+        check(context.wsEndpoint is WsEndpointAnswerable) { "type is: `${context.wsEndpoint.javaClass.canonicalName}`" }
         locked {
             if (allEndpoints.contains(context.wsEndpoint))
                 endpointsFor(req.topicName).add(context.wsEndpoint)

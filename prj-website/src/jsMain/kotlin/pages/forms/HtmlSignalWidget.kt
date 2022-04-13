@@ -2,7 +2,7 @@ package pages.forms
 
 import api.oneway.ApiNotifyHtmlChange
 import browserTopic
-import kotlinx.browser.document
+import extensions.span
 import widget.Widget
 
 class HtmlSignalWidget : Widget(//language=HTML
@@ -10,7 +10,7 @@ class HtmlSignalWidget : Widget(//language=HTML
     """.trimMargin()
 ) {
     init {
-        explicitContainer = document.createElement("span")
+        explicitContainer = span()
     }
 
     companion object {

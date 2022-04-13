@@ -9,7 +9,7 @@ import version
 import widget.HolderWidget
 import widget.Widget
 
-class BootstrapHomeWidget : Widget(//language=HTML
+class BootstrapHomeWidget(private val rootWidget: Widget = Widget("<h1>empty rootWidget</h1>")) : Widget(//language=HTML
     """
 
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark" aria-label="Main navigation">
@@ -68,7 +68,7 @@ class BootstrapHomeWidget : Widget(//language=HTML
         }
         menuHtml1.onclick = { toggle() }
 
-        mainHolder.show(MainWidget())
+        mainHolder.show(rootWidget)
         val designerWidget = DesignerWidget()
         container.append(LoaderWidget.shared.container)
 

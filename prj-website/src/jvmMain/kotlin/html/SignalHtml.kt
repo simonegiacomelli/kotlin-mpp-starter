@@ -45,7 +45,7 @@ class SignalHtmlThread(private val fileToWatch: File) {
     private fun signalHtml() {
 
         val browserTopic = BrowserTopic<Any>(transport())
-
+        fun notify() = browserTopic.publish(ApiNotifyHtmlChange(fileToWatch.readText()))
 
         fileToWatch.parentFile.mkdirs()
         if (!fileToWatch.exists()) fileToWatch.writeText("<h1>hello</h1>")
@@ -53,7 +53,7 @@ class SignalHtmlThread(private val fileToWatch: File) {
         while (!thread.isInterrupted) {
             log.info("SignalHtmlThread waiting for file to change ${fileToWatch.canonicalPath}")
             watch.waitUntilChanged()
-            browserTopic.publish(ApiNotifyHtmlChange(fileToWatch.readText()))
+            notify()
         }
     }
 }
