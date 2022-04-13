@@ -1,8 +1,25 @@
 package forms.login
 
+import api.names.ApiAcLoginRequest
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLInputElement
+import rpc.send
+import utils.launchJs
 import widget.Widget
 
 class LoginWidget : Widget(html) {
+    private val floatingInput: HTMLInputElement by this
+    private val floatingPassword: HTMLInputElement by this
+    private val btnSubmit: HTMLElement by this
+
+    override fun afterRender() {
+        btnSubmit.onclick = {
+            launchJs {
+                val response = ApiAcLoginRequest(floatingInput.value, floatingPassword.value).send()
+            }
+        }
+
+    }
 }
 
 private val html = //language=HTML
@@ -67,7 +84,7 @@ private val html = //language=HTML
                 <input type="checkbox" value="remember-me"> Remember me
             </label>
         </div>
-        <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+        <button class="w-100 btn btn-lg btn-primary" type="submit" id="btnSubmit">Sign in</button>
         <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
     </form>
 </main>
