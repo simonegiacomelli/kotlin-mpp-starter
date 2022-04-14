@@ -8,6 +8,10 @@ import rpc.http.FetchRequest
 import rpc.http.FetchResponse
 
 object Api {
+    @Deprecated(
+        message = "use the extension function on all Request<>",
+        replaceWith = ReplaceWith("request.send()")
+    )
     suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> send(
         request: Req,
     ): Resp {
@@ -15,7 +19,7 @@ object Api {
     }
 }
 
-suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> Req.send(): Resp = Api.send(this)
+suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> Req.send(): Resp = send(this, ::dispatcher)
 
 var ApiBaseUrl = ""
 suspend fun dispatcher(apiName: String, payload: String): String =

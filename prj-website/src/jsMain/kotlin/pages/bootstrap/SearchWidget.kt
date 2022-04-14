@@ -7,7 +7,7 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLInputElement
 import pages.LoaderWidget
 import pages.search.ResultsWidget
-import rpc.Api
+import rpc.send
 import utils.Persist
 import utils.launchJs
 import widget.Widget
@@ -48,7 +48,7 @@ class SearchWidget : Widget(//language=HTML
         launchJs {
 
             val request = compileRequest()
-            Api.send(request).hits.also {
+            request.send().hits.also {
                 results.innerHTML = ""
             }.forEach {
                 results.append(ResultsWidget(it).container)

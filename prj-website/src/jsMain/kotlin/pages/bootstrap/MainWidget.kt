@@ -2,7 +2,7 @@ package pages.bootstrap
 
 import api.names.ApiAddRequest
 import org.w3c.dom.HTMLInputElement
-import rpc.Api
+import rpc.send
 import utils.launchJs
 import widget.Widget
 
@@ -41,7 +41,7 @@ class MainWidget : Widget(//language=HTML
 
     private fun calculate() = launchJs {
         inputResult.value = ""
-        val response = Api.send(ApiAddRequest(inputA.value.toInt(), inputB.value.toInt()))
+        val response = ApiAddRequest(inputA.value.toInt(), inputB.value.toInt()).send()
         inputResult.value = response.result.toString()
     }
 }
