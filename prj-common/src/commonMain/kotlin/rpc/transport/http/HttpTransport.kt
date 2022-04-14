@@ -19,9 +19,10 @@ data class HttpResponse(
 
 class RpcRequest(val message: RpcMessage, val session_id: String)
 
+private const val session_id_key = "id"
 fun RpcRequest.toHttpRequest(apiBaseUrl: String) = HttpRequest(
     message.payload,
-    mapOf("session_id" to session_id),
+    mapOf(session_id_key to session_id),
     "$apiBaseUrl$rpcHttpHandlerName",
     mapOf("api_name" to message.simpleName)
 )
@@ -31,7 +32,7 @@ fun HttpRequest.toRpcRequest() = RpcRequest(
         parameters["api_name"] ?: error("Don't know which api to call. httpRequest=```$this```"),
         body
     ),
-    headers.getOrElse("session_id") { "" }
+    headers.getOrElse(session_id_key) { "" }
 )
 
 class RpcResponse(val result: Result<String>)

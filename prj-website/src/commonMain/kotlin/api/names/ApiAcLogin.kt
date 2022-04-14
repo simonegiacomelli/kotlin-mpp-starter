@@ -7,4 +7,4 @@ import rpc.Request
 class ApiAcLoginRequest(val username: String, val password: String) : Request<ApiAcLoginResponse>
 
 @Serializable
-class ApiAcLoginResponse()
+class ApiAcLoginResponse(val session_id: String)

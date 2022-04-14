@@ -2,15 +2,17 @@ package security
 
 import java.security.SecureRandom
 
-object SecureToken {
-    private val AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-    private val rnd = SecureRandom()
+private const val AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+private val rnd = SecureRandom()
 
-    fun randomString(len: Int): String {
-        val sb = StringBuilder(len)
-        repeat(len) { sb.append(AB[rnd.nextInt(AB.length)]) }
-        return sb.toString()
-    }
+fun randomString(len: Int): String {
+    val sb = StringBuilder(len)
+    repeat(len) { sb.append(AB[rnd.nextInt(AB.length)]) }
+    return sb.toString()
+}
+
+object SecureToken {
+
 
     @JvmStatic
     fun main(args: Array<String>) {

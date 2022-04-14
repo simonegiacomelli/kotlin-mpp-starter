@@ -2,6 +2,7 @@ package rpc.server
 
 import api.names.ApiAcLoginRequest
 import api.names.ApiAcLoginResponse
+import security.randomString
 
 private val reg1 = contextHandler.register { req: ApiAcLoginRequest, _ ->
     req.run {
@@ -12,5 +13,5 @@ private val reg1 = contextHandler.register { req: ApiAcLoginRequest, _ ->
 //        }
     }
 
-    ApiAcLoginResponse()
+    ApiAcLoginResponse(randomString(30))
 }

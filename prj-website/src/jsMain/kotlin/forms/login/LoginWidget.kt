@@ -4,6 +4,7 @@ import api.names.ApiAcLoginRequest
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 import rpc.send
+import rpc.session_id
 import utils.launchJs
 import widget.Widget
 
@@ -16,6 +17,7 @@ class LoginWidget : Widget(html) {
         btnSubmit.onclick = {
             launchJs {
                 val response = ApiAcLoginRequest(floatingInput.value, floatingPassword.value).send()
+                session_id = response.session_id
             }
         }
 
