@@ -15,7 +15,7 @@ object Api {
     suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> send(
         request: Req,
     ): Resp {
-        return send(request, ::dispatcher)
+        return request.send()
     }
 }
 
