@@ -16,14 +16,15 @@ import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.runBlocking
 import rpc.RpcMessage
-import rpc.http.HttpRequest
-import rpc.http.HttpResponse
+//import rpc.http.HttpRequest
+//import rpc.http.HttpResponse
 import rpc.oneway.OnewayContext
 import rpc.oneway.onewayContextHandler
 import rpc.oneway.topics.WsEndpointAnswerable
 import rpc.oneway.topics.wsEndpointPool
 import rpc.rpcHttpHandlerName
 import rpc.server.contextHandler
+import rpc.transport.http.*
 import java.io.File
 import java.util.*
 
@@ -87,12 +88,19 @@ fun Application.module() {
             }
             try {
 
-                HttpRequest(call.parameters.toMap(), call.request.headers.toMap(), call.receiveText())
-                    .dispatch(contextHandler) { Any() }
-                    .respondToClient()
+                call.run {
+                    val headersMap = request.headers.toMap().keepFirst()
+                    val parametersMap = parameters.toMap().keepFirst()
+                    HttpRequest(receiveText(), headersMap, "", parametersMap).toRpcRequest()
+                }.run {
+                    val context = session_id // todo
+                    val payload = contextHandler.dispatch(message, Any())
+                    RpcResponse(Result.success(payload)).toHttpResponse()
+                }.respondToClient()
 
             } catch (ex: Exception) {
-                HttpRequest.exception(ex).respondToClient()
+                println("Exception on api request ```${ex.stackTraceToString()}```")
+                RpcResponse(Result.failure(ex)).toHttpResponse().respondToClient()
             }
         }
         webSocket("/ws1") {
@@ -115,6 +123,10 @@ fun Application.module() {
         }
     }
 }
+
+private fun <K, V> Map<K, List<V>>.keepFirst(): Map<K, V> =
+    filterValues { it.isNotEmpty() }.mapValues { it.value.first() }
+
 
 private class WsEndpointKtor(val session: DefaultWebSocketServerSession) : WsEndpointAnswerable() {
     override fun send(string: String) {

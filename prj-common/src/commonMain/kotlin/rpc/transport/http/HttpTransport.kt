@@ -3,20 +3,14 @@ package rpc.transport.http
 import rpc.RpcMessage
 import rpc.rpcHttpHandlerName
 
-// interface to fetch/XMLHttpRequest
-// interface to api server/servlet-container/etc
-fun interface HttpTransport {
-    fun process(httpRequest: HttpRequest): HttpResponse
-}
-
-class HttpRequest(
+data class HttpRequest(
     val body: String,
     val headers: Map<String, String>,
     val url: String,
     val parameters: Map<String, String>,
 )
 
-class HttpResponse(
+data class HttpResponse(
     val body: String,
     val headers: Map<String, String>,
     val status: Int,
@@ -32,22 +26,27 @@ fun RpcRequest.toHttpRequest(apiBaseUrl: String) = HttpRequest(
     mapOf("api_name" to message.simpleName)
 )
 
-private val errorMessage = "Don't know which api to call"
 fun HttpRequest.toRpcRequest() = RpcRequest(
-    RpcMessage(parameters["api_name"] ?: error(errorMessage), body),
+    RpcMessage(
+        parameters["api_name"] ?: error("Don't know which api to call. httpRequest=```$this```"),
+        body
+    ),
     headers.getOrElse("session_id") { "" }
 )
 
 class RpcResponse(val result: Result<String>)
 
+private const val successStatus = 200
+private const val failureStatus = 500
+
 fun RpcResponse.toHttpResponse() = if (result.isSuccess)
     result.getOrThrow().run {
-        HttpResponse(this, emptyMap(), 200, null)
+        HttpResponse(this, emptyMap(), successStatus, null)
     } else result.exceptionOrNull()!!.run {
-    HttpResponse(stackTraceToString(), emptyMap(), 555, null)
+    HttpResponse(stackTraceToString(), emptyMap(), failureStatus, null)
 }
 
-fun HttpResponse.toRpcResponse() = if (status == 200)
+fun HttpResponse.toRpcResponse() = if (status == successStatus)
     RpcResponse(Result.success(body))
 else
     RpcResponse(Result.failure(HttpResponseException(this)))
