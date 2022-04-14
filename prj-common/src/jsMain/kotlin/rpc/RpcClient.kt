@@ -2,9 +2,10 @@ package rpc
 
 import kotlinx.browser.window
 import kotlinx.coroutines.await
-import kotlinx.datetime.Clock
 import org.w3c.fetch.Headers
 import org.w3c.fetch.RequestInit
+import rpc.http.FetchRequest
+import rpc.http.FetchResponse
 
 object Api {
     suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> send(
@@ -17,20 +18,12 @@ object Api {
 suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> Req.send(): Resp = Api.send(this)
 
 var ApiBaseUrl = ""
-suspend fun dispatcher(apiName: String, payload: String): String {
-    val url = "$ApiBaseUrl$rpcHttpHandlerName?api_name=$apiName"
-    val request = RequestInit()
-    request.method = "POST"
-    request.body = payload
-    request.headers = Headers().apply {
-        append("x-header-1", "yepa")
-        append("x-header-2", Clock.System.now().toString())
+suspend fun dispatcher(apiName: String, payload: String): String =
+    FetchRequest(ApiBaseUrl, apiName, payload, session_id).values().run {
+        val request = RequestInit()
+        request.method = method
+        request.body = body
+        request.headers = Headers().also { headers.forEach { entry -> it.append(entry.key, entry.value) } }
+        val resp = window.fetch(url, request).await()
+        FetchResponse(resp.status, resp.text().await()).payload()
     }
-    val resp = window.fetch(url, request).await()
-    console.log("resp.headers.asDynamic().keys()")
-    console.log(resp.headers.asDynamic().keys())
-    val response = resp.text().await().split("\n\n", limit = 2)
-    if (response[0] == "success=1")
-        return response[1]
-    error(response[1])
-}

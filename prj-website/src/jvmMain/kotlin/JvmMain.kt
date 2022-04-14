@@ -12,9 +12,12 @@ import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
+import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.runBlocking
 import rpc.RpcMessage
+import rpc.http.HttpRequest
+import rpc.http.HttpResponse
 import rpc.oneway.OnewayContext
 import rpc.oneway.onewayContextHandler
 import rpc.oneway.topics.WsEndpointAnswerable
@@ -74,24 +77,22 @@ fun Application.module() {
             call.respondText { "RESULT=OK2" }
         }
         post("$rpcHttpHandlerName") {
-            try {
-                val apiName = call.parameters["api_name"]!!
-                println("dispatching $apiName")
-                call.request.headers.entries().forEach {
-                    println("  " + it.key + "=" + it.value)
-                }
-                val serializedResponse =
-                    contextHandler.dispatch(apiName, call.receiveText(), Any())
-                call.response.headers.append("x-from-simonserv-1", "yea");
-                call.respondText("success=1\n\n$serializedResponse", ContentType.Text.Plain)
-            } catch (ex: Exception) {
-                val text = "success=0\n\n${ex.stackTraceToString()}"
-                println("handling exception [[$text]] ")
+            suspend fun HttpResponse.respondToClient() {
+                headers.entries.forEach { call.response.headers.append(it.key, it.value) }
                 call.respondText(
-                    text = text,
-                    status = HttpStatusCode.InternalServerError,
-                    contentType = ContentType.Text.Plain
+                    text = body,
+                    contentType = ContentType.Text.Plain,
+                    status = HttpStatusCode.fromValue(status)
                 )
+            }
+            try {
+
+                HttpRequest(call.parameters.toMap(), call.request.headers.toMap(), call.receiveText())
+                    .dispatch(contextHandler) { Any() }
+                    .respondToClient()
+
+            } catch (ex: Exception) {
+                HttpRequest.exception(ex).respondToClient()
             }
         }
         webSocket("/ws1") {

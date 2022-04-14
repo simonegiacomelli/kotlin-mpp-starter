@@ -60,14 +60,14 @@ private val html = //language=HTML
         border-top-right-radius: 0;
     }
     .top-image {
-        object-fit: cover;
+        object-fit: contain;
         width: 100%;
         height: 150px;
     }
 </style>
 <main class="form-signin form-body">
     <form>
-        <img class="mb-4" src="img/login.png" alt="" class="top-image">
+        <img class="mb-4 top-image" src="img/login.png" alt="">
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
         <div class="form-floating">
