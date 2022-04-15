@@ -1,3 +1,9 @@
+package pages.bootstrap
+
+import widget.Widget
+
+class OffcanvasWidget : Widget(//language=HTML
+    """
 <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling"
         aria-controls="offcanvasScrolling">Enable body scrolling
 </button>
@@ -38,3 +44,7 @@
     </div>
 </div>
 
+
+"""
+) {
+}

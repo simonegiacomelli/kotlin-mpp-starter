@@ -3,7 +3,10 @@ import forms.login.LoginWidget
 import keyboard.HotkeyWindow
 import kotlinx.browser.document
 import kotlinx.datetime.Clock
+import pages.bootstrap.BootstrapHomeWidget
 import pages.bootstrap.MainWidget
+import pages.bootstrap.OffcanvasWidget
+import pages.bootstrap.SearchWidget
 import pages.forms.HtmlSignalWidget
 import rpc.send
 import utils.launchJs
@@ -18,19 +21,21 @@ fun main() {
 
 private fun loadRootWidget() {
     val container = document.getElementById("root") ?: document.body!!
-    val holder = HolderWidget()
-    container.append(holder.container)
+    val bodyHolder = HolderWidget()
+    container.append(bodyHolder.container)
     HotkeyWindow.log_prefix = "HotkeyWindow"
     val loginWidget = LoginWidget()
     val mainWidget = MainWidget()
 
-
+    val bootrapWidget = BootstrapHomeWidget()
+    bodyHolder.show(bootrapWidget)
+    val holder = bootrapWidget.mainHolder
+    holder.show(loginWidget)
     HotkeyWindow
         .add("SHIFT-F3") { holder.show(HtmlSignalWidget.shared) }
-        .add("Escape") { launchJs { ApiTmEventRequest(1234, "Esc was pressed").send() } }
+        .add("F8") { launchJs { ApiTmEventRequest(1234, "Esc was pressed").send() } }
         .add("F1") { holder.show(loginWidget) }
         .add("F2") { holder.show(mainWidget) }
-
-    holder.show(loginWidget)
-
+        .add("F3") { holder.show(SearchWidget()) }
+        .add("F4") { holder.show(OffcanvasWidget()) }
 }

@@ -1,5 +1,8 @@
-todo setup auth
+todo rename BootstrapHomeWidget to NavabarWidget
+todo make OffcanvasWidget usable with menu
+todo remove <main> from BootstrapHomeWidget
 todo dynamic menu voices
+todo setup auth
 todo fix create database app_db (ENCODING, LC_COLLATE, LC_CTYPE,  CONNECTION LIMIT)
 todo fix protocol: client/server fetch/ktor communication protocol
 todo user/roles to shield server apis

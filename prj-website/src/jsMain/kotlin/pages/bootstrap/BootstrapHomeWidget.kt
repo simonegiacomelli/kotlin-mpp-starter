@@ -55,7 +55,7 @@ class BootstrapHomeWidget(private val rootWidget: Widget = Widget("<h1>empty roo
 <main class="container" id="mainHolder"></main>        
     """.trimIndent()
 ) {
-    private val mainHolder by this { HolderWidget() }
+    val mainHolder by this { HolderWidget() }
 
     private val navbarSideCollapse: HTMLElement by this
     private val navbarsExampleDefault: HTMLElement by this
@@ -73,9 +73,9 @@ class BootstrapHomeWidget(private val rootWidget: Widget = Widget("<h1>empty roo
         container.append(LoaderWidget.shared.container)
 
         HotkeyWindow
-            .add("F2") { mainHolder.show(designerWidget) }
-            .add("F3", "~", "SHIFT-~") { it.stopPropagation(); it.preventDefault(); toggle() }
-            .add("F4") { mainHolder.container.classList.toggle("container") }
+//            .add("F2") { mainHolder.show(designerWidget) }
+//            .add("F3", "~", "SHIFT-~") { it.stopPropagation(); it.preventDefault(); toggle() }
+            .add("SHIFT-F4") { mainHolder.container.classList.toggle("container") }
             .add("Escape") { mainHolder.closeCurrent() }
     }
 
