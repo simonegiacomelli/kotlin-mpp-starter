@@ -1,8 +1,9 @@
+todo create user from cli
+todo assign role to user from cli
+todo setup auth
 todo make OffcanvasWidget usable with menu
 todo remove <main> from BootstrapHomeWidget
 todo dynamic menu voices
-todo setup auth
 todo fix create database app_db (ENCODING, LC_COLLATE, LC_CTYPE,  CONNECTION LIMIT)
-todo fix protocol: client/server fetch/ktor communication protocol
 todo user/roles to shield server apis
 todo remove output binaries copy, use output folder setting
