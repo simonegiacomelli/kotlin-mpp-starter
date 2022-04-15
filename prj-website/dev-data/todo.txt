@@ -1,5 +1,6 @@
 todo setup auth
+todo dynamic menu voices
 todo fix create database app_db (ENCODING, LC_COLLATE, LC_CTYPE,  CONNECTION LIMIT)
 todo fix protocol: client/server fetch/ktor communication protocol
-todo dynamic menu voices
 todo user/roles to shield server apis
+todo remove output binaries copy, use output folder setting

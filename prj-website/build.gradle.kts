@@ -1,3 +1,4 @@
+import git.scriviGitInfoSourceFile
 import java.nio.file.Paths
 
 plugins {
@@ -129,4 +130,16 @@ fun TaskContainer.createJavaExec(
 //        errorOutput = System.err
 }
 
+// steps to test if cache is honored:
+// 1) verify without any harness that a double compilation enjoy cache effects
+// 2) with harness, a double compilation should enjoy cache effects
+// 3) with harness, (a) after a compilation , (b) touch a file,
+//    (c) look at correct gitinfo (d) next compile should not benefit on cache
+tasks.register<Copy>("copyDocsTestGitinfo") {
+    group = "app-" + project.name
+    from("dev-data/auth")
+    into("dev-data/auth-test-gitinfo")
+    outputs.cacheIf { true }
+}
 
+scriviGitInfoSourceFile()
