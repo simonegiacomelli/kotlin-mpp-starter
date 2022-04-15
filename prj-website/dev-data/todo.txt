@@ -1,6 +1,7 @@
-todo create user from cli
 todo assign role to user from cli
-todo setup auth
+todo create session linked to user
+todo manage session browser-side
+todo create role infrastructure
 todo make OffcanvasWidget usable with menu
 todo remove <main> from BootstrapHomeWidget
 todo dynamic menu voices

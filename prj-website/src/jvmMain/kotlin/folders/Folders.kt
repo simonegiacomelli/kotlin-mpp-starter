@@ -13,3 +13,5 @@ class Data(data: File) : File(data.canonicalPath) {
     val html = resolve("html").canonicalFile
     val tmp = resolve("tmp").canonicalFile
 }
+
+fun folders() = Folders(File("."))

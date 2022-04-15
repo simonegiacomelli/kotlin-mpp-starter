@@ -3,7 +3,7 @@ package ktor
 import appinit.AppInit
 import appinit.destroy
 import appinit.init
-import folders.Folders
+import folders.folders
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
@@ -25,7 +25,6 @@ import rpc.oneway.topics.wsEndpointPool
 import rpc.rpcHttpHandlerName
 import rpc.server.contextHandler
 import rpc.transport.http.*
-import java.io.File
 import java.util.*
 
 fun startKtor() {
@@ -34,7 +33,7 @@ fun startKtor() {
 
 fun Application.module() {
 
-    val folders = Folders(File("."))
+    val folders = folders()
     val appInit = AppInit(folders).apply { init() }
 
     environment.monitor.subscribe(ApplicationStopped) { appInit.destroy() }

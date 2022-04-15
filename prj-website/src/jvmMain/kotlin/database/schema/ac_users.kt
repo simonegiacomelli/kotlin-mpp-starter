@@ -1,17 +1,17 @@
 package database.schema
 
 object ac_users : LongIdTable(), CreatedAt {
-    val email = varchar("email", 256)
+    val email = varchar("email", 256).nullable()
     val email_confirmed = bool("email_confirmed")
-    val password_hash = text("password_hash")
-    val security_stamp = text("security_stamp")
-    val phone_number = text("phone_number")
+    val password_hash = text("password_hash").nullable()
+    val security_stamp = text("security_stamp").nullable()
+    val phone_number = text("phone_number").nullable()
     val phone_number_confirmed = bool("phone_number_confirmed")
     val two_factor_enabled = bool("two_factor_enabled")
-    val lockout_end_date_utc = datetime("lockout_end_date_utc")
+    val lockout_end_date_utc = datetime("lockout_end_date_utc").nullable()
     val lockout_enabled = bool("lockout_enabled")
     val access_failed_count = integer("access_failed_count")
-    val username = varchar("username", 256)
+    val username = varchar("username", 256).uniqueIndex("ac_users_idx_username")
     override val created_at = createdAt()
 }
 

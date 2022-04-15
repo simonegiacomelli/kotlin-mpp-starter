@@ -104,7 +104,13 @@ val appEtcCopy = "appEtcCopy"
 tasks.createJavaExec(
     "JvmMainKt", "appJvmExec",
 //    listOf("-Dio.ktor.development=true")
-    listOf()
+    args = listOf("start")
+).apply {
+    dependsOn(appEtcCopy)
+}
+
+tasks.createJavaExec(
+    "JvmMainKt", "appCli",
 ).apply {
     dependsOn(appEtcCopy)
 }
@@ -118,14 +124,16 @@ tasks.register<JavaExec>(appEtcCopy) {
 fun TaskContainer.createJavaExec(
     mainClassFqdn: String,
     taskName: String? = null,
-    pJvmArgs: List<String>? = null
+    args: List<String>? = null,
+    jvmArgs: List<String>? = null,
 ) = create<JavaExec>(taskName ?: mainClassFqdn) {
     group = "app-" + project.name
     classpath = sourceSets["main"].runtimeClasspath
     mainClass.set(mainClassFqdn)
     standardInput = System.`in`
     workingDir = projectDir
-    if (pJvmArgs != null) jvmArgs = pJvmArgs
+    if (args != null) this.args = args
+    if (jvmArgs != null) this.jvmArgs = jvmArgs
 //        standardOutput = System.out
 //        errorOutput = System.err
 }
