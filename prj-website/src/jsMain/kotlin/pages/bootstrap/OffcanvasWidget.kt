@@ -1,10 +1,11 @@
 package pages.bootstrap
 
+import org.w3c.dom.HTMLElement
 import widget.Widget
 
 class OffcanvasWidget : Widget(//language=HTML
     """
-<button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling"
+<button id="btnToggle" style="display: none" class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling"
         aria-controls="offcanvasScrolling">Enable body scrolling
 </button>
 
@@ -47,4 +48,6 @@ class OffcanvasWidget : Widget(//language=HTML
 
 """
 ) {
+    private val btnToggle: HTMLElement by this
+    fun toggle() = btnToggle.click()
 }

@@ -1,4 +1,3 @@
-todo rename BootstrapHomeWidget to NavabarWidget
 todo make OffcanvasWidget usable with menu
 todo remove <main> from BootstrapHomeWidget
 todo dynamic menu voices

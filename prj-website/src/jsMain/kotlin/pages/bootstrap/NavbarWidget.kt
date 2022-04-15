@@ -9,7 +9,7 @@ import version
 import widget.HolderWidget
 import widget.Widget
 
-class BootstrapHomeWidget(private val rootWidget: Widget = Widget("<h1>empty rootWidget</h1>")) : Widget(//language=HTML
+class NavbarWidget(private val rootWidget: Widget = Widget("<h1>empty rootWidget</h1>")) : Widget(//language=HTML
     """
 
 <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark" aria-label="Main navigation">
@@ -60,12 +60,11 @@ class BootstrapHomeWidget(private val rootWidget: Widget = Widget("<h1>empty roo
     private val navbarSideCollapse: HTMLElement by this
     private val navbarsExampleDefault: HTMLElement by this
     private val menuHtml1: HTMLElement by this
-
+    val defaultHamburgerClick = { navbarsExampleDefault.classList.toggle("open"); Unit }
+    var onHamburgerClick: () -> Unit = defaultHamburgerClick
     override fun afterRender() {
 
-        navbarSideCollapse.onclick = {
-            navbarsExampleDefault.classList.toggle("open")
-        }
+        navbarSideCollapse.onclick = { onHamburgerClick() }
         menuHtml1.onclick = { toggle() }
 
         mainHolder.show(rootWidget)
