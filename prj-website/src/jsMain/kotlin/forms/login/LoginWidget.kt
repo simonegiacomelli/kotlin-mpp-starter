@@ -1,6 +1,9 @@
 package forms.login
 
 import api.names.ApiAcLoginRequest
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 import rpc.send
@@ -32,7 +35,6 @@ private val html = //language=HTML
         align-items: center;
         padding-top: 40px;
         padding-bottom: 40px;
-        background-color: #f5f5f5;
     }
 
     .form-signin {
@@ -67,9 +69,9 @@ private val html = //language=HTML
         height: 150px;
     }
 </style>
-<main class="form-signin form-body">
+<div class="form-signin">
     <form>
-        <img class="mb-4 top-image" src="img/login.png" alt="">
+        <img class="top-image" src="img/login.png" alt="">
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
         <div class="form-floating">
@@ -87,7 +89,7 @@ private val html = //language=HTML
             </label>
         </div>
         <button class="w-100 btn btn-lg btn-primary" type="submit" id="btnSubmit">Sign in</button>
-        <p class="mt-5 mb-3 text-muted">&copy; 2017–2021</p>
+        <p class="mt-5 mb-3 text-muted">&copy; 2021–${Clock.System.now().toLocalDateTime(TimeZone.UTC).year}</p>
     </form>
-</main>
+</div>
 """.trimIndent()

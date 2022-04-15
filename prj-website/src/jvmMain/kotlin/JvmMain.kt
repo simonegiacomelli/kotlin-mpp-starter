@@ -51,6 +51,7 @@ fun Application.module() {
     install(ConditionalHeaders) {
         val file = webDir.resolve("js/compiled/prj-website.js")
         version { outgoingContent ->
+            println("outgoingContent=`$outgoingContent` contentType=`${outgoingContent.contentType}`")
             when (outgoingContent.contentType?.withoutParameters()) {
                 ContentType.Application.JavaScript -> listOf(
                     EntityTagVersion(file.lastModified().hashCode().toString()),

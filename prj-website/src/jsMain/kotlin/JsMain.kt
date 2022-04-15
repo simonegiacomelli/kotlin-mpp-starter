@@ -3,8 +3,8 @@ import forms.login.LoginWidget
 import keyboard.HotkeyWindow
 import kotlinx.browser.document
 import kotlinx.datetime.Clock
-import pages.bootstrap.BootstrapHomeWidget
 import pages.bootstrap.MainWidget
+import pages.bootstrap.NavbarWidget
 import pages.bootstrap.OffcanvasWidget
 import pages.bootstrap.SearchWidget
 import pages.forms.HtmlSignalWidget
@@ -27,15 +27,17 @@ private fun loadRootWidget() {
     val loginWidget = LoginWidget()
     val mainWidget = MainWidget()
 
-    val bootrapWidget = BootstrapHomeWidget()
+    val bootrapWidget = NavbarWidget()
+    val offcanvasWidget = OffcanvasWidget()
     bodyHolder.show(bootrapWidget)
+    container.append(offcanvasWidget.container)
     val holder = bootrapWidget.mainHolder
     holder.show(loginWidget)
+    bootrapWidget.onHamburgerClick = { offcanvasWidget.toggle() }
     HotkeyWindow
         .add("SHIFT-F3") { holder.show(HtmlSignalWidget.shared) }
         .add("F8") { launchJs { ApiTmEventRequest(1234, "Esc was pressed").send() } }
         .add("F1") { holder.show(loginWidget) }
         .add("F2") { holder.show(mainWidget) }
         .add("F3") { holder.show(SearchWidget()) }
-        .add("F4") { holder.show(OffcanvasWidget()) }
 }
