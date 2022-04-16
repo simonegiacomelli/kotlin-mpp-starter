@@ -2,6 +2,7 @@ package rpc.server
 
 import api.names.ApiAcLoginRequest
 import api.names.ApiAcLoginResponse
+import api.names.Credential
 import database.schema.ac_users
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.select
@@ -10,10 +11,10 @@ import security.randomString
 import security.verifySaltedHash
 
 private val reg1 = contextHandler.register { req: ApiAcLoginRequest, _ ->
-    ApiAcLoginResponse(req.getSessionIfValid())
+    ApiAcLoginResponse(req.credential.getSessionIfValid())
 }
 
-private fun ApiAcLoginRequest.getSessionIfValid(): String = transaction {
+private fun Credential.getSessionIfValid(): String = transaction {
     println("Auth request, user=$username pw=$password")
     val user = ac_users.select { ac_users.username eq username }.firstOrNull()
     if (user.credentialValid(password)) randomString(30) else ""

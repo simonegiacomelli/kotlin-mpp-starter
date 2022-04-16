@@ -2,7 +2,7 @@ package rpc.server
 
 import api.names.ApiAcUserCreateRequest
 import api.names.ApiAcUserCreateResponse
-import api.names.UserCredential
+import api.names.Credential
 import database.schema.ac_users
 import database.time.nowAtDefault
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -39,7 +39,7 @@ fun userCreate(username: String): Unit = transaction {
     }
 }
 
-fun userPasswd(credential: UserCredential) = transaction {
+fun userPasswd(credential: Credential) = transaction {
     val res = ac_users.update({ ac_users.username eq credential.username }) {
         it[password_hash] = saltedHash(credential.password)
     }

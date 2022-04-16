@@ -1,6 +1,6 @@
 package cli
 
-import api.names.UserCredential
+import api.names.Credential
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -30,7 +30,7 @@ class CliTest {
 
     @Test
     fun test_user_passwd() {
-        var credential: UserCredential? = null
+        var credential: Credential? = null
         cli("user", "passwd", "foo", "secret") { user_passwd = { credential = it } }
         checkNotNull(credential)
         credential?.apply {

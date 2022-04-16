@@ -1,6 +1,7 @@
 package forms.login
 
 import api.names.ApiAcLoginRequest
+import api.names.Credential
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -19,7 +20,7 @@ class LoginWidget : Widget(html) {
     override fun afterRender() {
         btnSubmit.onclick = {
             launchJs {
-                val response = ApiAcLoginRequest(floatingInput.value, floatingPassword.value).send()
+                val response = ApiAcLoginRequest(Credential(floatingInput.value, floatingPassword.value)).send()
                 session_id = response.session_id
             }
         }

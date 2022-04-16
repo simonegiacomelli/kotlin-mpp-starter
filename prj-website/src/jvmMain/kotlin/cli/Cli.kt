@@ -1,6 +1,6 @@
 package cli
 
-import api.names.UserCredential
+import api.names.Credential
 import appinit.initDatabasePart
 import folders.folders
 import ktor.startKtor
@@ -18,7 +18,7 @@ fun cli(vararg arguments: String, init: Cli.() -> Unit) = with(Cli()) {
 
     if (match("start")) start()
     if (match("user", "create")) user_create(args[2])
-    if (match("user", "passwd")) user_passwd(UserCredential(args[2], args[3]))
+    if (match("user", "passwd")) user_passwd(Credential(args[2], args[3]))
 }
 
 fun Cli.defaultHandlers() {
@@ -32,7 +32,7 @@ class Cli {
     var start = {}
     var no_arguments = {}
     var user_create: (String) -> Unit = {}
-    var user_passwd: (UserCredential) -> Unit = {}
+    var user_passwd: (Credential) -> Unit = {}
 }
 
 private fun minimalStartup() {
