@@ -1,13 +1,13 @@
 package rpc
 
-import client.State
 import kotlinx.browser.window
 import kotlinx.coroutines.await
 import org.w3c.fetch.Headers
 import org.w3c.fetch.RequestInit
 import rpc.transport.http.*
+import state.ClientState
 
-suspend fun State.apiDispatcher(apiName: String, payload: String): String {
+suspend fun ClientState.apiDispatcher(apiName: String, payload: String): String {
     val httpRequest = RpcRequest(RpcMessage(apiName, payload), session_id).toHttpRequest(ApiBaseUrl)
     val result = doFetch(httpRequest).toRpcResponse().result
     if (result.isFailure) {
@@ -19,7 +19,7 @@ suspend fun State.apiDispatcher(apiName: String, payload: String): String {
     return result.getOrThrow()
 }
 
-private suspend fun State.doFetch(httpRequest: HttpRequest): HttpResponse = httpRequest.run {
+private suspend fun ClientState.doFetch(httpRequest: HttpRequest): HttpResponse = httpRequest.run {
     val request = RequestInit()
     request.method = "POST"
     request.body = body

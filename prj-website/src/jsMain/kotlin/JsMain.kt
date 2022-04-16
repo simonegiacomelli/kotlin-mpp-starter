@@ -1,5 +1,4 @@
 import api.names.ApiTmEventRequest
-import client.installClientHandler
 import forms.login.LoginWidget
 import keyboard.HotkeyWindow
 import kotlinx.browser.document
@@ -10,6 +9,7 @@ import pages.bootstrap.OffcanvasWidget
 import pages.bootstrap.SearchWidget
 import pages.forms.HtmlSignalWidget
 import rpc.send
+import state.installClientHandler
 import utils.launchJs
 import widget.HolderWidget
 

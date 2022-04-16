@@ -1,9 +1,9 @@
-package client
+package state
 
 import accesscontrol.Session
 import kotlinx.coroutines.CoroutineScope
 
-interface State {
+interface ClientState {
     fun toast(message: String)
     fun spinner(function: suspend CoroutineScope.() -> Unit)
     val ApiBaseUrl: String

@@ -1,4 +1,4 @@
-package client
+package state
 
 
 import accesscontrol.Session
@@ -11,11 +11,11 @@ import rpc.apiDispatcher
 import utils.launchJs
 
 fun installClientHandler() {
-    val domState = DomState()
-    stateOrNull = { domState }
+    val jsState = JsState()
+    stateOrNull = { jsState }
 }
 
-class DomState : State {
+class JsState : ClientState {
     override fun toast(message: String) = window.alert(message)
     override val ApiBaseUrl: String = ""
 

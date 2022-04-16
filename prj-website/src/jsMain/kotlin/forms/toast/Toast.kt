@@ -1,5 +1,5 @@
 package forms.toast
 
-import client.state
+import state.state
 
 fun toast(message: String) = state.toast(message)

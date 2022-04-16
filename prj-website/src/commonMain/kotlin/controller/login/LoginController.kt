@@ -5,12 +5,12 @@ import api.names.ApiAcLoginRequest
 import api.names.ApiAcSessionResponse
 import api.names.ApiAcVerifySessionRequest
 import api.names.Credential
-import client.State
 import rpc.send
+import state.ClientState
 
 class LoginController(
-    state: State, val credential: () -> Credential, val close: () -> Unit
-) : State by state {
+    state: ClientState, val credential: () -> Credential, val close: () -> Unit
+) : ClientState by state {
 
     fun loginClick() {
         spinner {
