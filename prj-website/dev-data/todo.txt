@@ -1,4 +1,6 @@
-todo implement ApiAcVerifySession
+todo remove global contextHandler(s)
+todo spinner(wholeScreen=true){}
+todo logoff
 todo good localStorage wrapper (map delegate?)
 todo logging
 todo assign role to user from cli

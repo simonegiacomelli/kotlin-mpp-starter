@@ -49,7 +49,7 @@ class LoginWidget : Widget(html) {
     private fun sessionOk(session: ApiAcSession) {
         state.sessionOrNull = session
         close()
-        toast("Sessione creata " + session.id)
+        toast("Sessione valida " + session.id)
     }
 
     private fun failedLogin() {
