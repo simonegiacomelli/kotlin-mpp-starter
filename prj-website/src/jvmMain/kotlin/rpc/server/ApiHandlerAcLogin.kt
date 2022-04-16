@@ -2,8 +2,8 @@ package rpc.server
 
 import accesscontrol.acUserFromSession
 import api.names.ApiAcLoginRequest
-import api.names.ApiAcLoginResponse
 import api.names.ApiAcSession
+import api.names.ApiAcSessionResponse
 import api.names.Credential
 import context.toDataclass
 import database.schema.ac_sessions
@@ -19,9 +19,9 @@ import security.verifySaltedHash
 
 private val reg1 = contextHandler.register { req: ApiAcLoginRequest, context ->
     val session_id = req.credential.newSessionIfValid()
-        ?: return@register ApiAcLoginResponse(null)
+        ?: return@register ApiAcSessionResponse(null)
     val user = context.database.acUserFromSession(session_id)
-    ApiAcLoginResponse(ApiAcSession(session_id, user.toDataclass()))
+    ApiAcSessionResponse(ApiAcSession(session_id, user.toDataclass()))
 }
 
 private fun Credential.newSessionIfValid(): String? = transaction {

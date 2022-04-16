@@ -1,37 +1,54 @@
 package forms.login
 
-import api.names.ApiAcLoginRequest
-import api.names.ApiAcLoginResponse
-import api.names.Credential
+import api.names.*
 import client.state
 import forms.toast.toast
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLInputElement
+import pages.spinner
 import rpc.send
-import utils.launchJs
 import widget.Widget
 
 class LoginWidget : Widget(html) {
     private val floatingInput: HTMLInputElement by this
     private val floatingPassword: HTMLInputElement by this
-    private val btnSubmit: HTMLElement by this
+    private val btnSubmit: HTMLButtonElement by this
 
     override fun afterRender() {
-        btnSubmit.onclick = {
-            launchJs {
-                ApiAcLoginRequest(Credential(floatingInput.value, floatingPassword.value))
-                    .send().also { processResponse(it) }
-
-            }
+        spinner {
+            btnSubmit.disabled = true
+            kotlin.runCatching { verifySessionState() }
+            btnSubmit.disabled = false
+            btnSubmit.onclick = { loginClick() }
         }
     }
 
-    private fun processResponse(response: ApiAcLoginResponse) {
+    private fun loginClick() {
+        spinner {
+            ApiAcLoginRequest(Credential(floatingInput.value, floatingPassword.value))
+                .send().also { processResponse(it) }
+
+        }
+    }
+
+    private suspend fun verifySessionState() {
+        val id = state.session_id ?: return
+        val session = ApiAcVerifySessionRequest(id).send().session
+        if (session != null)
+            sessionOk(session)
+    }
+
+    private fun processResponse(response: ApiAcSessionResponse) {
         val session = response.session ?: return failedLogin()
+        sessionOk(session)
+    }
+
+    private fun sessionOk(session: ApiAcSession) {
         state.sessionOrNull = session
+        close()
         toast("Sessione creata " + session.id)
     }
 

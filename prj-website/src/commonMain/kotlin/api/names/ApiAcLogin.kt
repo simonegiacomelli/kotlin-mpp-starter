@@ -8,10 +8,14 @@ import rpc.Request
 class Credential(val username: String, val password: String)
 
 @Serializable
-class ApiAcLoginRequest(val credential: Credential) : Request<ApiAcLoginResponse>
+class ApiAcLoginRequest(val credential: Credential) : Request<ApiAcSessionResponse>
 
 @Serializable
 class ApiAcSession(val id: String, val user: UserDc)
 
 @Serializable
-class ApiAcLoginResponse(val session: ApiAcSession?)
+class ApiAcSessionResponse(val session: ApiAcSession?)
+
+
+@Serializable
+class ApiAcVerifySessionRequest(val id: String) : Request<ApiAcSessionResponse>

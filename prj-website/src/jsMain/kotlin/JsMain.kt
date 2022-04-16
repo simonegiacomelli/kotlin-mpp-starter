@@ -34,6 +34,7 @@ private fun loadRootWidget() {
     bodyHolder.show(bootrapWidget)
     container.append(offcanvasWidget.container)
     val holder = bootrapWidget.mainHolder
+    holder.show(mainWidget)
     holder.show(loginWidget)
     bootrapWidget.onHamburgerClick = { offcanvasWidget.toggle() }
     HotkeyWindow
