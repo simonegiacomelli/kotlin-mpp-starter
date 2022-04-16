@@ -57,3 +57,5 @@ suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> Req.sendReq
 }
 
 interface Request<Resp : Any>
+
+class VoidResponse

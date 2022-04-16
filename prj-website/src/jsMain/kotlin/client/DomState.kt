@@ -1,7 +1,7 @@
 package client
 
 
-import api.names.ApiAcSession
+import accesscontrol.Session
 import kotlinx.browser.localStorage
 import kotlinx.browser.window
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +22,7 @@ class DomState : State {
     override suspend fun dispatch(name: String, payload: String): String = apiDispatcher(name, payload)
     override suspend fun launch(block: suspend CoroutineScope.() -> Unit): Unit = run { launchJs(block = block) }
 
-    override var sessionOrNull: ApiAcSession? = null
+    override var sessionOrNull: Session? = null
         set(value) {
             localStorage.removeItem("id")
             value?.apply { localStorage["id"] = id }

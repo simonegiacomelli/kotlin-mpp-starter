@@ -1,7 +1,7 @@
 package client
 
-import api.names.ApiAcSession
+import accesscontrol.Session
 
-interface State : ClientState {
-    var sessionOrNull: ApiAcSession?
+interface State : StateAbs {
+    var sessionOrNull: Session?
 }

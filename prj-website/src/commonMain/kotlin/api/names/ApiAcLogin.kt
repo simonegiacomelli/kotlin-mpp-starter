@@ -1,8 +1,9 @@
 package api.names
 
-import context.UserDc
+import accesscontrol.Session
 import kotlinx.serialization.Serializable
 import rpc.Request
+import rpc.VoidResponse
 
 @Serializable
 class Credential(val username: String, val password: String)
@@ -11,11 +12,10 @@ class Credential(val username: String, val password: String)
 class ApiAcLoginRequest(val credential: Credential) : Request<ApiAcSessionResponse>
 
 @Serializable
-class ApiAcSession(val id: String, val user: UserDc)
-
-@Serializable
-class ApiAcSessionResponse(val session: ApiAcSession?)
-
+class ApiAcSessionResponse(val session: Session?)
 
 @Serializable
 class ApiAcVerifySessionRequest(val id: String) : Request<ApiAcSessionResponse>
+
+@Serializable
+class ApiAcPasswordChangeRequest(val password: String) : Request<VoidResponse>

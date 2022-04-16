@@ -1,6 +1,6 @@
 package rpc
 
-import client.ClientState
+import client.StateAbs
 import client.clientState
 import kotlinx.browser.window
 import kotlinx.coroutines.await
@@ -24,7 +24,7 @@ suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> Req.send():
     sendRequest() { apiName, payload -> clientState.apiDispatcher(apiName, payload) }
 
 
-suspend fun ClientState.apiDispatcher(apiName: String, payload: String): String {
+suspend fun StateAbs.apiDispatcher(apiName: String, payload: String): String {
     val httpRequest = RpcRequest(RpcMessage(apiName, payload), session_id).toHttpRequest(ApiBaseUrl)
     val result = doFetch(httpRequest).toRpcResponse().result
     if (result.isFailure) {
@@ -36,7 +36,7 @@ suspend fun ClientState.apiDispatcher(apiName: String, payload: String): String 
     return result.getOrThrow()
 }
 
-private suspend fun ClientState.doFetch(httpRequest: HttpRequest): HttpResponse = httpRequest.run {
+private suspend fun StateAbs.doFetch(httpRequest: HttpRequest): HttpResponse = httpRequest.run {
     val request = RequestInit()
     request.method = "POST"
     request.body = body

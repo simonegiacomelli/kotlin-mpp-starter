@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import rpc.Request
 import rpc.sendRequest
 
-interface ClientState {
+interface StateAbs {
     fun toast(message: String)
     fun spinner(function: suspend CoroutineScope.() -> Unit)
     val ApiBaseUrl: String
@@ -13,9 +13,9 @@ interface ClientState {
     suspend fun launch(block: suspend CoroutineScope.() -> Unit)
 }
 
-suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> ClientState.send(request: Req):
+suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> StateAbs.send(request: Req):
         Resp = request.sendRequest(::dispatch)
 
 
-var clientStateOrNull: () -> ClientState = { error("non ClientState handler") }
+var clientStateOrNull: () -> StateAbs = { error("non ClientState handler") }
 val clientState get() = clientStateOrNull()

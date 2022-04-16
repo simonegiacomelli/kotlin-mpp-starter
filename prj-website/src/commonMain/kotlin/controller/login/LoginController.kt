@@ -1,6 +1,10 @@
 package controller.login
 
-import api.names.*
+import accesscontrol.Session
+import api.names.ApiAcLoginRequest
+import api.names.ApiAcSessionResponse
+import api.names.ApiAcVerifySessionRequest
+import api.names.Credential
 import client.State
 import client.send
 
@@ -25,7 +29,7 @@ class LoginController(
         sessionOk(session)
     }
 
-    private fun sessionOk(session: ApiAcSession) {
+    private fun sessionOk(session: Session) {
         sessionOrNull = session
         close()
         toast("Sessione valida " + session.id)

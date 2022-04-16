@@ -1,8 +1,12 @@
 package rpc.server
 
+import accesscontrol.Session
 import accesscontrol.acUserBySessionId
-import api.names.*
-import context.toDataclass
+import accesscontrol.toDataclass
+import api.names.ApiAcLoginRequest
+import api.names.ApiAcSessionResponse
+import api.names.ApiAcVerifySessionRequest
+import api.names.Credential
 import database.schema.ac_sessions
 import database.schema.ac_users
 import database.schema.session_id_length
@@ -28,7 +32,7 @@ private val reg2 = contextHandler.register { req: ApiAcVerifySessionRequest, con
 
 private fun Database.getApiSessionForId(sessionId: String): ApiAcSessionResponse {
     val user = acUserBySessionId(sessionId) ?: return nullSession
-    return ApiAcSessionResponse(ApiAcSession(sessionId, user.toDataclass()))
+    return ApiAcSessionResponse(Session(sessionId, user.toDataclass()))
 }
 
 private fun Credential.newSessionIfValid(): String? = transaction {
