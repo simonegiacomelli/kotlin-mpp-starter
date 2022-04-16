@@ -1,8 +1,11 @@
 package context
 
-import appinit.AppInit
+import appinit.State
 import rpc.transport.http.RpcRequest
 
-fun AppInit.contextFactory(rpcRequest: RpcRequest): Context {
-    TODO()
+fun State.contextFactory(rpcRequest: RpcRequest): Context {
+    return object : Context {
+        override val user: User = User(-1, "")
+
+    }
 }

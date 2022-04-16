@@ -1,10 +1,10 @@
 package ktor
 
-import appinit.AppInit
 import appinit.destroy
+import appinit.initWebPart
+import appinit.newState
 import context.contextFactory
 import context.requestDispatcher
-import folders.folders
 import heap.HeapDumper
 import io.ktor.application.*
 import io.ktor.features.*
@@ -36,12 +36,11 @@ fun startKtor() {
 
 fun Application.module() {
 
-    val folders = folders()
+    val state = newState().apply { initWebPart() }
+    val folders = state.folders
     HeapDumper.enableHeapDump(folders.data.heapdump)
 
-    val appInit = AppInit(folders)
-
-    environment.monitor.subscribe(ApplicationStopped) { appInit.destroy() }
+    environment.monitor.subscribe(ApplicationStopped) { state.destroy() }
 
     val webDir = folders.data.resolve("wwwroot")
     install(WebSockets)
@@ -88,7 +87,7 @@ fun Application.module() {
                     status = HttpStatusCode.fromValue(status)
                 )
             }
-            requestDispatcher(contextHandler, { appInit.contextFactory(it) }) {
+            requestDispatcher(contextHandler, { state.contextFactory(it) }) {
                 call.run {
                     val headersMap = request.headers.toMap().keepFirst()
                     val parametersMap = parameters.toMap().keepFirst()

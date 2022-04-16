@@ -1,8 +1,8 @@
 package cli
 
 import api.names.Credential
-import appinit.initDatabasePart
-import folders.folders
+import appinit.newState
+
 import ktor.startKtor
 import rpc.server.userCreate
 import rpc.server.userPasswd
@@ -24,8 +24,14 @@ fun cli(vararg arguments: String, init: Cli.() -> Unit) = with(Cli()) {
 fun Cli.defaultHandlers() {
     no_arguments = { println("No arguments specified.") }
     start = { startKtor() }
-    user_create = { minimalStartup(); userCreate(it) }
-    user_passwd = { minimalStartup(); userPasswd(it) }
+    user_create = {
+        newState()
+        userCreate(it)
+    }
+    user_passwd = {
+        newState()
+        userPasswd(it)
+    }
 }
 
 class Cli {
@@ -35,6 +41,3 @@ class Cli {
     var user_passwd: (Credential) -> Unit = {}
 }
 
-private fun minimalStartup() {
-    folders().initDatabasePart()
-}

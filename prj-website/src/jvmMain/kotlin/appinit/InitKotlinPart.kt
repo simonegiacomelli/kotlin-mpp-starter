@@ -7,7 +7,7 @@ import rpc.oneway.topics.*
 import rpc.server.ContextHandler
 import utils.AutoLoadPackage
 
-internal fun AppInit.initKotlinPart() {
+internal fun State.initWebPart() {
     destroyCallback.add { wsEndpointPool.destroy() }
     loadHandlersClasses()
     wsEndpointPoolBacking = WsEndpointPool(folders.data.proc)
@@ -15,7 +15,7 @@ internal fun AppInit.initKotlinPart() {
     if (config.watch_design_html) startDesignWatcher()
 }
 
-private fun AppInit.startDesignWatcher() {
+private fun State.startDesignWatcher() {
     val sign = SignalHtmlThread(folders.data.html.resolve("design.html"))
     destroyCallback.add { sign.destroy() }
 }
