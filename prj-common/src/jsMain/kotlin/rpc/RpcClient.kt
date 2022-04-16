@@ -21,7 +21,7 @@ object Api {
 }
 
 suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> Req.send(): Resp =
-    send(this) { apiName, payload -> clientState.apiDispatcher(apiName, payload) }
+    sendRequest() { apiName, payload -> clientState.apiDispatcher(apiName, payload) }
 
 
 suspend fun ClientState.apiDispatcher(apiName: String, payload: String): String {

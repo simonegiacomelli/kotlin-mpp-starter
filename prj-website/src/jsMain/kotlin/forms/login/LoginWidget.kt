@@ -1,15 +1,14 @@
 package forms.login
 
-import api.names.*
+import api.names.Credential
 import client.state
-import forms.toast.toast
+import controller.login.LoginController
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLInputElement
-import pages.spinner
-import rpc.send
+import utils.launchJs
 import widget.Widget
 
 class LoginWidget : Widget(html) {
@@ -18,43 +17,13 @@ class LoginWidget : Widget(html) {
     private val btnSubmit: HTMLButtonElement by this
 
     override fun afterRender() {
-        spinner {
-            btnSubmit.disabled = true
-            kotlin.runCatching { verifySessionState() }
-            btnSubmit.disabled = false
-            btnSubmit.onclick = { loginClick() }
-        }
+        val controller = LoginController(state, { getCredential() }) { close() }
+        launchJs { controller.verifySessionState() }
+        btnSubmit.onclick = { controller.loginClick() }
     }
 
-    private fun loginClick() {
-        spinner {
-            ApiAcLoginRequest(Credential(floatingInput.value, floatingPassword.value))
-                .send().also { processResponse(it) }
+    private fun getCredential() = Credential(floatingInput.value, floatingPassword.value)
 
-        }
-    }
-
-    private suspend fun verifySessionState() {
-        val id = state.session_id ?: return
-        val session = ApiAcVerifySessionRequest(id).send().session
-        if (session != null)
-            sessionOk(session)
-    }
-
-    private fun processResponse(response: ApiAcSessionResponse) {
-        val session = response.session ?: return failedLogin()
-        sessionOk(session)
-    }
-
-    private fun sessionOk(session: ApiAcSession) {
-        state.sessionOrNull = session
-        close()
-        toast("Sessione valida " + session.id)
-    }
-
-    private fun failedLogin() {
-        toast("Login failed")
-    }
 }
 
 private val html = //language=HTML

@@ -87,4 +87,3 @@ class LoaderWidget : Widget(//language=HTML
 }
 
 
-fun spinner(function: suspend CoroutineScope.() -> Unit) = LoaderWidget.shared.spinner(function)

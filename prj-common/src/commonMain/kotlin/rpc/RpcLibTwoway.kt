@@ -47,11 +47,10 @@ class ContextHandlers<Context> {
 
 }
 
-suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> send(
-    request: Req,
+suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> Req.sendRequest(
     dispatcher: suspend (String, String) -> String,
 ): Resp {
-    val requestJson = Json.encodeToString(request)
+    val requestJson = Json.encodeToString(this)
     val responseJson = dispatcher(Req::class.simpleName ?: error("no class name"), requestJson)
     val response = Json.decodeFromString<Resp>(responseJson)
     return response
