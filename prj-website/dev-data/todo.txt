@@ -1,3 +1,4 @@
+todo logging
 todo assign role to user from cli
 todo create session linked to user
 todo manage session browser-side

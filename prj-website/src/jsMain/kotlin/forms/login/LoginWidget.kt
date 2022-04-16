@@ -1,14 +1,16 @@
 package forms.login
 
 import api.names.ApiAcLoginRequest
+import api.names.ApiAcLoginResponse
 import api.names.Credential
+import client.state
+import forms.toast.toast
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 import rpc.send
-import rpc.session_id
 import utils.launchJs
 import widget.Widget
 
@@ -20,11 +22,21 @@ class LoginWidget : Widget(html) {
     override fun afterRender() {
         btnSubmit.onclick = {
             launchJs {
-                val response = ApiAcLoginRequest(Credential(floatingInput.value, floatingPassword.value)).send()
-                session_id = response.session_id
+                ApiAcLoginRequest(Credential(floatingInput.value, floatingPassword.value))
+                    .send().also { processResponse(it) }
+
             }
         }
+    }
 
+    private fun processResponse(response: ApiAcLoginResponse) {
+        val session = response.session ?: return failedLogin()
+        state.sessionOrNull = session
+        toast("Sessione creata " + session.id)
+    }
+
+    private fun failedLogin() {
+        toast("Login failed")
     }
 }
 

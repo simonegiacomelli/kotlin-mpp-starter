@@ -17,12 +17,12 @@ data class HttpResponse(
     val clientException: Exception?,
 )
 
-class RpcRequest(val message: RpcMessage, val session_id: String)
+class RpcRequest(val message: RpcMessage, val session_id: String?)
 
 private const val session_id_key = "id"
 fun RpcRequest.toHttpRequest(apiBaseUrl: String) = HttpRequest(
     message.payload,
-    mapOf(session_id_key to session_id),
+    mapOf(session_id_key to (session_id ?: "")),
     "$apiBaseUrl$rpcHttpHandlerName",
     mapOf("api_name" to message.simpleName)
 )
@@ -40,12 +40,11 @@ class RpcResponse(val result: Result<String>)
 private const val successStatus = 200
 private const val failureStatus = 500
 
-fun RpcResponse.toHttpResponse() = if (result.isSuccess)
-    result.getOrThrow().run {
-        HttpResponse(this, emptyMap(), successStatus, null)
-    } else result.exceptionOrNull()!!.run {
-    HttpResponse(stackTraceToString(), emptyMap(), failureStatus, null)
-}
+fun RpcResponse.toHttpResponse() =
+    if (result.isSuccess)
+        result.getOrThrow().run { HttpResponse(this, emptyMap(), successStatus, null) }
+    else
+        result.exceptionOrNull()!!.run { HttpResponse(stackTraceToString(), emptyMap(), failureStatus, null) }
 
 fun HttpResponse.toRpcResponse() = if (status == successStatus)
     RpcResponse(Result.success(body))

@@ -1,4 +1,5 @@
 import api.names.ApiTmEventRequest
+import client.installClientHandler
 import forms.login.LoginWidget
 import keyboard.HotkeyWindow
 import kotlinx.browser.document
@@ -15,6 +16,7 @@ import widget.HolderWidget
 const val version = "v0.1.4"
 fun main() {
     println("ok $version " + (Clock.System.now()))
+    installClientHandler()
     loadRootWidget()
     OnewayApi.openWebSocket()
 }

@@ -1,5 +1,7 @@
 package rpc
 
+import client.ClientState
+import client.clientState
 import kotlinx.browser.window
 import kotlinx.coroutines.await
 import org.w3c.fetch.Headers
@@ -18,24 +20,30 @@ object Api {
     }
 }
 
-suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> Req.send(): Resp = send(this, ::dispatcher)
+suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> Req.send(): Resp =
+    send(this) { apiName, payload -> clientState.apiDispatcher(apiName, payload) }
 
-var ApiBaseUrl = ""
-suspend fun dispatcher(apiName: String, payload: String): String {
+
+suspend fun ClientState.apiDispatcher(apiName: String, payload: String): String {
     val httpRequest = RpcRequest(RpcMessage(apiName, payload), session_id).toHttpRequest(ApiBaseUrl)
-    val result = httpRequest.fetch().toRpcResponse().result
-    if (result.isFailure)
-        throw result.exceptionOrNull()!!
+    val result = doFetch(httpRequest).toRpcResponse().result
+    if (result.isFailure) {
+        val exception = result.exceptionOrNull()!! as HttpResponseException
+        println("error http status=" + exception.httpResponse.status)
+        println(exception.httpResponse.body)
+        throw exception
+    }
     return result.getOrThrow()
 }
 
-private suspend fun HttpRequest.fetch(): HttpResponse {
+private suspend fun ClientState.doFetch(httpRequest: HttpRequest): HttpResponse = httpRequest.run {
     val request = RequestInit()
     request.method = "POST"
     request.body = body
     request.headers = Headers().also { headers.forEach { entry -> it.append(entry.key, entry.value) } }
     val urlWithParams = url + "?" + parameters.map { it.key + "=" + it.value }.joinToString("&")
     val resp = window.fetch(urlWithParams, request).await()
+    if (!resp.ok) clientState.toast("Errore di comunicazione col server")
     val text = resp.text().await()
     // resp.headers() is present but the kotlin interface lacks the method to enumerate them so:
     return HttpResponse(text, emptyMap(), resp.status.toInt(), null)
