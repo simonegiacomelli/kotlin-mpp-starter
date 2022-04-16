@@ -2,6 +2,7 @@ package database.schema
 
 import database.exposed.expansion.datetime
 import kotlinx.datetime.LocalDateTime
+import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
@@ -10,6 +11,7 @@ fun Table.datetime(name: String, highResolution: Boolean = false) = datetime(nam
 
 typealias Table = Table
 typealias LongIdTable = LongIdTable
+typealias IntIdTable = IntIdTable
 
 interface CreatedAt {
     val created_at: Column<LocalDateTime>

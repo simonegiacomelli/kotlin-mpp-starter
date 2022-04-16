@@ -1,8 +1,9 @@
 package accesscontrol
 
 interface UserAbs {
-    val id: Long
+    val id: Int
     val username: String
     val email: String?
+    val roles: Set<RoleAbs>
 }
 

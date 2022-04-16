@@ -1,17 +1,17 @@
 package context
 
-import rpc.ContextHandlers
+import rpc.RpcMessage
 import rpc.transport.http.*
 
 suspend fun <Context> requestDispatcher(
-    ch: ContextHandlers<Context>,
+    dispatcher: (RpcMessage, Context) -> String,
     contextFactory: (RpcRequest) -> Context,
     httpRequest: suspend () -> HttpRequest
 ): HttpResponse =
     try {
 
         httpRequest().toRpcRequest().run {
-            val payload = ch.dispatch(message, contextFactory(this))
+            val payload = dispatcher(message, contextFactory(this))
             RpcResponse(Result.success(payload)).toHttpResponse()
         }
 

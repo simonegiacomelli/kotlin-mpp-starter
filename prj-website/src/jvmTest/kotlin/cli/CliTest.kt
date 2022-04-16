@@ -40,4 +40,16 @@ class CliTest {
 
     }
 
+    @Test
+    fun test_user_add_role() {
+        var role: AddRole? = null
+        cli("user", "add-role", "foo", "role1") { user_add_role = { role = it } }
+        checkNotNull(role)
+        role?.apply {
+            assertEquals("foo", username)
+            assertEquals("role1", roleName)
+        }
+
+    }
+
 }

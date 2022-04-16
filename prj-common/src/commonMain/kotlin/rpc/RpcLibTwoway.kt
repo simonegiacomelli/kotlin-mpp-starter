@@ -18,7 +18,7 @@ class ContextHandlers<Context> {
     inline fun <reified Req : Request<Resp>, reified Resp> register(
         noinline function: (Req, Context) -> Resp,
     ) {
-        val handlerName = Req::class.simpleName ?: error("no name")
+        val handlerName = nameOf(Req::class)
         contextHandlers[handlerName] = ContextHandler(
             requestSerializer = serializers<Req>(),
             responseSerializer = serializers<Resp>(),
@@ -51,11 +51,11 @@ suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> Req.sendReq
     dispatcher: suspend (String, String) -> String,
 ): Resp {
     val requestJson = Json.encodeToString(this)
-    val responseJson = dispatcher(Req::class.simpleName ?: error("no class name"), requestJson)
+    val responseJson = dispatcher(nameOf(Req::class), requestJson)
     val response = Json.decodeFromString<Resp>(responseJson)
     return response
 }
 
 interface Request<Resp : Any>
 
-class VoidResponse
+object VoidResponse

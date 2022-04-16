@@ -5,5 +5,5 @@ import rpc.VoidResponse
 
 private val reg1 = contextHandler.register { req: ApiDelayRequest, context ->
     Thread.sleep(req.delayMilliseconds)
-    VoidResponse()
+    VoidResponse
 }

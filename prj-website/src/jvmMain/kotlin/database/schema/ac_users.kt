@@ -1,6 +1,6 @@
 package database.schema
 
-object ac_users : LongIdTable(), CreatedAt {
+object ac_users : IntIdTable(), CreatedAt {
     val email = varchar("email", 256).nullable()
     val email_confirmed = bool("email_confirmed")
     val password_hash = text("password_hash").nullable()

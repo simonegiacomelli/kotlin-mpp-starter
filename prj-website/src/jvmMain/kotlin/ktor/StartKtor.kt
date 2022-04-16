@@ -87,7 +87,9 @@ fun Application.module() {
                     status = HttpStatusCode.fromValue(status)
                 )
             }
-            requestDispatcher(contextHandler, { state.contextFactory(it) }) {
+            requestDispatcher({ message, ctx ->
+                contextHandler.dispatch(message, ctx)
+            }, { state.contextFactory(it) }) {
                 call.run {
                     val headersMap = request.headers.toMap().keepFirst()
                     val parametersMap = parameters.toMap().keepFirst()

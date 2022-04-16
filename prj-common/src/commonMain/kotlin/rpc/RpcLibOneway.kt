@@ -9,7 +9,7 @@ inline fun <reified Req> sendOneway(
     dispatcher: (String, String) -> Unit,
 ) {
     val requestJson = Json.encodeToString(request)
-    dispatcher(Req::class.simpleName ?: error("no class name"), requestJson)
+    dispatcher(nameOf(Req::class), requestJson)
 }
 
 data class OnewwayContextHandler<Context>(
@@ -26,7 +26,7 @@ class OnewayContextHandlers<Context> {
     inline fun <reified Req> register(
         noinline function: (Req, Context) -> Unit,
     ): OnewwayContextHandler<Context> {
-        val handlerName = Req::class.simpleName ?: error("no name")
+        val handlerName = nameOf(Req::class)
         if (handlers.containsKey(handlerName)) error("Handler gia' registrato `$handlerName`")
 
         val onewwayContextHandler = OnewwayContextHandler(
