@@ -1,3 +1,4 @@
+todo fix Exception on api request ```kotlinx.serialization.SerializationException: Class 'RoleInt' is not registered for polymorphic serialization in the scope of 'RoleAbs'.
 todo handle role check on ktor dispatch (authorizeDispatch)
 todo dynamic menu voices
 todo remove global contextHandler(s)

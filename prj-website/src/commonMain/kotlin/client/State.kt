@@ -1,7 +1,5 @@
 package client
 
-import accesscontrol.Session
+var stateOrNull: () -> State = { error("no State handler") }
+val state get() = stateOrNull()
 
-interface State : StateAbs {
-    var sessionOrNull: Session?
-}

@@ -6,7 +6,7 @@ import api.names.ApiAcSessionResponse
 import api.names.ApiAcVerifySessionRequest
 import api.names.Credential
 import client.State
-import client.send
+import rpc.send
 
 class LoginController(
     state: State, val credential: () -> Credential, val close: () -> Unit
@@ -14,13 +14,13 @@ class LoginController(
 
     fun loginClick() {
         spinner {
-            send(ApiAcLoginRequest(credential())).also { processResponse(it) }
+            ApiAcLoginRequest(credential()).send().also { processResponse(it) }
         }
     }
 
     suspend fun verifySessionState() {
         val id = session_id ?: return
-        val session = send(ApiAcVerifySessionRequest(id)).session
+        val session = ApiAcVerifySessionRequest(id).send().session
         if (session != null) sessionOk(session)
     }
 

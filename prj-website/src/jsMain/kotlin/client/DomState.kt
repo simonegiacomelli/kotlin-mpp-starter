@@ -11,7 +11,8 @@ import rpc.apiDispatcher
 import utils.launchJs
 
 fun installClientHandler() {
-    clientStateOrNull = { state }
+    val domState = DomState()
+    stateOrNull = { domState }
 }
 
 class DomState : State {
@@ -32,6 +33,3 @@ class DomState : State {
     override fun spinner(function: suspend CoroutineScope.() -> Unit) = dom.spinner(function)
 
 }
-
-
-val state = DomState()
