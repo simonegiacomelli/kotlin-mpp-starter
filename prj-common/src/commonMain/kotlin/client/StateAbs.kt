@@ -17,5 +17,5 @@ suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> StateAbs.se
         Resp = request.sendRequest(::dispatch)
 
 
-var clientStateOrNull: () -> StateAbs = { error("non ClientState handler") }
+var clientStateOrNull: () -> StateAbs = { error("no ClientState handler") }
 val clientState get() = clientStateOrNull()
