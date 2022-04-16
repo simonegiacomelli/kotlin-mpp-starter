@@ -2,9 +2,10 @@ package ktor
 
 import appinit.AppInit
 import appinit.destroy
-import appinit.init
-import context.ContextRequest
+import context.contextFactory
+import context.requestDispatcher
 import folders.folders
+import heap.HeapDumper
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.http.*
@@ -36,7 +37,9 @@ fun startKtor() {
 fun Application.module() {
 
     val folders = folders()
-    val appInit = AppInit(folders).apply { init() }
+    HeapDumper.enableHeapDump(folders.data.heapdump)
+
+    val appInit = AppInit(folders)
 
     environment.monitor.subscribe(ApplicationStopped) { appInit.destroy() }
 
@@ -76,7 +79,6 @@ fun Application.module() {
         get("/health") {
             call.respondText { "RESULT=OK2" }
         }
-        val contextRequest = ContextRequest(contextHandler) { Any() }
         post("$rpcHttpHandlerName") {
             suspend fun HttpResponse.respondToClient() {
                 headers.entries.forEach { call.response.headers.append(it.key, it.value) }
@@ -86,7 +88,7 @@ fun Application.module() {
                     status = HttpStatusCode.fromValue(status)
                 )
             }
-            contextRequest.process {
+            requestDispatcher(contextHandler, { appInit.contextFactory(it) }) {
                 call.run {
                     val headersMap = request.headers.toMap().keepFirst()
                     val parametersMap = parameters.toMap().keepFirst()

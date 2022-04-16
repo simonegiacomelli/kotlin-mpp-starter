@@ -2,19 +2,17 @@ package appinit
 
 import folders.Folders
 import folders.data.etc.config
-import heap.HeapDumper
 
 class AppInit(
     val folders: Folders,
     val destroyCallback: MutableList<() -> Unit> = mutableListOf()
 ) {
     val config = folders.config()
-}
+    val database = folders.initDatabasePart()
 
-fun AppInit.init() {
-    HeapDumper.enableHeapDump(folders.data.heapdump)
-    folders.initDatabasePart()
-    initKotlinPart()
+    init {
+        initKotlinPart()
+    }
 }
 
 fun AppInit.destroy() {
