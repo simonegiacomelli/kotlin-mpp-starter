@@ -3,6 +3,7 @@ package ktor
 import appinit.AppInit
 import appinit.destroy
 import appinit.init
+import context.ContextRequest
 import folders.folders
 import io.ktor.application.*
 import io.ktor.features.*
@@ -24,7 +25,8 @@ import rpc.oneway.topics.WsEndpointAnswerable
 import rpc.oneway.topics.wsEndpointPool
 import rpc.rpcHttpHandlerName
 import rpc.server.contextHandler
-import rpc.transport.http.*
+import rpc.transport.http.HttpRequest
+import rpc.transport.http.HttpResponse
 import java.util.*
 
 fun startKtor() {
@@ -74,6 +76,7 @@ fun Application.module() {
         get("/health") {
             call.respondText { "RESULT=OK2" }
         }
+        val contextRequest = ContextRequest(contextHandler) { Any() }
         post("$rpcHttpHandlerName") {
             suspend fun HttpResponse.respondToClient() {
                 headers.entries.forEach { call.response.headers.append(it.key, it.value) }
@@ -83,22 +86,13 @@ fun Application.module() {
                     status = HttpStatusCode.fromValue(status)
                 )
             }
-            try {
-
+            contextRequest.process {
                 call.run {
                     val headersMap = request.headers.toMap().keepFirst()
                     val parametersMap = parameters.toMap().keepFirst()
-                    HttpRequest(receiveText(), headersMap, "", parametersMap).toRpcRequest()
-                }.run {
-                    val context = session_id // todo
-                    val payload = contextHandler.dispatch(message, Any())
-                    RpcResponse(Result.success(payload)).toHttpResponse()
-                }.respondToClient()
-
-            } catch (ex: Exception) {
-                println("Exception on api request ```${ex.stackTraceToString()}```")
-                RpcResponse(Result.failure(ex)).toHttpResponse().respondToClient()
-            }
+                    HttpRequest(receiveText(), headersMap, "", parametersMap)
+                }
+            }.respondToClient()
         }
         webSocket("/ws1") {
             val endpoint = WsEndpointKtor(this)
