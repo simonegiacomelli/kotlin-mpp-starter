@@ -9,12 +9,12 @@ interface ClientState {
     fun spinner(function: suspend CoroutineScope.() -> Unit)
     val ApiBaseUrl: String
     val session_id: String?
-    val dispatcher: suspend (String, String) -> String
+    suspend fun dispatch(name: String, payload: String): String
     suspend fun launch(block: suspend CoroutineScope.() -> Unit)
 }
 
 suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> ClientState.send(request: Req):
-        Resp = request.sendRequest(dispatcher)
+        Resp = request.sendRequest(::dispatch)
 
 
 var clientStateOrNull: () -> ClientState = { error("non ClientState handler") }

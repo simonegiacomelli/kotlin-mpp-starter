@@ -19,10 +19,8 @@ class DomState : State {
     override val ApiBaseUrl: String = ""
 
     override val session_id: String? get() = localStorage["id"]
-    override val dispatcher: suspend (String, String) -> String = { name, payload -> apiDispatcher(name, payload) }
-    override suspend fun launch(block: suspend CoroutineScope.() -> Unit) {
-        launchJs(block = block)
-    }
+    override suspend fun dispatch(name: String, payload: String): String = apiDispatcher(name, payload)
+    override suspend fun launch(block: suspend CoroutineScope.() -> Unit): Unit = run { launchJs(block = block) }
 
     override var sessionOrNull: ApiAcSession? = null
         set(value) {
