@@ -3,10 +3,10 @@ package state
 
 import accesscontrol.Session
 import kotlinx.browser.localStorage
-import kotlinx.browser.window
 import kotlinx.coroutines.CoroutineScope
 import org.w3c.dom.get
 import org.w3c.dom.set
+import pages.bootstrap.ToastWidget
 import rpc.apiDispatcher
 import utils.launchJs
 
@@ -16,7 +16,7 @@ fun installClientHandler() {
 }
 
 class JsState : ClientState {
-    override fun toast(message: String) = window.alert(message)
+    override fun toast(message: String) = kotlin.run { ToastWidget.show(message) }
     override val ApiBaseUrl: String = ""
 
     override val session_id: String? get() = localStorage["id"]

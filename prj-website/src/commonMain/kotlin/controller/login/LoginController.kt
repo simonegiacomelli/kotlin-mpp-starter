@@ -32,7 +32,7 @@ class LoginController(
     private fun sessionOk(session: Session) {
         sessionOrNull = session
         close()
-        toast("Sessione valida " + session.id)
+        toast("Welcome ${session.user.username}")
     }
 
     private fun failedLogin() {

@@ -9,23 +9,36 @@ import widget.Widget
 class MainWidget : Widget(//language=HTML
     """
 <div class="mt-2">
-    <div class="input-group mb-3">
-        <span class="input-group-text" id="basic-addon1">A</span>
-        <input id='inputA' type="text" class="form-control" placeholder="an integer A" aria-label="Username"
-               aria-describedby="basic-addon1">
-    </div>
-    
-    <div class="input-group mb-3">
-        <span class="input-group-text" id="basic-addon1">B</span>
-        <input id='inputB' type="text" class="form-control" placeholder="an integer B" aria-label="Username"
-               aria-describedby="basic-addon1">
-    </div>
-    
-    <div class="form-floating mb-3">
-        <input id='inputResult' type="email" class="form-control" id="floatingInput" placeholder="">
-        <label for="floatingInput">A + B =</label>
-    </div>
+    <div class="row g-3">
+        <div class="col">
+            <div class="input-group mb-3 ">
+                <span class="input-group-text" id="basic-addon1">A</span>
+                <input id='inputA' type="text" class="form-control" placeholder="an integer A" aria-label="Username"
+                       aria-describedby="basic-addon1">
+            </div>
+            <div class="input-group mb-3 ">
+                <button id="btnToggle" style="display: none" class="btn btn-primary" type="button"
+                        data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling"
+                        aria-controls="offcanvasScrolling">Enable body scrolling
+                </button>
+            </div>
 
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">B</span>
+                <input id='inputB' type="text" class="form-control" placeholder="an integer B" aria-label="Username"
+                       aria-describedby="basic-addon1">
+            </div>
+
+            <div class="form-floating mb-3">
+                <input id='inputResult' type="email" class="form-control" id="floatingInput" placeholder="">
+                <label for="floatingInput">A + B =</label>
+            </div>
+        </div>
+        <div class="col">
+            <input type="text" class="form-control" placeholder="Last name" aria-label="Last name">
+            
+        </div>
+    </div>
 </div>
     """.trimIndent()
 ) {

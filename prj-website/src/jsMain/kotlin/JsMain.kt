@@ -3,10 +3,7 @@ import forms.login.LoginWidget
 import keyboard.HotkeyWindow
 import kotlinx.browser.document
 import kotlinx.datetime.Clock
-import pages.bootstrap.MainWidget
-import pages.bootstrap.NavbarWidget
-import pages.bootstrap.OffcanvasWidget
-import pages.bootstrap.SearchWidget
+import pages.bootstrap.*
 import pages.forms.HtmlSignalWidget
 import rpc.send
 import state.installClientHandler
@@ -31,6 +28,7 @@ private fun loadRootWidget() {
 
     val bootrapWidget = NavbarWidget()
     val offcanvasWidget = OffcanvasWidget()
+    offcanvasWidget.idBody.innerHTML = "ciccio pasticcio"
     bodyHolder.show(bootrapWidget)
     container.append(offcanvasWidget.container)
     val holder = bootrapWidget.mainHolder
@@ -43,4 +41,10 @@ private fun loadRootWidget() {
         .add("F1") { holder.show(loginWidget) }
         .add("F2") { holder.show(mainWidget) }
         .add("F3") { holder.show(SearchWidget()) }
+        .add("F4") {
+            ToastWidget().apply {
+                body = "ciaoo"
+                show()
+            }
+        }
 }
