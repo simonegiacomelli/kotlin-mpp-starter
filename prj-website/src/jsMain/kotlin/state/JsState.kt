@@ -9,7 +9,7 @@ import org.w3c.dom.get
 import org.w3c.dom.set
 import pages.LoaderWidget
 import pages.bootstrap.MenuWidget
-import pages.bootstrap.NavbarWidget
+import pages.bootstrap.Navbar2Widget
 import pages.bootstrap.OffcanvasWidget
 import pages.bootstrap.ToastWidget
 import rpc.apiDispatcher
@@ -46,7 +46,7 @@ class JsState : ClientState {
 
 class Widgets {
     val holder = HolderWidget()
-    val navbar = NavbarWidget()
+    val navbar = Navbar2Widget()
     val offcanvas = OffcanvasWidget()
     val menu = MenuWidget()
 }

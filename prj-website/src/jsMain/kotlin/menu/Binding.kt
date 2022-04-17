@@ -3,6 +3,7 @@ package menu
 import api.names.ApiAcLogoffRequest
 import kotlinx.browser.window
 import kotlinx.coroutines.withTimeout
+import pages.bootstrap.CreateUserWidget
 import removeAppComponents
 import rpc.send
 import startupApplication
@@ -13,7 +14,11 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
     val map = this
     infix fun Menu.bindTo(func: () -> Unit) = run { map[this] = func }
     root.apply {
+        accessControl.apply {
+            userCreate bindTo { widgets.navbar.show(CreateUserWidget()) }
+        }
         logoff bindTo { logoffController() }
+
     }
 }
 
