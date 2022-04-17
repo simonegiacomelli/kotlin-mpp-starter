@@ -1,10 +1,10 @@
-todo dynamic menu voices
+todo dynamic menu voices / make OffcanvasWidget usable with menu
+todo logging
 todo remove global contextHandler(s)
 todo spinner(wholeScreen=true){}
 todo logoff
 todo good localStorage wrapper (map delegate?)
-todo logging
-todo make OffcanvasWidget usable with menu
 todo remove <main> from BootstrapHomeWidget
 todo fix create database app_db (ENCODING, LC_COLLATE, LC_CTYPE,  CONNECTION LIMIT)
 todo remove output binaries copy, use output folder setting
+todo gitinfo, without wasting gradle cache
