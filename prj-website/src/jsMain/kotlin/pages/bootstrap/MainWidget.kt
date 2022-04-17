@@ -41,7 +41,10 @@ class MainWidget : Widget(//language=HTML
 
     private fun calculate() = launchJs {
         inputResult.value = ""
-        val response = ApiAddRequest(inputA.value.toInt(), inputB.value.toInt()).send()
+        val result = kotlin.runCatching { listOf(inputA.value.toInt(), inputB.value.toInt()) }
+        if (result.isFailure) return@launchJs
+        val (a, b) = result.getOrThrow()
+        val response = ApiAddRequest(a, b).send()
         inputResult.value = response.result.toString()
     }
 }

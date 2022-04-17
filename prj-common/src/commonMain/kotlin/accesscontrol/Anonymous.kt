@@ -5,5 +5,5 @@ object Anonymous : UserAbs {
     override val id: Int get() = error(message)
     override val username: String get() = error(message)
     override val email: String get() = error(message)
-    override val roles: Set<RoleAbs> get() = error(message)
+    override val roles: Set<Int> get() = error(message)
 }
