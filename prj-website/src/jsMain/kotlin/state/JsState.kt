@@ -2,17 +2,23 @@ package state
 
 
 import accesscontrol.Session
+import kotlinx.browser.document
 import kotlinx.browser.localStorage
 import kotlinx.coroutines.CoroutineScope
 import org.w3c.dom.get
 import org.w3c.dom.set
+import pages.bootstrap.MenuWidget
+import pages.bootstrap.NavbarWidget
+import pages.bootstrap.OffcanvasWidget
 import pages.bootstrap.ToastWidget
 import rpc.apiDispatcher
 import utils.launchJs
+import widget.HolderWidget
 
-fun installClientHandler() {
+fun installClientHandler(): JsState {
     val jsState = JsState()
     stateOrNull = { jsState }
+    return jsState
 }
 
 class JsState : ClientState {
@@ -32,4 +38,13 @@ class JsState : ClientState {
 
     override fun spinner(function: suspend CoroutineScope.() -> Unit) = dom.spinner(function)
 
+    val body = document.getElementById("root") ?: document.body!!
+    val widgets = Widgets()
+}
+
+class Widgets {
+    val holder = HolderWidget()
+    val navbar = NavbarWidget()
+    val offcanvas = OffcanvasWidget()
+    val menu = MenuWidget()
 }

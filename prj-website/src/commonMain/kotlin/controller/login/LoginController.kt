@@ -9,12 +9,14 @@ import rpc.send
 import state.ClientState
 
 class LoginController(
-    state: ClientState, val credential: () -> Credential, val close: () -> Unit
+    state: ClientState,
+    val onCredential: () -> Credential,
+    val onSessionOk: () -> Unit
 ) : ClientState by state {
 
     fun loginClick() {
         spinner {
-            ApiAcLoginRequest(credential()).send().also { processResponse(it) }
+            ApiAcLoginRequest(onCredential()).send().also { processResponse(it) }
         }
     }
 
@@ -31,7 +33,7 @@ class LoginController(
 
     private fun sessionOk(session: Session) {
         sessionOrNull = session
-        close()
+        onSessionOk()
         toast("Welcome ${session.user.username}")
     }
 

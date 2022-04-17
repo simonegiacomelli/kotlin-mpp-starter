@@ -11,13 +11,17 @@ import state.state
 import utils.launchJs
 import widget.Widget
 
-class LoginWidget : Widget(html) {
+class LoginWidget(val onSessionOk: () -> Unit) : Widget(html) {
     private val floatingInput: HTMLInputElement by this
     private val floatingPassword: HTMLInputElement by this
     private val btnSubmit: HTMLButtonElement by this
 
     override fun afterRender() {
-        val controller = LoginController(state, { getCredential() }) { close() }
+        val controller = LoginController(
+            state = state,
+            onCredential = { getCredential() },
+            onSessionOk = { onSessionOk() }
+        )
         launchJs { controller.verifySessionState() }
         btnSubmit.onclick = { controller.loginClick() }
     }

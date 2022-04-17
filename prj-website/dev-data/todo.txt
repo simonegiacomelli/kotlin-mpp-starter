@@ -1,4 +1,5 @@
 todo handle functions to menu entries
+todo filter menu entries through user roles
 todo logging
 todo remove global contextHandler(s)
 todo spinner(wholeScreen=true){}
