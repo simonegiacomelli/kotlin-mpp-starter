@@ -1,8 +1,11 @@
 package pages.bootstrap
 
 import keyboard.HotkeyWindow
+import kotlinx.dom.clear
 import org.w3c.dom.HTMLElement
+import utils.forward
 import widget.Widget
+import widget.containerElement
 
 class OffcanvasWidget : Widget(//language=HTML
     """
@@ -12,9 +15,7 @@ class OffcanvasWidget : Widget(//language=HTML
 <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
      id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
     <div class="offcanvas-header" id='idHeader'>
-        <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Colored with scrolling</h5>
-        <span>ciao span</span>
-        <input>
+        <h5 class="offcanvas-title" id="offcanvasScrollingLabel"></h5>
         <button id='btnClose' type="button" class="btn-close text-reset" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body" id='idBody'>
@@ -50,12 +51,21 @@ class OffcanvasWidget : Widget(//language=HTML
 ) {
     private val btnToggle: HTMLElement by this
     private val btnClose: HTMLElement by this
+    private val offcanvasScrollingLabel: HTMLElement by this
+    private val idHeader: HTMLElement by this
+    private val idBody: HTMLElement by this
+
+    var title: String by forward { offcanvasScrollingLabel::innerHTML }
     fun toggle() = btnToggle.click()
-    val idHeader: HTMLElement by this
-    val idBody: HTMLElement by this
+
     override fun afterRender() {
         setCloseHandlers(btnClose)
         HotkeyWindow.add("META-Escape") { toggle() }
+    }
+
+    fun setBody(widget: Widget) {
+        idBody.clear()
+        idBody.append(widget.containerElement)
     }
 
     fun setCloseHandlers(element: HTMLElement) {

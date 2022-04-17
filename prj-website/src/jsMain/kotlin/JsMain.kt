@@ -28,7 +28,8 @@ private fun loadRootWidget() {
 
     val bootrapWidget = NavbarWidget()
     val offcanvasWidget = OffcanvasWidget()
-    offcanvasWidget.idBody.innerHTML = "ciccio pasticcio"
+    offcanvasWidget.setBody(MenuWidget())
+    offcanvasWidget.title = "Select one menu option"
     bodyHolder.show(bootrapWidget)
     container.append(offcanvasWidget.container)
     val holder = bootrapWidget.mainHolder

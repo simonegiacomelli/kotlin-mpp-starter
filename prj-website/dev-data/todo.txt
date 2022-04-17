@@ -1,4 +1,4 @@
-todo dynamic menu voices / make OffcanvasWidget usable with menu
+todo handle functions to menu entries
 todo logging
 todo remove global contextHandler(s)
 todo spinner(wholeScreen=true){}
