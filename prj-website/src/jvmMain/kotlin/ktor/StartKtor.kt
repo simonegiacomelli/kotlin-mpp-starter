@@ -96,8 +96,8 @@ fun Application.module() {
                 contextFactory = { state.contextFactory(it) },
                 authorized = { message, context -> authorizeDispatch(message, context.user, roles) },
                 httpRequest = {
-                    val headersMap = call.request.headers.toMap().keepFirst()
-                    val parametersMap = call.parameters.toMap().keepFirst()
+                    val headersMap = call.request.headers.toMap().fix()
+                    val parametersMap = call.parameters.toMap().fix()
                     HttpRequest(call.receiveText(), headersMap, "", parametersMap)
                 }).dispatch().respondToClient()
         }
@@ -123,8 +123,8 @@ fun Application.module() {
 }
 
 
-private fun <K, V> Map<K, List<V>>.keepFirst(): Map<K, V> =
-    filterValues { it.isNotEmpty() }.mapValues { it.value.first() }
+private fun Map<String, List<String>>.fix(): Map<String, String> =
+    filterValues { it.isNotEmpty() }.mapValues { it.value.first() }.mapKeys { it.key.lowercase() }
 
 
 private class WsEndpointKtor(val session: DefaultWebSocketServerSession) : WsEndpointAnswerable() {

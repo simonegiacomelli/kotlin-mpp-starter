@@ -11,7 +11,8 @@ class RequestDispatcher<Context>(
 ) {
     suspend fun dispatch(): HttpResponse = run {
         try {
-            val rpcRequest = httpRequest().toRpcRequest()
+            val httpRequest1 = httpRequest()
+            val rpcRequest = httpRequest1.toRpcRequest()
             val context = contextFactory(rpcRequest)
             val message = rpcRequest.message
             val authStatus = authorized(message, context)
