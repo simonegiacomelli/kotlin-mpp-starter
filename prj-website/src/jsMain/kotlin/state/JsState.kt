@@ -22,13 +22,15 @@ fun installClientHandler(): JsState {
     return jsState
 }
 
+val body = document.getElementById("root") ?: document.body!!
+
 class JsState : ClientState {
     override fun toast(message: String) = kotlin.run { ToastWidget.show(message) }
     override val ApiBaseUrl: String = ""
 
     override val session_id: String? get() = localStorage["id"]
     override suspend fun dispatch(name: String, payload: String): String = apiDispatcher(name, payload)
-    override suspend fun launch(block: suspend CoroutineScope.() -> Unit): Unit = run { launchJs(block = block) }
+    override fun launch(block: suspend CoroutineScope.() -> Unit): Unit = run { launchJs(block = block) }
 
     override var sessionOrNull: Session? = null
         set(value) {
@@ -39,7 +41,6 @@ class JsState : ClientState {
 
     override fun spinner(function: suspend CoroutineScope.() -> Unit) = LoaderWidget.shared.spinner(function)
 
-    val body = document.getElementById("root") ?: document.body!!
     val widgets = Widgets()
 }
 

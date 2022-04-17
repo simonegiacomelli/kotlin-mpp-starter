@@ -59,6 +59,7 @@ class LoaderWidget : Widget(//language=HTML
         if (counter == 0)
             visible = true
         counter++
+        console.log("after increment $counter")
         window.requestAnimationFrame {
             window.setTimeout({
                 launchJs {
@@ -68,6 +69,7 @@ class LoaderWidget : Widget(//language=HTML
                         console.log("runcatching", this)
                     }
                     counter--
+                    console.log("after decrement $counter")
                     if (counter == 0)
                         visible = false
                 }

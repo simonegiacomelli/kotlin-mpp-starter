@@ -12,6 +12,7 @@ import pages.bootstrap.ToastWidget
 import pages.forms.HtmlSignalWidget
 import rpc.send
 import state.JsState
+import state.body
 import state.installClientHandler
 import utils.launchJs
 
@@ -19,14 +20,22 @@ const val version = "v0.1.4"
 
 suspend fun main() {
     println("ok $version " + (Clock.System.now()))
-    installClientHandler().login()
+    body.append(LoaderWidget.shared.container)
+    startupApplication()
     OnewayApi.openWebSocket()
 }
 
-private suspend fun JsState.login() = widgets.apply {
+suspend fun startupApplication() {
+    installClientHandler().addLoginComponents()
+}
 
+fun JsState.removeAppComponents() = widgets.apply {
+    holder.container.remove()
+    offcanvas.container.remove()
+}
+
+private suspend fun JsState.addLoginComponents() = widgets.apply {
     body.append(holder.container)
-    body.append(LoaderWidget.shared.container)
     HotkeyWindow.log_prefix = "HotkeyWindow"
 
     WaitContinuation<Unit>("wait login").apply {

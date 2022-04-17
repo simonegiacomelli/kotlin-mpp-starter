@@ -1,21 +1,17 @@
 package rpc.server
 
+import accesscontrol.Anonymous
 import accesscontrol.Session
 import accesscontrol.acUserBySessionId
 import accesscontrol.toDataclass
-import api.names.ApiAcLoginRequest
-import api.names.ApiAcSessionResponse
-import api.names.ApiAcVerifySessionRequest
-import api.names.Credential
+import api.names.*
 import database.schema.ac_sessions
 import database.schema.ac_users
 import database.schema.session_id_length
 import database.time.nowAtDefault
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import rpc.VoidResponse
 import security.randomString
 import security.verifySaltedHash
 
@@ -28,6 +24,15 @@ private val reg1 = contextHandler.register { req: ApiAcLoginRequest, context ->
 
 private val reg2 = contextHandler.register { req: ApiAcVerifySessionRequest, context ->
     context.database.getApiSessionForId(req.id)
+}
+
+private val reg3 = contextHandler.register { req: ApiAcLogoffRequest, context ->
+    val sessionId = req.id
+    val user = context.user
+    if (user !is Anonymous) transaction {
+        ac_sessions.deleteWhere { (ac_sessions.id eq sessionId) and (ac_sessions.user_id eq user.id) }
+    }
+    VoidResponse
 }
 
 private fun Database.getApiSessionForId(sessionId: String): ApiAcSessionResponse {

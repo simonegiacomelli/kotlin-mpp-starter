@@ -1,5 +1,6 @@
 package rpc
 
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -58,4 +59,5 @@ suspend inline fun <reified Req : Request<Resp>, reified Resp : Any> Req.sendReq
 
 interface Request<Resp : Any>
 
+@Serializable
 object VoidResponse

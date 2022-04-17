@@ -12,6 +12,9 @@ class Credential(val username: String, val password: String)
 class ApiAcLoginRequest(val credential: Credential) : Request<ApiAcSessionResponse>
 
 @Serializable
+class ApiAcLogoffRequest(val id: String) : Request<VoidResponse>
+
+@Serializable
 class ApiAcSessionResponse(val session: Session?)
 
 @Serializable

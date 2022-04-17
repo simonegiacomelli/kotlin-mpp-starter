@@ -10,5 +10,5 @@ interface ClientState {
     val session_id: String?
     var sessionOrNull: Session?
     suspend fun dispatch(name: String, payload: String): String
-    suspend fun launch(block: suspend CoroutineScope.() -> Unit)
+    fun launch(block: suspend CoroutineScope.() -> Unit)
 }
