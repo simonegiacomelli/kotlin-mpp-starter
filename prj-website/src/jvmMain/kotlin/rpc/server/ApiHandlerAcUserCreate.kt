@@ -6,12 +6,9 @@ import api.names.Credential
 import database.schema.ac_user_roles
 import database.schema.ac_users
 import database.time.nowAtDefault
+import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.count
-import org.jetbrains.exposed.sql.insert
-import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.update
 import rpc.VoidResponse
 import security.saltedHash
 
@@ -47,7 +44,10 @@ fun userPasswd(credential: Credential) = transaction {
     }
 }
 
-fun userAddRole(username: String, roleName: String) = transaction {
+class UserRoleStr(val username: String, val roleName: String)
+class UserRoleInt(val user_id: Int, val role_id: Int)
+
+fun UserRoleStr.toInt() = run {
     val map = Role.values().associate { it.name to it.id }
     val role_id = map[roleName]
         ?: error("Role `${roleName}` not found. Available roles:\n" + map.keys.joinToString("\n") { "  $it" })
@@ -55,12 +55,24 @@ fun userAddRole(username: String, roleName: String) = transaction {
         .select { ac_users.username eq username }
         .firstOrNull()?.let { it[ac_users.id].value }
         ?: error("User `$username` not found")
+    UserRoleInt(user_id, role_id)
+}
 
+fun userAddRole(userRole: UserRoleStr) = transaction { userAddRole(userRole.toInt()) }
+fun userAddRole(userRole: UserRoleInt) {
     ac_user_roles.insert {
-        it[ac_user_roles.user_id] = user_id
-        it[ac_user_roles.role_id] = role_id
+        it[user_id] = userRole.user_id
+        it[role_id] = userRole.role_id
     }
+}
 
+// todo should invalidate session (delete all records in ac_sessions for user_id) ?
+fun userRemoveRole(userRole: UserRoleStr) = transaction { userRemoveRole(userRole.toInt()) }
+fun userRemoveRole(userRole: UserRoleInt) {
+    ac_user_roles.deleteWhere {
+        (ac_user_roles.user_id eq userRole.user_id) and
+                (ac_user_roles.role_id eq userRole.role_id)
+    }
 }
 
 fun userExist(username: String) = transaction {

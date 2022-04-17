@@ -1,6 +1,7 @@
 package cli
 
 import api.names.Credential
+import rpc.server.UserRoleStr
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -42,8 +43,20 @@ class CliTest {
 
     @Test
     fun test_user_add_role() {
-        var role: AddRole? = null
+        var role: UserRoleStr? = null
         cli("user", "add-role", "foo", "role1") { user_add_role = { role = it } }
+        checkNotNull(role)
+        role?.apply {
+            assertEquals("foo", username)
+            assertEquals("role1", roleName)
+        }
+
+    }
+
+    @Test
+    fun test_user_remove_role() {
+        var role: UserRoleStr? = null
+        cli("user", "remove-role", "foo", "role1") { user_remove_role = { role = it } }
         checkNotNull(role)
         role?.apply {
             assertEquals("foo", username)

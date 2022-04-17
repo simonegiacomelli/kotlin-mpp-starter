@@ -43,7 +43,7 @@ class OnewayContextHandlers<Context> {
         handlers.remove(context.name)
     }
 
-    fun dispatchOneway(m: RpcMessage, context: Context) = dispatchOneway(m.simpleName, m.payload, context)
+    fun dispatchOneway(m: RpcMessage, context: Context) = dispatchOneway(m.name, m.payload, context)
     fun dispatchOneway(payload: String, context: Context) =
         dispatchOneway(RpcMessage.decode(payload), context)
 

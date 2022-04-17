@@ -27,7 +27,7 @@ class ContextHandlers<Context> {
     }
 
     fun dispatch(payload: String, context: Context) = dispatch(RpcMessage.decode(payload), context)
-    fun dispatch(m: RpcMessage, context: Context) = dispatch(m.simpleName, m.payload, context)
+    fun dispatch(m: RpcMessage, context: Context) = dispatch(m.name, m.payload, context)
     fun dispatch(simpleName: String, payload: String, context: Context): String {
 
         val handler = contextHandlers[simpleName] ?: throw MissingHandler(

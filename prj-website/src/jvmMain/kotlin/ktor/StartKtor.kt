@@ -1,10 +1,12 @@
 package ktor
 
+import accesscontrol.Role
 import appinit.destroy
 import appinit.initWebPart
 import appinit.newState
+import context.RequestDispatcher
+import context.authorizeDispatch
 import context.contextFactory
-import context.requestDispatcher
 import heap.HeapDumper
 import io.ktor.application.*
 import io.ktor.features.*
@@ -19,6 +21,7 @@ import io.ktor.server.engine.*
 import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.runBlocking
+import menu.toRoleMap
 import rpc.RpcMessage
 import rpc.oneway.OnewayContext
 import rpc.oneway.onewayContextHandler
@@ -78,6 +81,7 @@ fun Application.module() {
         get("/health") {
             call.respondText { "RESULT=OK2" }
         }
+        val roles = Role.values().toSet().toRoleMap()
         post("$rpcHttpHandlerName") {
             suspend fun HttpResponse.respondToClient() {
                 headers.entries.forEach { call.response.headers.append(it.key, it.value) }
@@ -87,15 +91,15 @@ fun Application.module() {
                     status = HttpStatusCode.fromValue(status)
                 )
             }
-            requestDispatcher({ message, ctx ->
-                contextHandler.dispatch(message, ctx)
-            }, { state.contextFactory(it) }) {
-                call.run {
-                    val headersMap = request.headers.toMap().keepFirst()
-                    val parametersMap = parameters.toMap().keepFirst()
-                    HttpRequest(receiveText(), headersMap, "", parametersMap)
-                }
-            }.respondToClient()
+            RequestDispatcher(
+                dispatcher = { message, ctx -> contextHandler.dispatch(message, ctx) },
+                contextFactory = { state.contextFactory(it) },
+                authorized = { message, context -> authorizeDispatch(message, context.user, roles) },
+                httpRequest = {
+                    val headersMap = call.request.headers.toMap().keepFirst()
+                    val parametersMap = call.parameters.toMap().keepFirst()
+                    HttpRequest(call.receiveText(), headersMap, "", parametersMap)
+                }).dispatch().respondToClient()
         }
         webSocket("/ws1") {
             val endpoint = WsEndpointKtor(this)

@@ -24,7 +24,7 @@ fun RpcRequest.toHttpRequest(apiBaseUrl: String) = HttpRequest(
     message.payload,
     mapOf(session_id_key to (session_id ?: "")),
     "$apiBaseUrl$rpcHttpHandlerName",
-    mapOf("api_name" to message.simpleName)
+    mapOf("api_name" to message.name)
 )
 
 fun HttpRequest.toRpcRequest() = RpcRequest(

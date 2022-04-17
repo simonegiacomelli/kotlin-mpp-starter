@@ -118,7 +118,7 @@ tasks.createJavaExec(
 tasks.register<JavaExec>(appEtcCopy) {
     group = "app-" + project.name
     dependsOn(tasks.getByName("compileJava"))
-    main = "folders.data.etc.CopyConfigKt"
+    mainClass.set("folders.data.etc.CopyConfigKt")
     classpath = sourceSets["main"].runtimeClasspath
 }
 fun TaskContainer.createJavaExec(

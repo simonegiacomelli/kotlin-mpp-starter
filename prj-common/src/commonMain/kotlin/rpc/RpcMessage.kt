@@ -1,6 +1,6 @@
 package rpc
 
-data class RpcMessage(val simpleName: String, val payload: String) {
+data class RpcMessage(val name: String, val payload: String) {
 
     companion object {
         private const val apiMarker = "#kotlin"
