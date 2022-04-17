@@ -41,9 +41,10 @@ private fun Database.getApiSessionForId(sessionId: String): ApiAcSessionResponse
 }
 
 private fun Credential.newSessionIfValid(): String? = transaction {
-    println("Auth request, user=$username pw=$password")
     val user = ac_users.select { ac_users.username eq username }.firstOrNull()
-    user.newSessionIfValid(password)
+    user.newSessionIfValid(password).also {
+        println("Auth request, user=$username pw=$password ok=${it != null}")
+    }
 }
 
 private fun ResultRow?.newSessionIfValid(password: String): String? {

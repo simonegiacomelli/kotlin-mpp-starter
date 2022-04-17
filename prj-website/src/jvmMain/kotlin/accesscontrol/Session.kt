@@ -23,7 +23,6 @@ fun Database.acUserBySessionId(sessionId: String): UserAbs? = transaction(this) 
     val roleIds = ac_user_roles.slice(ac_user_roles.role_id)
         .select { ac_user_roles.user_id eq user_id }
         .map { it[ac_user_roles.role_id] }
-//        .map { RoleInt(it) }
         .toSet()
 
     object : UserAbs {

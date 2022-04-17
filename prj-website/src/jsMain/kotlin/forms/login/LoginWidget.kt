@@ -17,13 +17,10 @@ class LoginWidget(val onSessionOk: () -> Unit) : Widget(html) {
     private val btnSubmit: HTMLButtonElement by this
 
     override fun afterRender() {
-        val controller = LoginController(
-            state = state,
-            onCredential = { getCredential() },
-            onSessionOk = { onSessionOk() }
-        )
+        val controller =
+            LoginController(state = state, onCredential = { getCredential() }, onSessionOk = { onSessionOk() })
         launchJs { controller.verifySessionState() }
-        btnSubmit.onclick = { controller.loginClick() }
+        btnSubmit.onclick = { it.preventDefault(); it.stopPropagation(); controller.loginClick() }
     }
 
     private fun getCredential() = Credential(floatingInput.value, floatingPassword.value)
@@ -78,21 +75,16 @@ private val html = //language=HTML
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
         <div class="form-floating">
-            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
-            <label for="floatingInput">Email address</label>
+            <input type="text" class="form-control" id="floatingInput" placeholder="Username">
+            <label for="floatingInput">Username</label>
         </div>
         <div class="form-floating">
             <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
             <label for="floatingPassword">Password</label>
         </div>
 
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" value="remember-me"> Remember me
-            </label>
-        </div>
-        <button class="w-100 btn btn-lg btn-primary" type="submit" id="btnSubmit">Sign in</button>
-        <p class="mt-5 mb-3 text-muted">&copy; 2021–${Clock.System.now().toLocalDateTime(TimeZone.UTC).year}</p>
+        <button class="w-100 btn btn-lg btn-primary" id="btnSubmit">Sign in</button>
+        <p class="mt-5 mb-3 text-muted">&copy; 2021–${Clock.System.now().toLocalDateTime(TimeZone.UTC).year} v0.4.0</p>
     </form>
 </div>
 """.trimIndent()
