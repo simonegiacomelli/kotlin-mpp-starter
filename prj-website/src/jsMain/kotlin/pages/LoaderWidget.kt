@@ -3,7 +3,6 @@ package pages
 import extensions.extVisible
 import kotlinx.browser.window
 import kotlinx.coroutines.CoroutineScope
-import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import utils.forward
 import utils.launchJs
@@ -44,7 +43,6 @@ class LoaderWidget : Widget(//language=HTML
         100% { transform: rotate(360deg); }
     }
 </style>
-<div id='results'></div>
 <div id="div_loader" style="display: none"></div>
 
     """
@@ -54,15 +52,13 @@ class LoaderWidget : Widget(//language=HTML
     }
 
     private val div_loader: HTMLElement by this
-    private val results: HTMLDivElement by this
     var visible by forward { div_loader::extVisible }
     private var counter = 0
 
     fun spinner(function: suspend CoroutineScope.() -> Unit) {
-        counter++
         if (counter == 0)
             visible = true
-
+        counter++
         window.requestAnimationFrame {
             window.setTimeout({
                 launchJs {
@@ -71,19 +67,14 @@ class LoaderWidget : Widget(//language=HTML
                     }.exceptionOrNull()?.apply {
                         console.log("runcatching", this)
                     }
-                    visible = false
-                }.apply {
-
+                    counter--
+                    if (counter == 0)
+                        visible = false
                 }
             })
         }
     }
 
-    private var log: String = ""
-        set(value) {
-            console.log(value)
-            results.innerHTML = value
-        }
 }
 
 

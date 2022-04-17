@@ -7,6 +7,7 @@ import kotlinx.browser.localStorage
 import kotlinx.coroutines.CoroutineScope
 import org.w3c.dom.get
 import org.w3c.dom.set
+import pages.LoaderWidget
 import pages.bootstrap.MenuWidget
 import pages.bootstrap.NavbarWidget
 import pages.bootstrap.OffcanvasWidget
@@ -36,7 +37,7 @@ class JsState : ClientState {
             field = value
         }
 
-    override fun spinner(function: suspend CoroutineScope.() -> Unit) = dom.spinner(function)
+    override fun spinner(function: suspend CoroutineScope.() -> Unit) = LoaderWidget.shared.spinner(function)
 
     val body = document.getElementById("root") ?: document.body!!
     val widgets = Widgets()

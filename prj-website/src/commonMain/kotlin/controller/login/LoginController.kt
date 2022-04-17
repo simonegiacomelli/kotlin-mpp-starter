@@ -20,10 +20,12 @@ class LoginController(
         }
     }
 
-    suspend fun verifySessionState() {
+    fun verifySessionState() {
         val id = session_id ?: return
-        val session = ApiAcVerifySessionRequest(id).send().session
-        if (session != null) sessionOk(session)
+        spinner {
+            val session = ApiAcVerifySessionRequest(id).send().session
+            if (session != null) sessionOk(session)
+        }
     }
 
     private fun processResponse(response: ApiAcSessionResponse) {

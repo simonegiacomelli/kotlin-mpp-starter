@@ -5,6 +5,7 @@ import keyboard.HotkeyWindow
 import kotlinx.datetime.Clock
 import menu.menuBindings
 import menu.root
+import pages.LoaderWidget
 import pages.bootstrap.MainWidget
 import pages.bootstrap.SearchWidget
 import pages.bootstrap.ToastWidget
@@ -25,7 +26,9 @@ suspend fun main() {
 private suspend fun JsState.login() = widgets.apply {
 
     body.append(holder.container)
+    body.append(LoaderWidget.shared.container)
     HotkeyWindow.log_prefix = "HotkeyWindow"
+
     WaitContinuation<Unit>("wait login").apply {
         runWaitResume { holder.show(LoginWidget { resume(Unit) }) }
     }

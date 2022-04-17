@@ -2,7 +2,6 @@ package pages.bootstrap
 
 import keyboard.HotkeyWindow
 import org.w3c.dom.HTMLElement
-import pages.LoaderWidget
 import pages.forms.DesignerWidget
 import pages.forms.HtmlSignalWidget
 import version
@@ -69,7 +68,7 @@ class NavbarWidget(private val rootWidget: Widget = Widget("<h1>empty rootWidget
 
         mainHolder.show(rootWidget)
         val designerWidget = DesignerWidget()
-        container.append(LoaderWidget.shared.container)
+
 
         HotkeyWindow
 //            .add("F2") { mainHolder.show(designerWidget) }
