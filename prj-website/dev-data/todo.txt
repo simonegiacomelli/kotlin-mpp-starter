@@ -1,4 +1,3 @@
-todo fix RpcClient doFetch ERR_CONNECTION_REFUSED
 todo filter menu entries through user roles
 todo logging
 todo remove global contextHandler(s)
