@@ -3,8 +3,9 @@ import coroutine.WaitContinuation
 import forms.login.LoginWidget
 import keyboard.HotkeyWindow
 import kotlinx.datetime.Clock
+import menu.menuBindings
+import menu.root
 import pages.bootstrap.MainWidget
-import pages.bootstrap.MenuWidget
 import pages.bootstrap.SearchWidget
 import pages.bootstrap.ToastWidget
 import pages.forms.HtmlSignalWidget
@@ -29,8 +30,15 @@ private suspend fun JsState.login() = widgets.apply {
         runWaitResume { holder.show(LoginWidget { resume(Unit) }) }
     }
 
+    val menuBindings = menuBindings()
+    menu.onMenuClick = { menu ->
+        menuBindings[menu]?.also { it() } ?: run { toast("No binding for menu: ${menu.name}") }
+        offcanvas.close()
+    }
+    menu.setMenu(root)
+
     val mainWidget = MainWidget()
-    offcanvas.setBody(MenuWidget())
+    offcanvas.setBody(menu)
     offcanvas.title = "Select one menu option"
     holder.show(navbar)
     body.append(offcanvas.container)

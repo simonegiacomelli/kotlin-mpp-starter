@@ -122,7 +122,7 @@ open class Widget(val html: String) {
         }
     }
 
-    fun close() {
+    open fun close() {
         checkedHolderWidget.close(this)
     }
 

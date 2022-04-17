@@ -72,4 +72,8 @@ class OffcanvasWidget : Widget(//language=HTML
         element.setAttribute("data-bs-dismiss", "offcanvas")
         element.setAttribute("data-bs-target", "#offcanvasScrolling")
     }
+
+    override fun close() {
+        btnClose.click()
+    }
 }
