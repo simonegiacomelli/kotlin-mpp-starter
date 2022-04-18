@@ -4,6 +4,7 @@ import api.names.ApiTmEventRequest
 import coroutine.WaitContinuation
 import forms.login.LoginWidget
 import keyboard.HotkeyWindow
+import kotlinx.browser.document
 import kotlinx.dom.clear
 import menu.Menu
 import menu.acceptedSet
@@ -40,26 +41,25 @@ private suspend fun JsState.addLoginComponents() = widgets.apply {
     fun menuClick(menu: Menu) {
         val function = menuBindings[menu] ?: return noMenuBinding(menu)
         offcanvas.close()
+        document.location?.apply { hash = "#${menu.name}" }
         function()
     }
 
     menu.onElementClick = { menuClick(it) }
     menu.onCaption = { it.caption }
-    val childrenMap = root.acceptedSet(user.roles).groupBy { it.parent }
+    val availableMenu = root.acceptedSet(user.roles)
+    val childrenMap = availableMenu.groupBy { it.parent }
     menu.onGetChildren = { childrenMap[it ?: root] ?: emptyList() }
     menu.render()
 
-    val mainWidget = CalculatorWidget()
     offcanvas.setBody(menu)
     offcanvas.title = "Select one menu option"
     rootHolder.show(navbar)
 
-    holder.show(mainWidget)
     navbar.onHamburgerClick = { offcanvas.toggle() }
     HotkeyWindow
         .add("SHIFT-F3") { holder.show(HtmlDisplayWidget.shared) }
         .add("F8") { coroutine.launch { ApiTmEventRequest(1234, "Esc was pressed").send() } }
-        .add("F2") { holder.show(mainWidget) }
         .add("F3") { holder.show(SearchWidget()) }
         .add("F4") {
             ToastWidget().apply {
@@ -67,4 +67,13 @@ private suspend fun JsState.addLoginComponents() = widgets.apply {
                 show()
             }
         }
+    holder.show(CalculatorWidget())
+
+    val menuNameMap = availableMenu.associateBy { it.name }
+    document.location?.run {
+        val menuName = hash.removePrefix("#")
+        menuNameMap.getOrElse(menuName) { toast("Menu $menuName not found"); null }
+            ?.also { menuClick(it) }
+    }
+
 }
