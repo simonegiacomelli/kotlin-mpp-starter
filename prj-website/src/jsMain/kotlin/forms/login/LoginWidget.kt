@@ -2,7 +2,7 @@ package forms.login
 
 import api.names.Credential
 import controller.login.LoginController
-import coroutine.launchJs
+import coroutine.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -19,7 +19,7 @@ class LoginWidget(val onSessionOk: () -> Unit) : Widget(html) {
     override fun afterRender() {
         val controller =
             LoginController(state = state, onCredential = { getCredential() }, onSessionOk = { onSessionOk() })
-        launchJs { controller.verifySessionState() }
+        launch { controller.verifySessionState() }
         btnSubmit.onclick = { it.preventDefault(); it.stopPropagation(); controller.loginClick() }
     }
 

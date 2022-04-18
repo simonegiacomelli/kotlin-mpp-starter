@@ -1,7 +1,6 @@
 package menu
 
 import api.names.ApiAcLogoffRequest
-import coroutine.launchJs
 import kotlinx.browser.window
 import kotlinx.coroutines.withTimeout
 import pages.bootstrap.CalculatorWidget
@@ -40,5 +39,5 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
 fun JsState.logoffController() = spinner {
     runCatching { withTimeout(1000) { session_id?.also { ApiAcLogoffRequest(it).send() } } }
     sessionOrNull = null
-    window.setTimeout({ launchJs { startupApplication() } }, 1)
+    window.setTimeout({ coroutine.launch { startupApplication() } }, 1)
 }

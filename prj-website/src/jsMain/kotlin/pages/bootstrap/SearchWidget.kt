@@ -1,7 +1,7 @@
 package pages.bootstrap
 
 import api.names.ApiSearchRequest
-import coroutine.launchJs
+import coroutine.launch
 import keyboard.Hotkey
 import kotlinx.browser.window
 import org.w3c.dom.HTMLDivElement
@@ -63,7 +63,7 @@ class SearchWidget : Widget(//language=HTML
     private fun startSearch() {
         persist.save()
         LoaderWidget.shared.visible = true
-        launchJs {
+        launch {
 
             val request = compileRequest()
             request.send().hits.also {

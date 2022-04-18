@@ -1,6 +1,6 @@
 package pages
 
-import coroutine.launchJs
+import coroutine.launch
 import extensions.extVisible
 import kotlinx.browser.window
 import kotlinx.coroutines.CoroutineScope
@@ -62,7 +62,7 @@ class LoaderWidget : Widget(//language=HTML
         console.log("after increment $counter")
         window.requestAnimationFrame {
             window.setTimeout({
-                launchJs {
+                launch {
                     kotlin.runCatching {
                         function()
                     }.exceptionOrNull()?.apply {

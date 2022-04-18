@@ -4,7 +4,6 @@ package state
 import accesscontrol.Anonymous
 import accesscontrol.Session
 import accesscontrol.UserAbs
-import coroutine.launchJs
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
 import kotlinx.coroutines.CoroutineScope
@@ -35,7 +34,7 @@ class JsState : ClientState {
     override val user: UserAbs get() = sessionOrNull?.user ?: Anonymous
 
     override suspend fun dispatch(name: String, payload: String): String = apiDispatcher(name, payload)
-    override fun launch(block: suspend CoroutineScope.() -> Unit): Unit = run { launchJs(block = block) }
+    override fun launch(block: suspend CoroutineScope.() -> Unit): Unit = run { coroutine.launch(block = block) }
 
     override var sessionOrNull: Session? = null
         set(value) {

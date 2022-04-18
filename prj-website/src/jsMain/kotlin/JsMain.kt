@@ -1,6 +1,5 @@
 import api.names.ApiTmEventRequest
 import coroutine.WaitContinuation
-import coroutine.launchJs
 import forms.login.LoginWidget
 import keyboard.HotkeyWindow
 import kotlinx.datetime.Clock
@@ -66,7 +65,7 @@ private suspend fun JsState.addLoginComponents() = widgets.apply {
     navbar.onHamburgerClick = { offcanvas.toggle() }
     HotkeyWindow
         .add("SHIFT-F3") { holder.show(HtmlDisplayWidget.shared) }
-        .add("F8") { launchJs { ApiTmEventRequest(1234, "Esc was pressed").send() } }
+        .add("F8") { coroutine.launch { ApiTmEventRequest(1234, "Esc was pressed").send() } }
         .add("F2") { holder.show(mainWidget) }
         .add("F3") { holder.show(SearchWidget()) }
         .add("F4") {

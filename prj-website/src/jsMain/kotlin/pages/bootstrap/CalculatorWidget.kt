@@ -1,7 +1,7 @@
 package pages.bootstrap
 
 import api.names.ApiAddRequest
-import coroutine.launchJs
+import coroutine.launch
 import org.w3c.dom.HTMLInputElement
 import rpc.send
 import widget.Widget
@@ -47,10 +47,10 @@ class CalculatorWidget : Widget(//language=HTML
         inputB.oninput = { calculate() }
     }
 
-    private fun calculate() = launchJs {
+    private fun calculate() = launch {
         inputResult.value = ""
         val result = kotlin.runCatching { listOf(inputA.value.toInt(), inputB.value.toInt()) }
-        if (result.isFailure) return@launchJs
+        if (result.isFailure) return@launch
         val (a, b) = result.getOrThrow()
         val response = ApiAddRequest(a, b).send()
         inputResult.value = response.result.toString()
