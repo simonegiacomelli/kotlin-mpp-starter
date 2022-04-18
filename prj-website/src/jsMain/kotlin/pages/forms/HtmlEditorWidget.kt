@@ -7,7 +7,7 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLTextAreaElement
 import widget.Widget
 
-class DesignerWidget : Widget(    //language=HTML
+class HtmlEditorWidget : Widget(    //language=HTML
     """<h2>I'm designer</h2>
         |<textarea id="input" style="width: 100%"></textarea>
         |<br>

@@ -5,7 +5,7 @@ import browserTopic
 import extensions.span
 import widget.Widget
 
-class HtmlSignalWidget : Widget(//language=HTML
+class HtmlDisplayWidget : Widget(//language=HTML
     """<h2>I'm HtmlWidget</h2>       
     """.trimMargin()
 ) {
@@ -14,7 +14,7 @@ class HtmlSignalWidget : Widget(//language=HTML
     }
 
     companion object {
-        val shared by lazy { HtmlSignalWidget() }
+        val shared by lazy { HtmlDisplayWidget() }
     }
 
     override fun afterRender() {

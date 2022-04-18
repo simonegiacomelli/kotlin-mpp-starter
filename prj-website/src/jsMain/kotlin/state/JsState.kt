@@ -1,17 +1,20 @@
 package state
 
 
+import accesscontrol.Anonymous
 import accesscontrol.Session
+import accesscontrol.UserAbs
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
 import kotlinx.coroutines.CoroutineScope
+import menu.Menu
 import org.w3c.dom.get
 import org.w3c.dom.set
 import pages.LoaderWidget
-import pages.bootstrap.MenuWidget
 import pages.bootstrap.Navbar2Widget
 import pages.bootstrap.OffcanvasWidget
 import pages.bootstrap.ToastWidget
+import pages.bootstrap.TreeWidget
 import rpc.apiDispatcher
 import utils.launchJs
 import widget.HolderWidget
@@ -29,6 +32,8 @@ class JsState : ClientState {
     override val ApiBaseUrl: String = ""
 
     override val session_id: String? get() = localStorage["id"]
+    override val user: UserAbs get() = sessionOrNull?.user ?: Anonymous
+
     override suspend fun dispatch(name: String, payload: String): String = apiDispatcher(name, payload)
     override fun launch(block: suspend CoroutineScope.() -> Unit): Unit = run { launchJs(block = block) }
 
@@ -45,8 +50,9 @@ class JsState : ClientState {
 }
 
 class Widgets {
-    val holder = HolderWidget()
+    val rootHolder = HolderWidget()
     val navbar = Navbar2Widget()
+    val holder get() = navbar.mainHolder
     val offcanvas = OffcanvasWidget()
-    val menu = MenuWidget()
+    val menu = TreeWidget<Menu>()
 }

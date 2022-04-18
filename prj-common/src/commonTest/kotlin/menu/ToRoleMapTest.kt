@@ -1,17 +1,10 @@
 package menu
 
-import accesscontrol.RoleMeta
 import rpc.nameOf
-import kotlin.reflect.KClass
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ToRoleMapTest {
-    private class RoleDc(
-        override val id: Int,
-        override val apiAffected: Set<KClass<*>> = emptySet(),
-//        override val composedBy: Set<RoleAbs> = emptySet()
-    ) : RoleMeta
 
     private class Api1
     private class Api2
@@ -19,7 +12,7 @@ class ToRoleMapTest {
 
     @Test
     fun test_one_menu() {
-        val role42 = RoleDc(42, setOf(Api1::class, Api2::class))
+        val role42 = MockRole(42, setOf(Api1::class, Api2::class))
 
         assertEquals(
             mapOf(
@@ -32,8 +25,8 @@ class ToRoleMapTest {
 
     @Test
     fun test_two_roles() {
-        val role42 = RoleDc(42, setOf(Api1::class, Api2::class))
-        val role43 = RoleDc(43, setOf(Api1::class))
+        val role42 = MockRole(42, setOf(Api1::class, Api2::class))
+        val role43 = MockRole(43, setOf(Api1::class))
 
         assertEquals(
             mapOf(
@@ -46,9 +39,9 @@ class ToRoleMapTest {
 
     //    @Test
     fun test_composite_roles() {
-        val role1 = RoleDc(1, setOf(Api1::class))
-        val role2 = RoleDc(2, setOf(Api2::class))
-        val role3 = RoleDc(3, setOf(Api3::class)/* composedBy = setOf(role1, role2)*/)
+        val role1 = MockRole(1, setOf(Api1::class))
+        val role2 = MockRole(2, setOf(Api2::class))
+        val role3 = MockRole(3, setOf(Api3::class)/* composedBy = setOf(role1, role2)*/)
         assertEquals(
             mapOf(
                 nameOf(Api1::class) to setOf(1, 3),

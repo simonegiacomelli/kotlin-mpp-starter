@@ -2,8 +2,8 @@ package pages.bootstrap
 
 import keyboard.HotkeyWindow
 import org.w3c.dom.HTMLElement
-import pages.forms.DesignerWidget
-import pages.forms.HtmlSignalWidget
+import pages.forms.HtmlDisplayWidget
+import pages.forms.HtmlEditorWidget
 import version
 import widget.HolderWidget
 import widget.Widget
@@ -67,7 +67,7 @@ class NavbarWidget(private val rootWidget: Widget = Widget("<h1>empty rootWidget
         menuHtml1.onclick = { toggle() }
 
         mainHolder.show(rootWidget)
-        val designerWidget = DesignerWidget()
+        val designerWidget = HtmlEditorWidget()
 
 
         HotkeyWindow
@@ -78,9 +78,9 @@ class NavbarWidget(private val rootWidget: Widget = Widget("<h1>empty rootWidget
     }
 
     private fun toggle() {
-        if (mainHolder.stack.lastOrNull() == HtmlSignalWidget.shared)
+        if (mainHolder.stack.lastOrNull() == HtmlDisplayWidget.shared)
             mainHolder.closeCurrent()
-        else mainHolder.show(HtmlSignalWidget.shared)
+        else mainHolder.show(HtmlDisplayWidget.shared)
 
     }
 }

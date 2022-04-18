@@ -3,13 +3,15 @@ import coroutine.WaitContinuation
 import forms.login.LoginWidget
 import keyboard.HotkeyWindow
 import kotlinx.datetime.Clock
+import menu.Menu
+import menu.acceptedSet
 import menu.menuBindings
 import menu.root
 import pages.LoaderWidget
-import pages.bootstrap.MainWidget
+import pages.bootstrap.CalculatorWidget
 import pages.bootstrap.SearchWidget
 import pages.bootstrap.ToastWidget
-import pages.forms.HtmlSignalWidget
+import pages.forms.HtmlDisplayWidget
 import rpc.send
 import state.JsState
 import state.body
@@ -30,35 +32,43 @@ suspend fun startupApplication() {
 }
 
 fun JsState.removeAppComponents() = widgets.apply {
-    holder.container.remove()
+    rootHolder.container.remove()
     offcanvas.container.remove()
 }
 
 private suspend fun JsState.addLoginComponents() = widgets.apply {
-    body.append(holder.container)
+    body.append(rootHolder.container)
     HotkeyWindow.log_prefix = "HotkeyWindow"
 
     WaitContinuation<Unit>("wait login").apply {
-        runWaitResume { holder.show(LoginWidget { resume(Unit) }) }
+        runWaitResume { rootHolder.show(LoginWidget { resume(Unit) }) }
     }
+
+    fun noMenuBinding(menu: Menu) = run { if (menu.parent != root) toast("No binding for menu: ${menu.name}") }
 
     val menuBindings = menuBindings()
-    menu.onMenuClick = { menu ->
-        menuBindings[menu]?.also { it() } ?: run { toast("No binding for menu: ${menu.name}") }
+    fun menuClick(menu: Menu) {
+        val function = menuBindings[menu] ?: return noMenuBinding(menu)
         offcanvas.close()
+        function()
     }
-    menu.setMenu(root)
 
-    val mainWidget = MainWidget()
+    menu.onElementClick = { menuClick(it) }
+    menu.onCaption = { it.caption }
+    val childrenMap = root.acceptedSet(user.roles).groupBy { it.parent }
+    menu.onGetChildren = { childrenMap[it ?: root] ?: emptyList() }
+    menu.render()
+
+    val mainWidget = CalculatorWidget()
     offcanvas.setBody(menu)
     offcanvas.title = "Select one menu option"
-    holder.show(navbar)
+    rootHolder.show(navbar)
     body.append(offcanvas.container)
-    val holder = navbar.mainHolder
+
     holder.show(mainWidget)
     navbar.onHamburgerClick = { offcanvas.toggle() }
     HotkeyWindow
-        .add("SHIFT-F3") { holder.show(HtmlSignalWidget.shared) }
+        .add("SHIFT-F3") { holder.show(HtmlDisplayWidget.shared) }
         .add("F8") { launchJs { ApiTmEventRequest(1234, "Esc was pressed").send() } }
         .add("F2") { holder.show(mainWidget) }
         .add("F3") { holder.show(SearchWidget()) }

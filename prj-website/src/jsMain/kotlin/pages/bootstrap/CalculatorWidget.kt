@@ -6,7 +6,7 @@ import rpc.send
 import utils.launchJs
 import widget.Widget
 
-class MainWidget : Widget(//language=HTML
+class CalculatorWidget : Widget(//language=HTML
     """
 <div class="mt-2">
     <div class="row g-3">
