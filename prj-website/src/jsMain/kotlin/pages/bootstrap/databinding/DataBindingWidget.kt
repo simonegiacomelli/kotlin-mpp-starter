@@ -25,10 +25,10 @@ class DataBindingWidget : Widget(//language=HTML
 
     override fun afterRender() {
         doubleBinding(user1, User1::name) { it::value }
-        doubleBinding(user1, User1::age) { IntBridge(it)::value }
+        doubleBinding(user1, User1::age) { intBridge(it) }
 
         doubleBinding(user3, User3::degree) { it::value }
-        doubleBinding(user3, User3::age) { IntBridge(it)::value }
+        doubleBinding(user3, User3::age) { intBridge(it) }
         doubleBinding(user3, User3::birthday) { LocalDateBridge(it)::value }
     }
 
@@ -56,26 +56,31 @@ class DataBindingWidget : Widget(//language=HTML
     }
 
 
-    //https://docs.microsoft.com/en-us/dotnet/api/system.windows.data.binding#remarks
+    // https://docs.microsoft.com/en-us/dotnet/api/system.windows.data.binding#remarks
     private fun <E, T> bind(instance: E, source: KMutableProperty1<E, T>, target: Target<T>) {
-        fun guiValue() = run { target.propertyBridge.get() }
-        fun propToGui() = run { target.propertyBridge.set(source.get(instance)) }
-        fun guiToProp() = run { source.set(instance, guiValue()) }
-        propToGui()
+        fun targetGet() = run { target.bridge.get() }
+        fun sourceToTarget() = run { target.bridge.set(source.get(instance)) }
+        fun targetToSource() = run { source.set(instance, targetGet()) }
+        sourceToTarget()
 
         if (instance is Binding) {
-            val changeListener = ChangeListener { if (it.name == source.name) propToGui() }
+            val changeListener = ChangeListener { if (it.name == source.name) sourceToTarget() }
             instance.bindingRegister(changeListener)
-            target.notifyOnChange { instance.bindingSetValueNotify(source, guiValue(), changeListener) }
+            target.notifyOnChange { instance.bindingSetValueNotify(source, targetGet(), changeListener) }
         } else {
-            target.notifyOnChange { guiToProp() }
+            target.notifyOnChange { targetToSource() }
         }
     }
 }
 
 interface Target<T> {
-    val propertyBridge: KMutableProperty0<T>
+    val bridge: KMutableProperty0<T>
     fun notifyOnChange(listener: () -> Unit)
+}
+
+fun intBridge(target: HTMLInputElement): KMutableProperty0<Int> {
+    val ib = IntBridge(target)
+    return ib::value
 }
 
 class IntBridge(val target: HTMLInputElement) {
@@ -95,7 +100,7 @@ class LocalDateBridge(val target: HTMLInputElement) {
 
 class HtmlInputTarget<T>(
     val target: HTMLInputElement,
-    override val propertyBridge: KMutableProperty0<T>
+    override val bridge: KMutableProperty0<T>
 ) : Target<T> {
 
     override fun notifyOnChange(listener: () -> Unit) {
