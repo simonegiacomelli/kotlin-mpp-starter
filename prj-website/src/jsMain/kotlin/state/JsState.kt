@@ -18,12 +18,6 @@ import pages.bootstrap.TreeWidget
 import rpc.apiDispatcher
 import widget.HolderWidget
 
-fun installClientHandler(): JsState {
-    val jsState = JsState()
-    stateOrNull = { jsState }
-    return jsState
-}
-
 val body = document.getElementById("root") ?: document.body!!
 
 class JsState : ClientState {

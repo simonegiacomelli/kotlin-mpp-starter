@@ -10,8 +10,8 @@ import pages.bootstrap.UserPasswdWidget
 import pages.forms.HtmlDisplayWidget
 import pages.forms.HtmlEditorWidget
 import rpc.send
-import startupApplication
 import state.JsState
+import state.startupApplication
 import widget.Widget
 
 fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {

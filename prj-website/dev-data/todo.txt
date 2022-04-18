@@ -1,8 +1,7 @@
-todo filter menu entries through user roles
 todo logging
 todo remove global contextHandler(s)
 todo spinner(wholeScreen=true){}
-todo logoff
+todo session expire cleanup job
 todo good localStorage wrapper (map delegate?)
 todo remove <main> from BootstrapHomeWidget
 todo fix create database app_db (ENCODING, LC_COLLATE, LC_CTYPE,  CONNECTION LIMIT)
