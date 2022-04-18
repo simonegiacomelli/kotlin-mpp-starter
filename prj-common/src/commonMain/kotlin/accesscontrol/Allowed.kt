@@ -16,7 +16,7 @@ enum class Access(val status: Int) { // see https://stackoverflow.com/a/14713094
 fun UserAbs.access(requiredRoles: Set<Int>) = when {
     requiredRoles.isEmpty() -> Allowed
     this is Anonymous -> NoAuthentication
-    else -> if (roles.allows(requiredRoles)) NoPermission else Allowed
+    else -> if (allowed(roles, requiredRoles)) Allowed else NoPermission
 }
 
 fun Set<Int>.allows(userRoles: Set<Int>) = allowed(userRoles, this)

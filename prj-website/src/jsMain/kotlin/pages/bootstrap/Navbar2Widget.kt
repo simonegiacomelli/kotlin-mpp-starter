@@ -18,7 +18,7 @@ class Navbar2Widget(private val rootWidget: Widget = Widget("<h1>empty rootWidge
     <a class="navbar-brand" href="#">Kotlin-mpp-starter $version</a>
 </nav>
 <!-- div class="nav-scroller bg-body shadow-sm" id="navBand" w-expand></div -->        
-<main class="container" id="mainHolder"></main>        
+<main class="container p-2 pt-3" id="mainHolder"></main>        
     """.trimIndent()
 ) {
     val mainHolder by this { HolderWidget() }
