@@ -1,15 +1,9 @@
 package pages.bootstrap
 
-import extensions.div
-import kotlinx.browser.document
 import org.w3c.dom.HTMLElement
 import utils.forward
 import widget.Widget
 
-private val toastStacking = div().apply {
-    innerHTML = //language=HTML
-        """<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 2000">"""
-}.firstElementChild!!
 
 class ToastWidget : Widget(//language=HTML
     """
@@ -37,8 +31,6 @@ class ToastWidget : Widget(//language=HTML
     }
 
     fun show() {
-        document.body?.append(toastStacking)
-        toastStacking.append(container)
         bsToast.show()
         liveToast.addEventListener("hidden.bs.toast", {
             container.remove()

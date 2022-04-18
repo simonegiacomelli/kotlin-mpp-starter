@@ -13,7 +13,7 @@ import org.w3c.dom.set
 import pages.LoaderWidget
 import pages.bootstrap.Navbar2Widget
 import pages.bootstrap.OffcanvasWidget
-import pages.bootstrap.ToastWidget
+import pages.bootstrap.ToastStackWidget
 import pages.bootstrap.TreeWidget
 import rpc.apiDispatcher
 import widget.HolderWidget
@@ -21,7 +21,7 @@ import widget.HolderWidget
 val body = document.getElementById("root") ?: document.body!!
 
 class JsState : ClientState {
-    override fun toast(message: String) = kotlin.run { ToastWidget.show(message) }
+    override fun toast(message: String) = kotlin.run { widgets.toastStack.showToast(message) }
     override val ApiBaseUrl: String = ""
 
     override val session_id: String? get() = localStorage["id"]
@@ -47,5 +47,6 @@ class Widgets {
     val navbar = Navbar2Widget()
     val holder get() = navbar.mainHolder
     val offcanvas = OffcanvasWidget()
+    val toastStack = ToastStackWidget()
     val menu = TreeWidget<Menu>()
 }

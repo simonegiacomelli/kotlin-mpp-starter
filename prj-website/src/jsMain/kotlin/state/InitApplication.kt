@@ -26,6 +26,9 @@ private suspend fun JsState.addLoginComponents() = widgets.apply {
     body.clear()
     body.append(LoaderWidget.shared.container)
     body.append(rootHolder.container)
+    body.append(offcanvas.container)
+    body.append(toastStack.container)
+
     HotkeyWindow.log_prefix = "HotkeyWindow"
 
     WaitContinuation<Unit>("wait login").apply {
@@ -51,7 +54,6 @@ private suspend fun JsState.addLoginComponents() = widgets.apply {
     offcanvas.setBody(menu)
     offcanvas.title = "Select one menu option"
     rootHolder.show(navbar)
-    body.append(offcanvas.container)
 
     holder.show(mainWidget)
     navbar.onHamburgerClick = { offcanvas.toggle() }

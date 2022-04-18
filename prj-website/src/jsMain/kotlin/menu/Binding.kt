@@ -1,17 +1,13 @@
 package menu
 
-import api.names.ApiAcLogoffRequest
-import kotlinx.browser.window
-import kotlinx.coroutines.withTimeout
 import pages.bootstrap.CalculatorWidget
 import pages.bootstrap.UserChangeWidget
 import pages.bootstrap.UserCreateWidget
 import pages.bootstrap.UserPasswdWidget
 import pages.forms.HtmlDisplayWidget
 import pages.forms.HtmlEditorWidget
-import rpc.send
 import state.JsState
-import state.startupApplication
+import state.logoffApplication
 import widget.Widget
 
 fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
@@ -31,13 +27,7 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
             html_editor bindTo { show(HtmlEditorWidget()) }
             html_display bindTo { show(HtmlDisplayWidget.shared) }
         }
-        logoff bindTo { logoffController() }
+        logoff bindTo { logoffApplication() }
 
     }
-}
-
-fun JsState.logoffController() = spinner {
-    runCatching { withTimeout(1000) { session_id?.also { ApiAcLogoffRequest(it).send() } } }
-    sessionOrNull = null
-    window.setTimeout({ coroutine.launch { startupApplication() } }, 1)
 }
