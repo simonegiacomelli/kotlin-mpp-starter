@@ -7,9 +7,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 class User3 : Binding() {
 
-    var age by this(value(42))
-    var degree by this(value("master"))
-    var birthday: LocalDate? by this(value("2022-12-31".toLocalDate()))
+    var age by this(valueOf(42))
+    var degree by this(valueOf("master"))
+    var birthday: LocalDate? by this(valueOf("2022-12-31".toLocalDate()))
 
     override fun toString() = "age=$age degree=$degree valueMap=$bindingValueMap"
 }

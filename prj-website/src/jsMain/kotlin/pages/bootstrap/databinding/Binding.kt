@@ -7,7 +7,7 @@ import kotlin.reflect.KProperty
 class ChangeListener(val notify: (property: KProperty<*>) -> Unit)
 
 open class Binding {
-    val bindingValueMap = mutableMapOf<String, Any?>()
+    val bindingValueMap = mutableMapOf<String, Optional<Any?>>()
     val bindingListeners = mutableListOf<ChangeListener>()
 
     fun bindingRegister(changeListener: ChangeListener) {
@@ -15,25 +15,29 @@ open class Binding {
     }
 
     fun bindingSetValueNotify(property: KProperty<*>, value: Any?, originator: ChangeListener? = null) {
+        bindingSetValueNotify(property, valueOf(value), originator)
+    }
+
+    fun bindingSetValueNotify(property: KProperty<*>, value: Optional<Any?>, originator: ChangeListener? = null) {
         bindingSetValue(property, value)
         bindingListeners.forEach { if (it != originator) it.notify(property) }
     }
 
-    fun bindingSetValue(property: KProperty<*>, value: Any?) {
+    fun bindingSetValue(property: KProperty<*>, value: Optional<Any?>) {
         bindingValueMap[property.name] = value
     }
 
-    inline operator fun <reified T> invoke(default: Optional<T> = none()): PropertyDelegateProvider<Any?, ReadWriteProperty<Any?, T>> {
+    inline operator fun <reified T> invoke(default: Optional<T> = empty()): PropertyDelegateProvider<Any?, ReadWriteProperty<Any?, T>> {
 //        var field: T = default
         return PropertyDelegateProvider<Any?, ReadWriteProperty<Any?, T>> { thisRef, property ->
-            if (default.hasValue)
-                bindingSetValue(property, default.value)
+            bindingSetValue(property, default.unsafeCast<Optional<Any?>>())
             object : ReadWriteProperty<Any?, T> {
                 override fun getValue(thisRef: Any?, property: KProperty<*>): T {
                     val field = bindingValueMap[property.name]
-                        ?: error("no value set for property. You could provide a default value")
                     console.log("getValue($field)")
-                    return field as T
+                    checkNotNull(field) { "should not be null" }
+                    if (!field.empty) error("no value set for property. You could provide a default value")
+                    return field.value as T
                 }
 
                 override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
@@ -52,15 +56,15 @@ open class Binding {
 
 interface Optional<T> {
     val value: T
-    val hasValue: Boolean
+    val empty: Boolean
 }
 
-fun <T> none(): Optional<T> = object : Optional<T> {
+fun <T> empty(): Optional<T> = object : Optional<T> {
     override val value: T get() = error("no value")
-    override val hasValue: Boolean get() = false
+    override val empty: Boolean get() = false
 }
 
-fun <T> value(value: T): Optional<T> = object : Optional<T> {
+fun <T> valueOf(value: T): Optional<T> = object : Optional<T> {
     override val value: T get() = value
-    override val hasValue: Boolean get() = true
+    override val empty: Boolean get() = true
 }
