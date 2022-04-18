@@ -15,9 +15,18 @@ class DataBindingWidget : Widget(//language=HTML
 """
 ) {
 
+    class User1 : Binding() {
+        var name: String by this()
+        var age: Int by this()
+    }
+
+    private val user1 = User1().apply { name = "simo"; age = 42 }
     private val user3 = User3()
 
     override fun afterRender() {
+        doubleBinding(user1, User1::name) { it::value }
+        doubleBinding(user1, User1::age) { IntBridge(it)::value }
+
         doubleBinding(user3, User3::degree) { it::value }
         doubleBinding(user3, User3::age) { IntBridge(it)::value }
         doubleBinding(user3, User3::birthday) { LocalDateBridge(it)::value }

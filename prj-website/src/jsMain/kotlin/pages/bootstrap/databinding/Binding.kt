@@ -23,14 +23,15 @@ open class Binding {
         bindingValueMap[property.name] = value
     }
 
-    inline operator fun <reified T> invoke(default: T): PropertyDelegateProvider<Any?, ReadWriteProperty<Any?, T>> {
+    inline operator fun <reified T> invoke(default: Optional<T> = none()): PropertyDelegateProvider<Any?, ReadWriteProperty<Any?, T>> {
 //        var field: T = default
-
         return PropertyDelegateProvider<Any?, ReadWriteProperty<Any?, T>> { thisRef, property ->
-            bindingSetValue(property, default)
+            if (default.hasValue)
+                bindingSetValue(property, default.value)
             object : ReadWriteProperty<Any?, T> {
                 override fun getValue(thisRef: Any?, property: KProperty<*>): T {
                     val field = bindingValueMap[property.name]
+                        ?: error("no value set for property. You could provide a default value")
                     console.log("getValue($field)")
                     return field as T
                 }
@@ -44,5 +45,22 @@ open class Binding {
         }
     }
 
+    override fun toString(): String {
+        return bindingValueMap.toString()
+    }
+}
 
+interface Optional<T> {
+    val value: T
+    val hasValue: Boolean
+}
+
+fun <T> none(): Optional<T> = object : Optional<T> {
+    override val value: T get() = error("no value")
+    override val hasValue: Boolean get() = false
+}
+
+fun <T> value(value: T): Optional<T> = object : Optional<T> {
+    override val value: T get() = value
+    override val hasValue: Boolean get() = true
 }
