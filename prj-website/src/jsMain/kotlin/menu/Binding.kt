@@ -5,6 +5,7 @@ import pages.bootstrap.CalculatorWidget
 import pages.bootstrap.UserChangeWidget
 import pages.bootstrap.UserCreateWidget
 import pages.bootstrap.UserPasswdWidget
+import pages.bootstrap.databinding.DataBindingDemoWidget
 import pages.bootstrap.databinding.DataBindingWidget
 import pages.forms.HtmlDisplayWidget
 import pages.forms.HtmlEditorWidget
@@ -15,7 +16,8 @@ import widget.Widget
 fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
     fun show(widget: Widget) = widgets.holder.show(widget)
     val map = this
-    infix fun Menu.bindTo(func: () -> Unit) = run { map[this] = func }
+    infix fun Menu.bindTo(func: () -> Unit) =
+        run { if (map[this] != null) error("menu $name already bound"); map[this] = func }
     root.apply {
         accessControl.apply {
             userChange bindTo { show(UserChangeWidget()) }
@@ -30,6 +32,7 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
             html_editor bindTo { show(HtmlEditorWidget()) }
             html_display bindTo { show(HtmlDisplayWidget.shared) }
             data_binding bindTo { show(DataBindingWidget()) }
+            data_binding_demo bindTo { show(DataBindingDemoWidget()) }
         }
         logoff bindTo { logoffApplication() }
 
