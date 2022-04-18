@@ -1,9 +1,20 @@
 todo logging
 todo remove global contextHandler(s)
+
+todo DOM
+todo html editor/display do not work on mobile!
 todo spinner(wholeScreen=true){}
-todo session expire cleanup job
 todo good localStorage wrapper (map delegate?)
+todo data binding / basic widget edit: text, number, date, boolean
+     with options: boolean/tristate, date/format, number/decimals etc.
+
 todo remove <main> from BootstrapHomeWidget
+
+todo rationalize client/server/common state
+todo session expire cleanup job
+todo push as much as possible to prj-common/common, e.g., ac_*tables and queries
+
 todo fix create database app_db (ENCODING, LC_COLLATE, LC_CTYPE,  CONNECTION LIMIT)
+
 todo remove output binaries copy, use output folder setting
 todo gitinfo, without wasting gradle cache
