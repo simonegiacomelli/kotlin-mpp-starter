@@ -41,7 +41,7 @@ private suspend fun JsState.addLoginComponents() = widgets.apply {
     fun menuClick(menu: Menu) {
         val function = menuBindings[menu] ?: return noMenuBinding(menu)
         offcanvas.close()
-        document.location?.apply { hash = "#${menu.name}" }
+        if (menu != root.logoff) document.location?.apply { hash = "#${menu.name}" }
         function()
     }
 
