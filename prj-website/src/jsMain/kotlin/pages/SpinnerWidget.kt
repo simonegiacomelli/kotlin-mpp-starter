@@ -8,7 +8,7 @@ import org.w3c.dom.HTMLElement
 import utils.forward
 import widget.Widget
 
-class LoaderWidget : Widget(//language=HTML
+class SpinnerWidget : Widget(//language=HTML
     """
 <style>
     #div_loader2 {
@@ -47,9 +47,6 @@ class LoaderWidget : Widget(//language=HTML
 
     """
 ) {
-    companion object {
-        val shared by lazy { LoaderWidget() }
-    }
 
     private val div_loader: HTMLElement by this
     var visible by forward { div_loader::extVisible }

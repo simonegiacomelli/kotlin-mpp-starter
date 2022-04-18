@@ -9,7 +9,6 @@ import menu.Menu
 import menu.acceptedSet
 import menu.menuBindings
 import menu.root
-import pages.LoaderWidget
 import pages.bootstrap.CalculatorWidget
 import pages.bootstrap.SearchWidget
 import pages.bootstrap.ToastWidget
@@ -25,8 +24,8 @@ suspend fun startupApplication() {
 private suspend fun JsState.addLoginComponents() = widgets.apply {
     body.clear()
     body.append(rootHolder.container)
-    body.append(LoaderWidget.shared.container)
     body.append(offcanvas.container)
+    body.append(spinner.container)
     body.append(toastStack.container)
 
     HotkeyWindow.log_prefix = "HotkeyWindow"

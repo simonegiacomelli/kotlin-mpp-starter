@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import menu.Menu
 import org.w3c.dom.get
 import org.w3c.dom.set
-import pages.LoaderWidget
+import pages.SpinnerWidget
 import pages.bootstrap.NavbarWidget
 import pages.bootstrap.OffcanvasWidget
 import pages.bootstrap.ToastStackWidget
@@ -37,7 +37,7 @@ class JsState : ClientState {
             field = value
         }
 
-    override fun spinner(function: suspend CoroutineScope.() -> Unit) = LoaderWidget.shared.spinner(function)
+    override fun spinner(function: suspend CoroutineScope.() -> Unit) = widgets.spinner.spinner(function)
 
     val widgets = Widgets()
 }
@@ -48,5 +48,6 @@ class Widgets {
     val holder get() = navbar.mainHolder
     val offcanvas = OffcanvasWidget()
     val toastStack = ToastStackWidget()
+    val spinner = SpinnerWidget()
     val menu = TreeWidget<Menu>()
 }

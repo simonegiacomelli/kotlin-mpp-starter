@@ -6,7 +6,6 @@ import keyboard.Hotkey
 import kotlinx.browser.window
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLInputElement
-import pages.LoaderWidget
 import pages.search.ResultsWidget
 import rpc.send
 import utils.Persist
@@ -62,16 +61,13 @@ class SearchWidget : Widget(//language=HTML
 
     private fun startSearch() {
         persist.save()
-        LoaderWidget.shared.visible = true
         launch {
-
             val request = compileRequest()
             request.send().hits.also {
                 results.innerHTML = ""
             }.forEach {
                 results.append(ResultsWidget(it).container)
             }
-            LoaderWidget.shared.visible = false
         }
     }
 

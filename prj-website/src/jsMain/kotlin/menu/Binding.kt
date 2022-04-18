@@ -1,5 +1,6 @@
 package menu
 
+import kotlinx.coroutines.delay
 import pages.bootstrap.CalculatorWidget
 import pages.bootstrap.UserChangeWidget
 import pages.bootstrap.UserCreateWidget
@@ -24,6 +25,7 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
             calculator bindTo { show(CalculatorWidget()) }
         }
         development.apply {
+            spinner bindTo { spinner { delay(3000) } }
             html_editor bindTo { show(HtmlEditorWidget()) }
             html_display bindTo { show(HtmlDisplayWidget.shared) }
         }
