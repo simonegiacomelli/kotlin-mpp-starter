@@ -1,5 +1,6 @@
 import api.names.ApiTmEventRequest
 import coroutine.WaitContinuation
+import coroutine.launchJs
 import forms.login.LoginWidget
 import keyboard.HotkeyWindow
 import kotlinx.datetime.Clock
@@ -17,7 +18,6 @@ import rpc.send
 import state.JsState
 import state.body
 import state.installClientHandler
-import utils.launchJs
 
 const val version = "v0.1.4"
 

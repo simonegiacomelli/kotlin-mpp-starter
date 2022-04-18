@@ -1,6 +1,7 @@
 package pages.bootstrap
 
 import api.names.ApiSearchRequest
+import coroutine.launchJs
 import keyboard.Hotkey
 import kotlinx.browser.window
 import org.w3c.dom.HTMLDivElement
@@ -9,7 +10,6 @@ import pages.LoaderWidget
 import pages.search.ResultsWidget
 import rpc.send
 import utils.Persist
-import utils.launchJs
 import widget.Widget
 import kotlin.collections.set
 

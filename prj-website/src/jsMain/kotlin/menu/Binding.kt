@@ -1,6 +1,7 @@
 package menu
 
 import api.names.ApiAcLogoffRequest
+import coroutine.launchJs
 import kotlinx.browser.window
 import kotlinx.coroutines.withTimeout
 import pages.bootstrap.CalculatorWidget
@@ -12,7 +13,6 @@ import pages.forms.HtmlEditorWidget
 import rpc.send
 import startupApplication
 import state.JsState
-import utils.launchJs
 import widget.Widget
 
 fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {

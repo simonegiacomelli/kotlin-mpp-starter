@@ -1,9 +1,9 @@
 package pages.bootstrap
 
 import api.names.ApiAddRequest
+import coroutine.launchJs
 import org.w3c.dom.HTMLInputElement
 import rpc.send
-import utils.launchJs
 import widget.Widget
 
 class CalculatorWidget : Widget(//language=HTML

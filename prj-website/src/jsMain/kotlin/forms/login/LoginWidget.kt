@@ -2,13 +2,13 @@ package forms.login
 
 import api.names.Credential
 import controller.login.LoginController
+import coroutine.launchJs
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLInputElement
 import state.state
-import utils.launchJs
 import widget.Widget
 
 class LoginWidget(val onSessionOk: () -> Unit) : Widget(html) {

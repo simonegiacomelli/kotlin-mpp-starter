@@ -4,6 +4,7 @@ package state
 import accesscontrol.Anonymous
 import accesscontrol.Session
 import accesscontrol.UserAbs
+import coroutine.launchJs
 import kotlinx.browser.document
 import kotlinx.browser.localStorage
 import kotlinx.coroutines.CoroutineScope
@@ -16,7 +17,6 @@ import pages.bootstrap.OffcanvasWidget
 import pages.bootstrap.ToastWidget
 import pages.bootstrap.TreeWidget
 import rpc.apiDispatcher
-import utils.launchJs
 import widget.HolderWidget
 
 fun installClientHandler(): JsState {

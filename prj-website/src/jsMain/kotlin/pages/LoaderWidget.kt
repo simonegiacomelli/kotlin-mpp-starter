@@ -1,11 +1,11 @@
 package pages
 
+import coroutine.launchJs
 import extensions.extVisible
 import kotlinx.browser.window
 import kotlinx.coroutines.CoroutineScope
 import org.w3c.dom.HTMLElement
 import utils.forward
-import utils.launchJs
 import widget.Widget
 
 class LoaderWidget : Widget(//language=HTML
