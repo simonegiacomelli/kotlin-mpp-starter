@@ -3,6 +3,7 @@ import coroutine.WaitContinuation
 import forms.login.LoginWidget
 import keyboard.HotkeyWindow
 import kotlinx.datetime.Clock
+import kotlinx.dom.clear
 import menu.Menu
 import menu.acceptedSet
 import menu.menuBindings
@@ -22,7 +23,6 @@ const val version = "v0.1.4"
 
 suspend fun main() {
     println("ok $version " + (Clock.System.now()))
-    body.append(LoaderWidget.shared.container)
     startupApplication()
     OnewayApi.openWebSocket()
 }
@@ -31,12 +31,9 @@ suspend fun startupApplication() {
     installClientHandler().addLoginComponents()
 }
 
-fun JsState.removeAppComponents() = widgets.apply {
-    rootHolder.container.remove()
-    offcanvas.container.remove()
-}
-
 private suspend fun JsState.addLoginComponents() = widgets.apply {
+    body.clear()
+    body.append(LoaderWidget.shared.container)
     body.append(rootHolder.container)
     HotkeyWindow.log_prefix = "HotkeyWindow"
 

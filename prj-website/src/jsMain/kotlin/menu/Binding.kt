@@ -9,7 +9,6 @@ import pages.bootstrap.UserCreateWidget
 import pages.bootstrap.UserPasswdWidget
 import pages.forms.HtmlDisplayWidget
 import pages.forms.HtmlEditorWidget
-import removeAppComponents
 import rpc.send
 import startupApplication
 import state.JsState
@@ -41,6 +40,5 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
 fun JsState.logoffController() = spinner {
     runCatching { withTimeout(1000) { session_id?.also { ApiAcLogoffRequest(it).send() } } }
     sessionOrNull = null
-    removeAppComponents()
     window.setTimeout({ launchJs { startupApplication() } }, 1)
 }
