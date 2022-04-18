@@ -24,8 +24,8 @@ suspend fun startupApplication() {
 
 private suspend fun JsState.addLoginComponents() = widgets.apply {
     body.clear()
-    body.append(LoaderWidget.shared.container)
     body.append(rootHolder.container)
+    body.append(LoaderWidget.shared.container)
     body.append(offcanvas.container)
     body.append(toastStack.container)
 

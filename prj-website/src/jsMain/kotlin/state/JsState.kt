@@ -11,7 +11,7 @@ import menu.Menu
 import org.w3c.dom.get
 import org.w3c.dom.set
 import pages.LoaderWidget
-import pages.bootstrap.Navbar2Widget
+import pages.bootstrap.NavbarWidget
 import pages.bootstrap.OffcanvasWidget
 import pages.bootstrap.ToastStackWidget
 import pages.bootstrap.TreeWidget
@@ -44,7 +44,7 @@ class JsState : ClientState {
 
 class Widgets {
     val rootHolder = HolderWidget()
-    val navbar = Navbar2Widget()
+    val navbar = NavbarWidget()
     val holder get() = navbar.mainHolder
     val offcanvas = OffcanvasWidget()
     val toastStack = ToastStackWidget()
