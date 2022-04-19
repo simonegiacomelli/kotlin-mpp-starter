@@ -1,4 +1,4 @@
-package pages.bootstrap.databinding
+package databinding
 
 fun <T> valueOf(value: T): Optional<T> = object : Optional<T> {
     override val value: T get() = value

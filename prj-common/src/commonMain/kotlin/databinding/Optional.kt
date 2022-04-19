@@ -1,4 +1,4 @@
-package pages.bootstrap.databinding
+package databinding
 
 interface Optional<T> {
     val value: T

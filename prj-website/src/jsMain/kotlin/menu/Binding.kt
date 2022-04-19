@@ -31,7 +31,7 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
             spinner bindTo { spinner { delay(3000) } }
             html_editor bindTo { show(HtmlEditorWidget()) }
             html_display bindTo { show(HtmlDisplayWidget.shared) }
-            data_binding bindTo { show(DataBindingWidget()) }
+            two_way_data_binding bindTo { show(DataBindingWidget()) }
             data_binding_demo bindTo { show(DataBindingDemoWidget()) }
         }
         logoff bindTo { logoffApplication() }

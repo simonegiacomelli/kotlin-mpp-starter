@@ -1,6 +1,7 @@
-package pages.bootstrap.databinding
+package databinding
 
 import org.w3c.dom.HTMLInputElement
+import pages.bootstrap.databinding.HtmlInputTarget
 import kotlin.reflect.KMutableProperty0
 
 fun intBridge(target: HTMLInputElement): KMutableProperty0<Int> = IntBridge(target)::value

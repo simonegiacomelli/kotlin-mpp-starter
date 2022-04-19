@@ -1,8 +1,9 @@
-package pages.bootstrap.databinding
+package databinding
 
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toLocalDate
 import org.w3c.dom.HTMLInputElement
+import pages.bootstrap.databinding.HtmlInputTarget
 import kotlin.reflect.KMutableProperty0
 
 fun localDateBridge(target: HTMLInputElement): KMutableProperty0<LocalDate?> = LocalDateBridge(target)::value

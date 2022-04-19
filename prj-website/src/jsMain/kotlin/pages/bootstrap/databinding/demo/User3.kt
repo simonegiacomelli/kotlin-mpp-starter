@@ -1,9 +1,9 @@
 package pages.bootstrap.databinding.demo
 
+import databinding.Bindable
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toLocalDate
 import kotlinx.serialization.Serializable
-import pages.bootstrap.databinding.Bindable
 
 @Serializable
 class User3 : Bindable() {

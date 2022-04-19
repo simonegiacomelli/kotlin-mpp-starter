@@ -1,10 +1,11 @@
 package pages.bootstrap.databinding.demo
 
+import databinding.*
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDate
-import pages.bootstrap.databinding.*
+import pages.bootstrap.databinding.InputGroupWidget
 import widget.Widget
 
 class DataBindingDemoWidget : Widget(//language=HTML

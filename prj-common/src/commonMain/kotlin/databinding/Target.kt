@@ -1,4 +1,4 @@
-package pages.bootstrap.databinding
+package databinding
 
 import kotlin.reflect.KMutableProperty0
 

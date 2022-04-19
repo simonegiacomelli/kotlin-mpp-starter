@@ -72,8 +72,9 @@ private suspend fun JsState.addLoginComponents() = widgets.apply {
     val menuNameMap = availableMenu.associateBy { it.name }
     document.location?.run {
         val menuName = hash.removePrefix("#")
-        menuNameMap.getOrElse(menuName) { toast("Menu $menuName not found"); null }
-            ?.also { menuClick(it) }
+        if (menuName.isNotBlank())
+            menuNameMap.getOrElse(menuName) { toast("Menu `$menuName` not found"); null }
+                ?.also { menuClick(it) }
     }
 
 }
