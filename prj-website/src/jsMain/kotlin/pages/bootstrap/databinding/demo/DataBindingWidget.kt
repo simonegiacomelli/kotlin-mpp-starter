@@ -1,6 +1,7 @@
-package pages.bootstrap.databinding
+package pages.bootstrap.databinding.demo
 
 import org.w3c.dom.HTMLInputElement
+import pages.bootstrap.databinding.*
 import widget.Widget
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KMutableProperty1
@@ -12,7 +13,7 @@ class DataBindingWidget : Widget(//language=HTML
 """
 ) {
 
-    class User1 : Binding() {
+    class User1 : Bindable() {
         var name: String by this()
         var age: Int by this()
     }

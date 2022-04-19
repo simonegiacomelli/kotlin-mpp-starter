@@ -1,9 +1,10 @@
-package pages.bootstrap.databinding
+package pages.bootstrap.databinding.demo
 
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDate
+import pages.bootstrap.databinding.*
 import widget.Widget
 
 class DataBindingDemoWidget : Widget(//language=HTML
@@ -21,7 +22,7 @@ class DataBindingDemoWidget : Widget(//language=HTML
     private val div2 by this { InputGroupWidget() }
     private val div3 by this { InputGroupWidget() }
 
-    class User1 : Binding() {
+    class User1 : Bindable() {
         var name: String by this()
         var age: Int by this()
         var birthday: LocalDate? by this()

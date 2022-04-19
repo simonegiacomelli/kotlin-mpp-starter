@@ -6,7 +6,7 @@ import kotlin.reflect.KProperty
 
 class ChangeListener(val notify: (property: KProperty<*>) -> Unit)
 
-open class Binding {
+open class Bindable {
     val bindingValueMap = mutableMapOf<String, Optional<Any?>>()
     val bindingListeners = mutableListOf<ChangeListener>()
 
@@ -27,10 +27,11 @@ open class Binding {
         bindingValueMap[property.name] = value
     }
 
-    inline operator fun <reified T> invoke(default: Optional<T> = empty()): PropertyDelegateProvider<Any?, ReadWriteProperty<Any?, T>> {
+    inline operator fun <reified T> invoke(default: T? = null): PropertyDelegateProvider<Any?, ReadWriteProperty<Any?, T>> {
+        val optional = if (default == null) empty() else valueOf(default)
 //        var field: T = default
         return PropertyDelegateProvider<Any?, ReadWriteProperty<Any?, T>> { thisRef, property ->
-            bindingSetValue(property, default.unsafeCast<Optional<Any?>>())
+            bindingSetValue(property, optional.unsafeCast<Optional<Any?>>())
             object : ReadWriteProperty<Any?, T> {
                 override fun getValue(thisRef: Any?, property: KProperty<*>): T {
                     val field = bindingValueMap[property.name]
@@ -54,17 +55,3 @@ open class Binding {
     }
 }
 
-interface Optional<T> {
-    val value: T
-    val empty: Boolean
-}
-
-fun <T> empty(): Optional<T> = object : Optional<T> {
-    override val value: T get() = error("no value")
-    override val empty: Boolean get() = false
-}
-
-fun <T> valueOf(value: T): Optional<T> = object : Optional<T> {
-    override val value: T get() = value
-    override val empty: Boolean get() = true
-}

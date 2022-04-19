@@ -5,8 +5,8 @@ import pages.bootstrap.CalculatorWidget
 import pages.bootstrap.UserChangeWidget
 import pages.bootstrap.UserCreateWidget
 import pages.bootstrap.UserPasswdWidget
-import pages.bootstrap.databinding.DataBindingDemoWidget
-import pages.bootstrap.databinding.DataBindingWidget
+import pages.bootstrap.databinding.demo.DataBindingDemoWidget
+import pages.bootstrap.databinding.demo.DataBindingWidget
 import pages.forms.HtmlDisplayWidget
 import pages.forms.HtmlEditorWidget
 import state.JsState

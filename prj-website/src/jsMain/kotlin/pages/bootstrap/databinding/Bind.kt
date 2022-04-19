@@ -10,11 +10,11 @@ fun <E, T> bind(instance: E, source: KMutableProperty1<E, T>, target: Target<T>)
 
     sourceToTarget()
 
-    if (instance is Binding) {
+    if (instance is Bindable) {
         val changeListener = ChangeListener { if (it.name == source.name) sourceToTarget() }
         instance.bindingRegister(changeListener)
-        target.notifyOnChange { instance.bindingSetValueNotify(source, targetGet(), changeListener) }
+        target.notifyChange { instance.bindingSetValueNotify(source, targetGet(), changeListener) }
     } else {
-        target.notifyOnChange { targetToSource() }
+        target.notifyChange { targetToSource() }
     }
 }

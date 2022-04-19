@@ -1,4 +1,4 @@
-package pages.bootstrap.databinding
+package serialization
 
 //val format = Json {
 //

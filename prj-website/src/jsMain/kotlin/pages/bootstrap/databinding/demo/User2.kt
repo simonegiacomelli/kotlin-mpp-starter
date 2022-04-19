@@ -1,4 +1,4 @@
-package pages.bootstrap.databinding
+package pages.bootstrap.databinding.demo
 
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
