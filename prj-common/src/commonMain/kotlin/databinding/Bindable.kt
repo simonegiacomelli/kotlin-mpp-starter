@@ -1,6 +1,5 @@
 package databinding
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import serialization.AnyValue
 import serialization.toAnyValue
@@ -10,10 +9,13 @@ import kotlin.reflect.KProperty
 
 class ChangeListener(val notify: (property: KProperty<*>) -> Unit)
 
-@Serializable
-open class Bindable {
+//@Serializable(with = BindableSerializer::class)
+//@Serializable
 
-    val bindingValueMap = mutableMapOf<String, AnyValue>()
+@kotlinx.serialization.Serializable
+open class Bindable {
+    //    @Serializable(with = BindableMapSerializer::class)
+    val bindingValueMap: MutableMap<String, AnyValue> = mutableMapOf<String, AnyValue>()
 
     @Transient
     val bindingListeners = mutableListOf<ChangeListener>()

@@ -8,11 +8,13 @@ import kotlin.test.assertEquals
 
 class BindableTest {
 
-    @kotlinx.serialization.Serializable
-    class User : Bindable() {
-        var name: String by this()
-        var age: Int by this()
-    }
+//    @Serializable
+//    open class User  {
+//        val bindable = Bindable()
+//        var name: String by bindable()
+//        var age: Int by bindable()
+//    }
+
 
     @Test
     fun test_serialization() {
@@ -25,4 +27,3 @@ class BindableTest {
     }
 
 }
-
