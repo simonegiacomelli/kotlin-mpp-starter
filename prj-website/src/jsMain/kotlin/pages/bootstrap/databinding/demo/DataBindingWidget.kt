@@ -3,6 +3,7 @@ package pages.bootstrap.databinding.demo
 import databinding.*
 import org.w3c.dom.HTMLInputElement
 import pages.bootstrap.commonwidgets.InputGroupWidget
+import pages.bootstrap.dateinput.setupDateInsert
 import widget.Widget
 import kotlin.reflect.KMutableProperty1
 
@@ -27,7 +28,7 @@ class DataBindingWidget : Widget(//language=HTML
 
         doubleBinding(user3, User3::degree) { StringBridge(it) }
         doubleBinding(user3, User3::age) { IntBridge(it) }
-        doubleBinding(user3, User3::birthday) { LocalDateBridge(it) }
+        doubleBinding(user3, User3::birthday) { it.setupDateInsert(); LocalDateBridge(it) }
     }
 
     fun <E, T> doubleBinding(
