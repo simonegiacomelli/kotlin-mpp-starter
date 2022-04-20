@@ -24,13 +24,13 @@ open class Bindable : InternallyChangeable, ExternallyChangeable {
         bindingListeners.add(changeListener)
     }
 
-    override fun change(property: KProperty<*>, value: Any?, originator: ((property: KProperty<*>) -> Unit)?) {
+    override fun change(property: KProperty<*>, value: Any?) {
         bindingSetValue(property, value)
-        notifyChange(property, originator)
+        notifyChange(property)
     }
 
-    fun notifyChange(property: KProperty<*>, originator: ((property: KProperty<*>) -> Unit)? = null) {
-        bindingListeners.forEach { if (it != originator) it(property) }
+    fun notifyChange(property: KProperty<*>) {
+        bindingListeners.forEach { it(property) }
     }
 
     fun bindingSetValue(property: KProperty<*>, value: Any?) {
