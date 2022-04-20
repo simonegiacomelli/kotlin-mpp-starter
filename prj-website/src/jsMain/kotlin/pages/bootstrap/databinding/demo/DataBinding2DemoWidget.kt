@@ -3,10 +3,12 @@ package pages.bootstrap.databinding.demo
 import databinding.*
 import org.w3c.dom.HTMLInputElement
 import pages.bootstrap.commonwidgets.InputGroupWidget
+import pages.bootstrap.databinding.HtmlInputTarget
 import widget.Widget
+import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KMutableProperty1
 
-class DataBindingWidget : Widget(//language=HTML
+class DataBinding2DemoWidget : Widget(//language=HTML
     """
 <h1>data binding modeling/prototyping</h1> 
 
@@ -22,27 +24,26 @@ class DataBindingWidget : Widget(//language=HTML
     private val user3 = User3()
 
     override fun afterRender() {
-        doubleBinding(user1, User1::name) { StringBridge(it) }
-        doubleBinding(user1, User1::age) { IntBridge(it) }
+        doubleBinding(user1, User1::name) { stringBridge(it) }
+        doubleBinding(user1, User1::age) { intBridge(it) }
 
-        doubleBinding(user3, User3::degree) { StringBridge(it) }
-        doubleBinding(user3, User3::age) { IntBridge(it) }
-        doubleBinding(user3, User3::birthday) { LocalDateBridge(it) }
+        doubleBinding(user3, User3::degree) { stringBridge(it) }
+        doubleBinding(user3, User3::age) { intBridge(it) }
+        doubleBinding(user3, User3::birthday) { localDateBridge(it) }
     }
 
     fun <E, T> doubleBinding(
         instance: E,
-        source: KMutableProperty1<E, T>, bridge: (HTMLInputElement) -> PropertyBridge<T>
+        source: KMutableProperty1<E, T>, bridge: (HTMLInputElement) -> KMutableProperty0<T>
     ) {
 
         val hw = DoubleInputResultWidget().apply {
             fun <E, T> InputGroupWidget.bind2(
                 instance: E,
                 source: KMutableProperty1<E, T>,
-                bridge: (HTMLInputElement) -> PropertyBridge<T>
+                bridge: (HTMLInputElement) -> KMutableProperty0<T>
             ) {
-                val targetInstance = bridge(this.input)
-                bind(instance, source, targetInstance, targetInstance::value)
+                bind(instance, source, HtmlInputTarget(this.input, bridge(this.input)))
                 this.input.oninput = { inputResult.value = instance.toString(); 0 }
                 this.addon.innerHTML = source.name
             }
