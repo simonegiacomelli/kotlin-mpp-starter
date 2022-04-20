@@ -18,7 +18,7 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
     val map = this
     infix fun Menu.bindTo(func: () -> Unit) =
         run { if (map[this] != null) error("menu $name already bound"); map[this] = func }
-    root.apply {
+    menuRoot.apply {
         accessControl.apply {
             userChange bindTo { show(UserChangeWidget()) }
             userCreate bindTo { show(UserCreateWidget()) }

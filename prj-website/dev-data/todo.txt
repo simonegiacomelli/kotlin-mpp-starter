@@ -1,16 +1,19 @@
 todo logging
-todo remove global contextHandler(s)
+
+todo data-binding server-side: bind source-exposed and implement
+     insert/update/delete?
+todo data-binding client-side: setup localDateTarget/HtmlInputTarget to write date delphi-style
+todo data-binding analyze Fabrizio idea of (source eq target). Should they just implement the same interface?
 
 todo DOM
-todo html editor/display do not work on mobile!
+todo html editor/display do not work on mobile! why?
 todo spinner(wholeScreen=true){}
 todo good localStorage wrapper (map delegate?)
 todo data binding / basic widget edit: text, number, date, boolean
      with options: boolean/tristate, date/format, number/decimals etc.
-
 todo remove <main> from BootstrapHomeWidget
 
-todo rationalize client/server/common state
+todo rationalize client/server/common state.
 todo session expire cleanup job
 todo push as much as possible to prj-common/common, e.g., ac_*tables and queries
 

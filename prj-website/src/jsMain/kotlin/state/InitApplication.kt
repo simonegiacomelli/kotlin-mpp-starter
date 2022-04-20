@@ -9,7 +9,7 @@ import kotlinx.dom.clear
 import menu.Menu
 import menu.acceptedSet
 import menu.menuBindings
-import menu.root
+import menu.menuRoot
 import pages.bootstrap.CalculatorWidget
 import pages.bootstrap.SearchWidget
 import pages.bootstrap.ToastWidget
@@ -35,21 +35,21 @@ private suspend fun JsState.addLoginComponents() = widgets.apply {
         runWaitResume { rootHolder.show(LoginWidget { resume(Unit) }) }
     }
 
-    fun noMenuBinding(menu: Menu) = run { if (menu.parent != root) toast("No binding for menu: ${menu.name}") }
+    fun noMenuBinding(menu: Menu) = run { if (menu.parent != menuRoot) toast("No binding for menu: ${menu.name}") }
 
     val menuBindings = menuBindings()
     fun menuClick(menu: Menu) {
         val function = menuBindings[menu] ?: return noMenuBinding(menu)
         offcanvas.close()
-        if (menu != root.logoff) document.location?.apply { hash = "#${menu.name}" }
+        if (menu != menuRoot.logoff) document.location?.apply { hash = "#${menu.name}" }
         function()
     }
 
     menu.onElementClick = { menuClick(it) }
     menu.onCaption = { it.caption }
-    val availableMenu = root.acceptedSet(user.roles)
+    val availableMenu = menuRoot.acceptedSet(user.roles)
     val childrenMap = availableMenu.groupBy { it.parent }
-    menu.onGetChildren = { childrenMap[it ?: root] ?: emptyList() }
+    menu.onGetChildren = { childrenMap[it ?: menuRoot] ?: emptyList() }
     menu.render()
 
     offcanvas.setBody(menu)

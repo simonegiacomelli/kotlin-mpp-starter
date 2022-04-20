@@ -9,6 +9,6 @@ class RootTest {
             println(" ".repeat(indent * 2) + caption)
             children.forEach { it.logMenu(indent + 1) }
         }
-        root.logMenu()
+        menuRoot.logMenu()
     }
 }
