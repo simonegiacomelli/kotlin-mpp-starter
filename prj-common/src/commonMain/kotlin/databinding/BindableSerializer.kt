@@ -7,6 +7,10 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.serializer
 import serialization.AnyValue
 
+/** this could be made much more efficient:
+ * At runtime we already know the klass for each field (thanks to the reified delegateProvider),
+ * so there is no actual need to specify the type everytime for each!
+ * Using the AnyValue we are actually doing it */
 open class BindableSerializer<B : Bindable>(val newInstance: () -> B) : KSerializer<B> {
     private val sample = newInstance()
     private val delegateSerializer = serializer<LinkedHashMap<String, AnyValue>>()

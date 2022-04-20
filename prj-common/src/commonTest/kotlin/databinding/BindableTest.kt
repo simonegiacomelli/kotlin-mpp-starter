@@ -6,6 +6,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class BindableTest {
     @Serializable
@@ -15,6 +16,7 @@ class BindableTest {
     open class User : Bindable() {
         var name: String by this()
         var age: Int by this()
+        var nullable_name: String? by this()
     }
 
     object UserSerializer : BindableSerializer<User>(::User)
@@ -25,6 +27,7 @@ class BindableTest {
         fun verify(u: User) = u.apply {
             assertEquals("foo", name)
             assertEquals(42, age)
+            assertNull(nullable_name)
         }
         verify(original.user)
 
