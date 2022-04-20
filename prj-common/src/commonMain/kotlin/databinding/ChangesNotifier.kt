@@ -2,7 +2,7 @@ package databinding
 
 import kotlin.reflect.KProperty
 
-interface InternallyChangeable {
+interface ChangesNotifier {
     /** if changes happen, the listener will be invoked*/
-    fun onChange(listener: (property: KProperty<*>) -> Unit)
+    fun addChangeListener(listener: (property: KProperty<*>) -> Unit)
 }

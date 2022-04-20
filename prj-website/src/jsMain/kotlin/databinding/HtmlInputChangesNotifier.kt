@@ -3,10 +3,10 @@ package databinding
 import org.w3c.dom.HTMLInputElement
 import kotlin.reflect.KProperty
 
-interface HtmlInputTarget : InternallyChangeable {
+interface HtmlInputChangesNotifier : ChangesNotifier {
     val target: HTMLInputElement
 
-    override fun onChange(listener: (property: KProperty<*>) -> Unit) {
+    override fun addChangeListener(listener: (property: KProperty<*>) -> Unit) {
         target.addEventListener("input", { listener(target::value) })
     }
 }

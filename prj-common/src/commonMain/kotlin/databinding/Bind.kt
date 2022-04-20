@@ -18,11 +18,11 @@ fun <S, T, P> bind(
 
     sourceToTarget()
 
-    if (targetInstance is InternallyChangeable)
-        targetInstance.onChange { targetToSource() }
+    if (targetInstance is ChangesNotifier)
+        targetInstance.addChangeListener { targetToSource() }
 
-    if (sourceInstance is InternallyChangeable) {
-        sourceInstance.onChange { if (it.name == sourceProperty.name) sourceToTarget() }
+    if (sourceInstance is ChangesNotifier) {
+        sourceInstance.addChangeListener { if (it.name == sourceProperty.name) sourceToTarget() }
     }
 }
 
