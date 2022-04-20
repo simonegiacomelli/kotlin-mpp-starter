@@ -1,6 +1,7 @@
 package databinding
 
 import kotlin.reflect.KMutableProperty1
+import kotlin.reflect.KProperty
 
 /** naming from https://docs.microsoft.com/en-us/dotnet/api/system.windows.data.binding#remarks */
 fun <E, T> bind(sourceInstance: E, sourceProperty: KMutableProperty1<E, T>, target: Target<T>) {
@@ -11,10 +12,10 @@ fun <E, T> bind(sourceInstance: E, sourceProperty: KMutableProperty1<E, T>, targ
     sourceToTarget()
 
     if (sourceInstance is InternallyChangeable) {
-//        val changeListener = ChangeListener { if (it.name == source.name) sourceToTarget() }
-        val changeListener = sourceInstance.onChange { if (it.name == sourceProperty.name) sourceToTarget() }
+        val listener: (property: KProperty<*>) -> Unit = { if (it.name == sourceProperty.name) sourceToTarget() }
+        sourceInstance.onChange(listener)
         if (sourceInstance is ExternallyChangeable)
-            target.onChange { sourceInstance.change(sourceProperty, targetGet(), changeListener) }
+            target.onChange { sourceInstance.change(sourceProperty, targetGet(), listener) }
     } else {
         target.onChange { targetToSource() }
     }

@@ -20,9 +20,8 @@ open class Bindable : InternallyChangeable, ExternallyChangeable {
 
     val bindingListeners = mutableListOf<(property: KProperty<*>) -> Unit>()
 
-    override fun onChange(changeListener: (property: KProperty<*>) -> Unit): (KProperty<*>) -> Unit {
+    override fun onChange(changeListener: (property: KProperty<*>) -> Unit) {
         bindingListeners.add(changeListener)
-        return changeListener
     }
 
     override fun change(

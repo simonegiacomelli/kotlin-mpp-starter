@@ -10,9 +10,7 @@ class HtmlInputTarget<T>(
     override val property: KMutableProperty0<T>
 ) : Target<T> {
 
-    override fun onChange(listener: (property: KProperty<*>) -> Unit): (KProperty<*>) -> Unit {
-        val callback = { property: KProperty<*> -> listener(this.property) }
-        inputElement.addEventListener("input", { callback(property) })
-        return callback
+    override fun onChange(listener: (property: KProperty<*>) -> Unit) {
+        inputElement.addEventListener("input", { listener(this.property) })
     }
 }

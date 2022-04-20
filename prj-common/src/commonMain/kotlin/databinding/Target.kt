@@ -9,7 +9,7 @@ interface Target<T> : InternallyChangeable {
 
 interface InternallyChangeable {
     /** if changes happen, the listener will be invoked*/
-    fun onChange(listener: (property: KProperty<*>) -> Unit): (KProperty<*>) -> Unit
+    fun onChange(listener: (property: KProperty<*>) -> Unit)
 }
 
 interface ExternallyChangeable {
