@@ -24,11 +24,7 @@ open class Bindable : InternallyChangeable, ExternallyChangeable {
         bindingListeners.add(changeListener)
     }
 
-    override fun change(
-        property: KProperty<*>,
-        value: Any?,
-        originator: ((property: KProperty<*>) -> Unit)?
-    ) {
+    override fun change(property: KProperty<*>, value: Any?, originator: ((property: KProperty<*>) -> Unit)?) {
         bindingSetValue(property, value)
         notifyChange(property, originator)
     }

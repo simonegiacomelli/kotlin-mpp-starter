@@ -13,12 +13,8 @@ interface InternallyChangeable {
 }
 
 interface ExternallyChangeable {
-
-    fun change(
-        property: KProperty<*>,
-        value: Any?,
-        originator: ((property: KProperty<*>) -> Unit)? = null
-    )
+    /** this will change the property value and will notify
+     * registered listeners, except the originator if available */
+    fun change(property: KProperty<*>, value: Any?, originator: ((property: KProperty<*>) -> Unit)?)
+    fun change(property: KProperty<*>, value: Any?) = change(property, value, null)
 }
-
-interface Target2<T>
