@@ -8,6 +8,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class BindableTest {
+    @Serializable
+    class GuineaPig(val user: User)
 
     @Serializable(with = UserSerializer::class)
     open class User : Bindable() {
@@ -19,17 +21,18 @@ class BindableTest {
 
     @Test
     fun test_serialization() {
-        val original = User().apply { name = "foo"; age = 42 }
-        assertEquals("foo", original.name)
-        assertEquals(42, original.age)
+        val original = GuineaPig(User().apply { name = "foo"; age = 42 })
+        fun verify(u: User) = u.apply {
+            assertEquals("foo", name)
+            assertEquals(42, age)
+        }
+        verify(original.user)
+
         val str = Json.encodeToString(original)
         println("serialized instance: `$str`")
-        val deserialized = Json.decodeFromString<User>(str)
-        println("deserialized map: `${deserialized.bindingValueMap}`")
-//        deserialized.bindingSetValue(User::name,"foo")
-//        deserialized.bindingSetValue(User::age,42)
-        assertEquals("foo", deserialized.name)
-        assertEquals(42, deserialized.age)
+        val deserialized = Json.decodeFromString<GuineaPig>(str)
+        println("deserialized map: `${deserialized.user.bindingValueMap}`")
+        verify(deserialized.user)
     }
 
 }
