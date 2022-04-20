@@ -41,16 +41,14 @@ open class Bindable {
     inline operator fun <reified T : Any?> invoke(default: T? = null): PropertyDelegateProvider<Any?, ReadWriteProperty<Any?, T>> {
 
         return PropertyDelegateProvider<Any?, ReadWriteProperty<Any?, T>> { thisRef, property ->
-            bindingValueMap[property.name] = bindingValueMap[property.name] ?: default.toAnyValue()
+            val anyValue = bindingValueMap[property.name] ?: default.toAnyValue()
+            bindingValueMap[property.name] = anyValue
             object : ReadWriteProperty<Any?, T> {
                 override fun getValue(thisRef: Any?, property: KProperty<*>): T {
-                    val anyValue = bindingValueMap[property.name] ?: error("not found!!!!")
-                    val t = anyValue.payload as T
-                    return t
+                    return anyValue.payload as T
                 }
 
                 override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-                    val anyValue = bindingValueMap[property.name] ?: error("not found!!!!")
                     anyValue.payload = value
                     notifyChange(property)
                 }

@@ -18,9 +18,13 @@ open class BindableSerializer<B : Bindable>(val newInstance: () -> B) : KSeriali
 
     override fun deserialize(decoder: Decoder): B {
         val value = newInstance()
-        val map = decoder.decodeSerializableValue(delegateSerializer)
-        value.bindingValueMap.clear()
-        value.bindingValueMap.putAll(map)
+        val srcMap = decoder.decodeSerializableValue(delegateSerializer)
+
+        value.bindingValueMap.forEach { dst ->
+            val srcEntry = srcMap[dst.key]
+            if (srcEntry != null) dst.value.payload = srcEntry.payload
+        }
+
         return value
     }
 }
