@@ -13,7 +13,7 @@ import kotlin.reflect.KProperty
  * cannot be @Serializable! on 2022-04-20 breaks the ir-js compiler!
  * workaround: a custom serializer for every descendant of Bindable
  */
-open class Bindable : InternallyChangeable, ExternallyChangeable {
+open class Bindable : InternallyChangeable {
 
     /** this is the problematic property that breaks the compiler */
     val bindingValueMap: LinkedHashMap<String, AnyValue> = LinkedHashMap()
@@ -24,18 +24,8 @@ open class Bindable : InternallyChangeable, ExternallyChangeable {
         bindingListeners.add(changeListener)
     }
 
-    override fun change(property: KProperty<*>, value: Any?) {
-        bindingSetValue(property, value)
-        notifyChange(property)
-    }
-
     fun notifyChange(property: KProperty<*>) {
         bindingListeners.forEach { it(property) }
-    }
-
-    fun bindingSetValue(property: KProperty<*>, value: Any?) {
-        val anyValue = bindingValueMap[property.name] ?: error("should never be null!")
-        anyValue.payload = value
     }
 
     inline operator fun <reified T : Any?> invoke(default: T? = null): PropertyDelegateProvider<Any?, ReadWriteProperty<Any?, T>> {
