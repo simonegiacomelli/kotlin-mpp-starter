@@ -1,7 +1,7 @@
 package pages.bootstrap.databinding.demo
 
 import org.w3c.dom.HTMLInputElement
-import pages.bootstrap.databinding.InputGroupWidget
+import pages.bootstrap.commonwidgets.InputGroupWidget
 import widget.Widget
 
 class DoubleInputResultWidget : Widget(//language=HTML

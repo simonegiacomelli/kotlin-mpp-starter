@@ -1,4 +1,4 @@
-package pages.bootstrap.databinding
+package pages.bootstrap.commonwidgets
 
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement

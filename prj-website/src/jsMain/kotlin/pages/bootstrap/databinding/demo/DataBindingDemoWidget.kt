@@ -5,7 +5,7 @@ import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDate
-import pages.bootstrap.databinding.InputGroupWidget
+import pages.bootstrap.commonwidgets.InputGroupWidget
 import widget.Widget
 
 class DataBindingDemoWidget : Widget(//language=HTML

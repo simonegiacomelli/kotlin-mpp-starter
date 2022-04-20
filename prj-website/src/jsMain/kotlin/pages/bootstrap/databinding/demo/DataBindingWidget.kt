@@ -2,8 +2,8 @@ package pages.bootstrap.databinding.demo
 
 import databinding.*
 import org.w3c.dom.HTMLInputElement
+import pages.bootstrap.commonwidgets.InputGroupWidget
 import pages.bootstrap.databinding.HtmlInputTarget
-import pages.bootstrap.databinding.InputGroupWidget
 import widget.Widget
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KMutableProperty1

@@ -7,6 +7,7 @@ import pages.bootstrap.UserCreateWidget
 import pages.bootstrap.UserPasswdWidget
 import pages.bootstrap.databinding.demo.DataBindingDemoWidget
 import pages.bootstrap.databinding.demo.DataBindingWidget
+import pages.bootstrap.dateinput.DateInputDelphiStyleWidget
 import pages.forms.HtmlDisplayWidget
 import pages.forms.HtmlEditorWidget
 import state.JsState
@@ -28,6 +29,7 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
             calculator bindTo { show(CalculatorWidget()) }
         }
         development.apply {
+            date_input_delphi_style bindTo { show(DateInputDelphiStyleWidget()) }
             spinner bindTo { spinner { delay(3000) } }
             html_editor bindTo { show(HtmlEditorWidget()) }
             html_display bindTo { show(HtmlDisplayWidget.shared) }
