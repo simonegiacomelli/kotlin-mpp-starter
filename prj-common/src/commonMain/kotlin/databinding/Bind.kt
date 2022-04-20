@@ -26,3 +26,8 @@ fun <S, T, P> bind(
     }
 }
 
+
+fun <S, P> bind(
+    sourceInstance: S, sourceProperty: KMutableProperty1<S, P>,
+    target: PropertyBridge<P>
+) = bind(sourceInstance, sourceProperty, target, target::value)

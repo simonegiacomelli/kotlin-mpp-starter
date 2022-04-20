@@ -17,6 +17,7 @@ class DataBindingWidget : Widget(//language=HTML
     class User1 : Bindable() {
         var name: String by this()
         var age: Int by this()
+        override fun toString() = "name=$name age=$age valueMap=$bindingValueMap"
     }
 
     private val user1 = User1().apply { name = "simo"; age = 42 }
@@ -37,19 +38,16 @@ class DataBindingWidget : Widget(//language=HTML
     ) {
 
         val hw = DoubleInputResultWidget().apply {
-            fun <E, T> InputGroupWidget.bind2(
-                instance: E,
-                source: KMutableProperty1<E, T>,
+            fun InputGroupWidget.bind2(
                 bridge: (HTMLInputElement) -> PropertyBridge<T>
             ) {
-                val targetInstance = bridge(this.input)
-                bind(instance, source, targetInstance, targetInstance::value)
+                bind(instance, source, bridge(this.input))
                 this.input.oninput = { inputResult.value = instance.toString(); 0 }
                 this.addon.innerHTML = source.name
             }
 
-            inputA.bind2(instance, source, bridge)
-            inputB.bind2(instance, source, bridge)
+            inputA.bind2(bridge)
+            inputB.bind2(bridge)
 
         }
         container.append(hw.container)

@@ -8,7 +8,6 @@ import kotlinx.datetime.toLocalDate
 import pages.bootstrap.commonwidgets.InputGroupWidget
 import pages.bootstrap.dateinput.setupDateInsert
 import widget.Widget
-import kotlin.reflect.KMutableProperty1
 
 class DataBindingDemoWidget : Widget(//language=HTML
     """
@@ -49,9 +48,4 @@ class DataBindingDemoWidget : Widget(//language=HTML
 
 
 }
-
-fun <S, P> bind(
-    sourceInstance: S, sourceProperty: KMutableProperty1<S, P>,
-    target: PropertyBridge<P>
-) = bind(sourceInstance, sourceProperty, target, target::value)
 
