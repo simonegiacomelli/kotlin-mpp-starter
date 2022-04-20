@@ -1,6 +1,5 @@
 package databinding
 
-import kotlinx.serialization.Transient
 import serialization.AnyValue
 import serialization.toAnyValue
 import kotlin.properties.PropertyDelegateProvider
@@ -9,14 +8,16 @@ import kotlin.reflect.KProperty
 
 class ChangeListener(val notify: (property: KProperty<*>) -> Unit)
 
-//@Serializable(with = BindableSerializer::class)
-//@Serializable
+
+/**
+ * cannot be @Serializable! on 2022-04-20 breaks the ir-js compiler!
+ * workaround: a custom serializer for every descendant of Bindable
+ */
 open class Bindable {
-    //    @Serializable(with = BindableMapSerializer::class)
-//    @Transient
+
+    /** this is the problematic property that breaks the compiler */
     val bindingValueMap: LinkedHashMap<String, AnyValue> = LinkedHashMap()
 
-    @Transient
     val bindingListeners = mutableListOf<ChangeListener>()
 
     fun bindingRegister(changeListener: ChangeListener) {

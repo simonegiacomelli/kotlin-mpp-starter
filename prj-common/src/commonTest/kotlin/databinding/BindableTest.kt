@@ -15,7 +15,7 @@ class BindableTest {
         var age: Int by this()
     }
 
-    object UserSerializer : BindableSerializer<User>({ User() })
+    object UserSerializer : BindableSerializer<User>(::User)
 
     @Test
     fun test_serialization() {
