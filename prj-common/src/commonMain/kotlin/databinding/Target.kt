@@ -4,5 +4,9 @@ import kotlin.reflect.KMutableProperty0
 
 interface Target<T> {
     val bridge: KMutableProperty0<T>
-    fun notifyChange(listener: () -> Unit)
+
+    /** if changes happen, the listener will be invoked*/
+    fun onChange(listener: () -> Unit)
 }
+
+interface Target2<T>

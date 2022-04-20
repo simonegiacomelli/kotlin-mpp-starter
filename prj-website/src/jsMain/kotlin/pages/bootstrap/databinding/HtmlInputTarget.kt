@@ -9,7 +9,7 @@ class HtmlInputTarget<T>(
     override val bridge: KMutableProperty0<T>
 ) : Target<T> {
 
-    override fun notifyChange(listener: () -> Unit) {
+    override fun onChange(listener: () -> Unit) {
         target.addEventListener("input", { listener() })
     }
 }

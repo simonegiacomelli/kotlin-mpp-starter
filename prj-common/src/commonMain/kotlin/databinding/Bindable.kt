@@ -6,7 +6,7 @@ import kotlin.properties.PropertyDelegateProvider
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class ChangeListener(val notify: (property: KProperty<*>) -> Unit)
+//class ChangeListener(val notify: (property: KProperty<*>) -> Unit)
 
 
 /**
@@ -18,19 +18,24 @@ open class Bindable {
     /** this is the problematic property that breaks the compiler */
     val bindingValueMap: LinkedHashMap<String, AnyValue> = LinkedHashMap()
 
-    val bindingListeners = mutableListOf<ChangeListener>()
+    val bindingListeners = mutableListOf<(property: KProperty<*>) -> Unit>()
 
-    fun bindingRegister(changeListener: ChangeListener) {
+    fun onChange(changeListener: (property: KProperty<*>) -> Unit): (KProperty<*>) -> Unit {
         bindingListeners.add(changeListener)
+        return changeListener
     }
 
-    fun bindingSetValueNotify(property: KProperty<*>, value: Any?, originator: ChangeListener? = null) {
+    fun bindingSetValueNotify(
+        property: KProperty<*>,
+        value: Any?,
+        originator: ((property: KProperty<*>) -> Unit)? = null
+    ) {
         bindingSetValue(property, value)
         notifyChange(property, originator)
     }
 
-    fun notifyChange(property: KProperty<*>, originator: ChangeListener? = null) {
-        bindingListeners.forEach { if (it != originator) it.notify(property) }
+    fun notifyChange(property: KProperty<*>, originator: ((property: KProperty<*>) -> Unit)? = null) {
+        bindingListeners.forEach { if (it != originator) it(property) }
     }
 
     fun bindingSetValue(property: KProperty<*>, value: Any?) {
