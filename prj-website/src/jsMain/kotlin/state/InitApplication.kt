@@ -50,6 +50,7 @@ private suspend fun JsState.addLoginComponents() = widgets.apply {
     val availableMenu = menuRoot.acceptedSet(user.roles)
     val childrenMap = availableMenu.groupBy { it.parent }
     menu.onGetChildren = { childrenMap[it ?: menuRoot] ?: emptyList() }
+    menu.onCellRender = { if (depth > 0) cell.classList.add("py-0") }
     menu.render()
 
     offcanvas.setBody(menu)

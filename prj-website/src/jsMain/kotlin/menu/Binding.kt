@@ -17,26 +17,26 @@ import widget.Widget
 fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
     fun show(widget: Widget) = widgets.holder.show(widget)
     val map = this
-    infix fun Menu.bindTo(func: () -> Unit) =
+    infix fun Menu.onClick(func: () -> Unit) =
         run { if (map[this] != null) error("menu $name already bound"); map[this] = func }
     menuRoot.apply {
         accessControl.apply {
-            userChange bindTo { show(UserChangeWidget()) }
-            userCreate bindTo { show(UserCreateWidget()) }
-            userPasswd bindTo { show(UserPasswdWidget()) }
+            userChange onClick { show(UserChangeWidget()) }
+            userCreate onClick { show(UserCreateWidget()) }
+            userPasswd onClick { show(UserPasswdWidget()) }
         }
         math.apply {
-            calculator bindTo { show(CalculatorWidget()) }
+            calculator onClick { show(CalculatorWidget()) }
         }
         development.apply {
-            date_input_delphi_style bindTo { show(DateInputDelphiStyleWidget()) }
-            spinner bindTo { spinner { delay(3000) } }
-            html_editor bindTo { show(HtmlEditorWidget()) }
-            html_display bindTo { show(HtmlDisplayWidget.shared) }
-            two_way_data_binding bindTo { show(DataBindingWidget()) }
-            data_binding_demo bindTo { show(DataBindingDemoWidget()) }
+            date_input_delphi_style onClick { show(DateInputDelphiStyleWidget()) }
+            spinner onClick { spinner { delay(3000) } }
+            html_editor onClick { show(HtmlEditorWidget()) }
+            html_display onClick { show(HtmlDisplayWidget.shared) }
+            two_way_data_binding onClick { show(DataBindingWidget()) }
+            data_binding_demo onClick { show(DataBindingDemoWidget()) }
         }
-        logoff bindTo { logoffApplication() }
+        logoff onClick { logoffApplication() }
 
     }
 }
