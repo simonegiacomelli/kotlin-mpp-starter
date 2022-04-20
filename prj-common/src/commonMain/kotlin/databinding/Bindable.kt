@@ -11,11 +11,10 @@ class ChangeListener(val notify: (property: KProperty<*>) -> Unit)
 
 //@Serializable(with = BindableSerializer::class)
 //@Serializable
-
-@kotlinx.serialization.Serializable
 open class Bindable {
     //    @Serializable(with = BindableMapSerializer::class)
-    val bindingValueMap: MutableMap<String, AnyValue> = mutableMapOf<String, AnyValue>()
+//    @Transient
+    val bindingValueMap: LinkedHashMap<String, AnyValue> = LinkedHashMap()
 
     @Transient
     val bindingListeners = mutableListOf<ChangeListener>()
@@ -42,16 +41,22 @@ open class Bindable {
         println("Invoke for default=`$default` mapContent=`$bindingValueMap`")
 
         return PropertyDelegateProvider<Any?, ReadWriteProperty<Any?, T>> { thisRef, property ->
-            val anyValue = bindingValueMap[property.name] ?: default.toAnyValue()
+            println("PropertyDelegateProvider map=`$bindingValueMap`")
             println("Instantiating a ReadWriteProperty for property name `${property.name}`")
-            bindingValueMap[property.name] = anyValue
+            bindingValueMap[property.name] = bindingValueMap[property.name] ?: default.toAnyValue()
             object : ReadWriteProperty<Any?, T> {
                 override fun getValue(thisRef: Any?, property: KProperty<*>): T {
-                    return anyValue.payload as T
+                    println("getValue(${property.name})")
+                    val anyValue = bindingValueMap[property.name] ?: error("not found!!!!")
+                    println("getValue(${property.name}=`${anyValue.payload}`)")
+                    val t = anyValue.payload as T
+                    println("getValue(${property.name}=`${t}`) casted")
+                    return t
                 }
 
                 override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
                     println("setValue ${property.name}=`$value`")
+                    val anyValue = bindingValueMap[property.name] ?: error("not found!!!!") ?: error("not found!!!!")
                     anyValue.payload = value
                     notifyChange(property)
                 }
