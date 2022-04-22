@@ -5,10 +5,11 @@ import kotlin.test.assertEquals
 
 class BindableTest {
 
+    class Trg(var age: Int)
+
     @Test
-    fun test_bindable_1() {
+    fun test_readonlySource_toWritableTarget_initialCopy() {
         class Src(val age: Int)
-        class Trg(var age: Int)
 
         val source = Src(42)
         val target = Trg(0)
@@ -17,13 +18,11 @@ class BindableTest {
     }
 
     @Test
-    fun test_bindable_2() {
+    fun test_readonlySource_toWritableTarget_manualCopy() {
         class Src() {
             var backingField = 42
             val age get() = backingField
         }
-
-        class Trg(var age: Int)
 
         val source = Src()
         val target = Trg(0)
@@ -31,6 +30,24 @@ class BindableTest {
         assertEquals(42, target.age)
         source.backingField = 11
         binder.writeTarget()
+        assertEquals(11, target.age)
+    }
+
+
+    @Test
+    fun test_readonlySourceWithNotification_toWritableTarget_automaticCopy() {
+        class Src {
+            var backingField = 42
+            val age get() = backingField
+        }
+
+        val changesNotifier = ChangesNotifierDc()
+        val source = Src()
+        val target = Trg(0)
+        bind(changesNotifier, source::age, target::age)
+        assertEquals(42, target.age)
+        source.backingField = 11
+        changesNotifier.notifyListeners()
         assertEquals(11, target.age)
     }
 
