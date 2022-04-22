@@ -23,12 +23,6 @@ class BindableTest {
         assertEquals(11, target.target_age)
     }
 
-    private class ReadonlyWithBackingField {
-        val values = mutableMapOf<String, Any?>("age" to 42, "name" to "foo")
-        val age: Int by values
-        val name: String by values
-    }
-
     @Test
     fun test_oneWay_withChangeNotifier() {
         val changesNotifier = ChangesNotifierDc()
@@ -62,5 +56,34 @@ class BindableTest {
         assertEquals("baz", target.target_name)
     }
 
+
+    @Test
+    fun test_twoWay_noChangeNotifier() {
+        val source = WritableWithBackingField()
+        val target = Trg(0)
+        val ageBinder = bind(target::target_age, source::age)
+
+        // verify initial copy
+        assertEquals(42, target.target_age)
+        assertEquals(Mode.TwoWay, ageBinder.mode)
+
+        // write target, manual copy invocation
+        target.target_age = 11
+        ageBinder.writeSource()
+        assertEquals(11, source.age)
+    }
+
+
+    private class ReadonlyWithBackingField {
+        val values = mutableMapOf<String, Any?>("age" to 42, "name" to "foo")
+        val age: Int by values
+        val name: String by values
+    }
+
+    private class WritableWithBackingField {
+        val values = mutableMapOf<String, Any?>("age" to 42, "name" to "foo")
+        var age: Int by values
+        var name: String by values
+    }
 
 }

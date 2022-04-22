@@ -4,14 +4,27 @@ import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty0
 
 fun <V> bind(target: KMutableProperty0<V>, source: KProperty0<V>) = binder(target, source)
+fun <V> bind(target: KMutableProperty0<V>, source: KMutableProperty0<V>): BinderTwoWay =
+    binder(target, source)
 
 private fun <V> binder(
     targetProperty: KMutableProperty0<V>,
     sourceProperty: KProperty0<V>
-): Binder {
-    return object : Binder {
+): BinderOneWay {
+    return object : BinderOneWay {
         override fun writeTarget() = targetProperty.set(sourceProperty.get())
         override val mode: Mode = Mode.OneWay
+    }.apply { writeTarget() }
+}
+
+private fun <V> binder(
+    targetProperty: KMutableProperty0<V>,
+    sourceProperty: KMutableProperty0<V>
+): BinderTwoWay {
+    return object : BinderTwoWay {
+        override fun writeTarget() = targetProperty.set(sourceProperty.get())
+        override fun writeSource() = sourceProperty.set(targetProperty.get())
+        override val mode: Mode = Mode.TwoWay
     }.apply { writeTarget() }
 }
 
@@ -26,9 +39,13 @@ fun <V> bind(
     }
 }
 
-interface Binder {
+interface BinderOneWay {
     fun writeTarget()
     val mode: Mode
+}
+
+interface BinderTwoWay : BinderOneWay {
+    fun writeSource()
 }
 
 /** Notifies clients that a property value has changed.
@@ -65,4 +82,4 @@ class ChangesNotifierDc : ChangesNotifier {
 /**
  * https://docs.microsoft.com/en-us/dotnet/desktop/wpf/data/?view=netdesktop-6.0&redirectedfrom=MSDN#direction-of-the-data-flow
  */
-enum class Mode { OneWay }
+enum class Mode { OneWay, TwoWay }
