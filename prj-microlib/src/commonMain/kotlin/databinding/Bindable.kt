@@ -3,38 +3,45 @@ package databinding
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty0
 
-fun <V> bind(
-    source: KProperty0<V>,
-    target: KMutableProperty0<V>
-): Binder = object : Binder {
-    override fun writeTarget() = target.set(source.get())
-}.apply { writeTarget() }
+fun <V> bind(source: KProperty0<V>, target: KMutableProperty0<V>) = binder(target, source)
+
+private fun <V> binder(
+    targetProperty: KMutableProperty0<V>,
+    sourceProperty: KProperty0<V>
+): Binder {
+    return object : Binder {
+        override fun writeTarget() = targetProperty.set(sourceProperty.get())
+    }.apply { writeTarget() }
+}
 
 fun <V> bind(
-    sourceNotifier: ChangesNotifier,
-    source: KProperty0<V>,
-    target: KMutableProperty0<V>
-): Binder {
-    val binder = object : Binder {
-        override fun writeTarget() = target.set(source.get())
+    targetProperty: KMutableProperty0<V>,
+    sourceProperty: KProperty0<V>,
+    sourceNotifier: NotifyPropertyChanged
+) = binder(targetProperty, sourceProperty).also { binder ->
+    sourceNotifier.propertyChangedEventHandlers.add {
+        if (it.propertyName == null || it.propertyName == sourceProperty.name)
+            binder.writeTarget()
     }
-    sourceNotifier.addChangeListener { binder.writeTarget() }
-    binder.writeTarget()
-    return binder
 }
 
 interface Binder {
     fun writeTarget()
 }
 
-interface ChangesNotifier {
+interface NotifyPropertyChanged {
     /** if changes happen, the listener will be invoked*/
-    fun addChangeListener(listener: () -> Unit)
-    fun notifyListeners()
+    val propertyChangedEventHandlers: MutableSet<PropertyChangedEvent>
+    fun notifyPropertyChangedEvent(event: PropertyChangedEventArgs)
 }
 
-class ChangesNotifierDc : ChangesNotifier {
-    private val changeListeners = mutableListOf<() -> Unit>()
-    override fun addChangeListener(listener: () -> Unit): Unit = run { changeListeners.add(listener) }
-    override fun notifyListeners() = changeListeners.forEach { it() }
+
+typealias PropertyChangedEvent = (PropertyChangedEventArgs) -> Unit
+
+class PropertyChangedEventArgs(val sender: Any?, val propertyName: String?)
+
+class ChangesNotifierDc : NotifyPropertyChanged {
+    override val propertyChangedEventHandlers = mutableSetOf<PropertyChangedEvent>()
+    override fun notifyPropertyChangedEvent(event: PropertyChangedEventArgs) =
+        propertyChangedEventHandlers.forEach { it(event) }
 }
