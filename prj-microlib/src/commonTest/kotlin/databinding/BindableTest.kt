@@ -40,10 +40,12 @@ class BindableTest {
         val changesNotifier = ChangesNotifierDc()
         val source = ReadonlyWithBackingField()
         val target = Trg(0)
-        bind(target::target_age, source::age, changesNotifier)
+        val ageBinder = bind(target::target_age, source::age, changesNotifier)
         assertEquals(42, target.target_age)
-        bind(target::target_name, source::name, changesNotifier)
+        assertEquals(Mode.OneWay, ageBinder.mode)
+        val nameBinder = bind(target::target_name, source::name, changesNotifier)
         assertEquals("foo", target.target_name)
+        assertEquals(Mode.OneWay, nameBinder.mode)
 
         source.values["age"] = 11
         source.values["name"] = "bar"

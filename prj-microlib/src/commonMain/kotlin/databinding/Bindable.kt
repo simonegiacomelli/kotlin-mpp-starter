@@ -11,6 +11,7 @@ private fun <V> binder(
 ): Binder {
     return object : Binder {
         override fun writeTarget() = targetProperty.set(sourceProperty.get())
+        override val mode: Mode = Mode.OneWay
     }.apply { writeTarget() }
 }
 
@@ -27,6 +28,7 @@ fun <V> bind(
 
 interface Binder {
     fun writeTarget()
+    val mode: Mode
 }
 
 interface NotifyPropertyChanged {
@@ -45,3 +47,5 @@ class ChangesNotifierDc : NotifyPropertyChanged {
     override fun notifyPropertyChangedEvent(event: PropertyChangedEventArgs) =
         propertyChangedEventHandlers.forEach { it(event) }
 }
+
+enum class Mode { OneWay }
