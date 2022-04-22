@@ -9,13 +9,18 @@ class BindableTest {
 
     @Test
     fun test_oneWay_noChangeNotifier() {
-        class Src(val age: Int)
-
-        val source = Src(42)
+        val source = ReadonlyWithBackingField()
         val target = Trg(0)
         val ageBinder = bind(target::target_age, source::age)
+
+        // verify initial copy
         assertEquals(42, target.target_age)
         assertEquals(Mode.OneWay, ageBinder.mode)
+
+        // verify manual copy
+        source.values["age"] = 11
+        ageBinder.writeTarget()
+        assertEquals(11, target.target_age)
     }
 
     private class ReadonlyWithBackingField {
@@ -25,27 +30,17 @@ class BindableTest {
     }
 
     @Test
-    fun test_readonlySource_toWritableTarget_manualCopy() {
-        val source = ReadonlyWithBackingField()
-        val target = Trg(0)
-        val binder = bind(target::target_age, source::age)
-        assertEquals(42, target.target_age)
-        assertEquals(Mode.OneWay, binder.mode)
-        source.values["age"] = 11
-        binder.writeTarget()
-        assertEquals(11, target.target_age)
-    }
-
-
-    @Test
     fun test_oneWay_withChangeNotifier() {
         val changesNotifier = ChangesNotifierDc()
         val source = ReadonlyWithBackingField()
         val target = Trg(0)
         val ageBinder = bind(target::target_age, source::age, changesNotifier)
+        // verify initial copy and mode
         assertEquals(42, target.target_age)
         assertEquals(Mode.OneWay, ageBinder.mode)
+
         val nameBinder = bind(target::target_name, source::name, changesNotifier)
+        // verify initial copy and mode
         assertEquals("foo", target.target_name)
         assertEquals(Mode.OneWay, nameBinder.mode)
 
