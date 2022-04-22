@@ -8,13 +8,14 @@ class BindableTest {
     private class Trg(var target_age: Int, var target_name: String = "")
 
     @Test
-    fun test_readonlySource_toWritableTarget_initialCopy() {
+    fun test_oneWay_noChangeNotifier() {
         class Src(val age: Int)
 
         val source = Src(42)
         val target = Trg(0)
-        bind(source::age, target::target_age)
+        val ageBinder = bind(target::target_age, source::age)
         assertEquals(42, target.target_age)
+        assertEquals(Mode.OneWay, ageBinder.mode)
     }
 
     private class ReadonlyWithBackingField {
@@ -27,8 +28,9 @@ class BindableTest {
     fun test_readonlySource_toWritableTarget_manualCopy() {
         val source = ReadonlyWithBackingField()
         val target = Trg(0)
-        val binder = bind(source::age, target::target_age)
+        val binder = bind(target::target_age, source::age)
         assertEquals(42, target.target_age)
+        assertEquals(Mode.OneWay, binder.mode)
         source.values["age"] = 11
         binder.writeTarget()
         assertEquals(11, target.target_age)
@@ -36,7 +38,7 @@ class BindableTest {
 
 
     @Test
-    fun test_readonlySourceWithNotification_toWritableTarget_automaticCopy() {
+    fun test_oneWay_withChangeNotifier() {
         val changesNotifier = ChangesNotifierDc()
         val source = ReadonlyWithBackingField()
         val target = Trg(0)
@@ -51,7 +53,7 @@ class BindableTest {
         source.values["name"] = "bar"
 
         // notify only age
-        changesNotifier.notifyPropertyChangedEvent(PropertyChangedEventArgs(null, "age"))
+        changesNotifier.notifyChange(PropertyChangedEventArgs(null, "age"))
 
         assertEquals(11, target.target_age)
         assertEquals("foo", target.target_name)
@@ -60,7 +62,7 @@ class BindableTest {
         source.values["name"] = "baz"
 
         // notify all
-        changesNotifier.notifyPropertyChangedEvent(PropertyChangedEventArgs(null, null))
+        changesNotifier.notifyChange(PropertyChangedEventArgs(null, null))
         assertEquals(12, target.target_age)
         assertEquals("baz", target.target_name)
     }

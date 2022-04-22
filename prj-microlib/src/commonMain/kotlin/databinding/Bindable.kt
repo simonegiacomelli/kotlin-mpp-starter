@@ -3,7 +3,7 @@ package databinding
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty0
 
-fun <V> bind(source: KProperty0<V>, target: KMutableProperty0<V>) = binder(target, source)
+fun <V> bind(target: KMutableProperty0<V>, source: KProperty0<V>) = binder(target, source)
 
 private fun <V> binder(
     targetProperty: KMutableProperty0<V>,
@@ -18,10 +18,10 @@ private fun <V> binder(
 fun <V> bind(
     targetProperty: KMutableProperty0<V>,
     sourceProperty: KProperty0<V>,
-    sourceNotifier: NotifyPropertyChanged
+    sourceNotifier: ChangesNotifier
 ) = binder(targetProperty, sourceProperty).also { binder ->
-    sourceNotifier.propertyChangedEventHandlers.add {
-        if (it.propertyName == null || it.propertyName == sourceProperty.name)
+    sourceNotifier.changesListeners.add {
+        if (it.propertyName.isNullOrEmpty() || it.propertyName == sourceProperty.name)
             binder.writeTarget()
     }
 }
@@ -31,21 +31,38 @@ interface Binder {
     val mode: Mode
 }
 
-interface NotifyPropertyChanged {
-    /** if changes happen, the listener will be invoked*/
-    val propertyChangedEventHandlers: MutableSet<PropertyChangedEvent>
-    fun notifyPropertyChangedEvent(event: PropertyChangedEventArgs)
+/** Notifies clients that a property value has changed.
+ * A PropertyChanged event is raised when a property is
+ * changed on a component. A PropertyChangedEventArgs
+ * object specifies the name of the property that changed.
+ * PropertyChangedEventArgs provides the PropertyName
+ * property to get the name of the property that changed.*/
+interface ChangesNotifier {
+    /** if notifyChange is called, the listeners will be invoked*/
+    val changesListeners: MutableSet<PropertyChangedEvent>
+    fun notifyChange(event: PropertyChangedEventArgs)
 }
 
 
+/** Represents the method that will handle the PropertyChanged event
+ * raised when a property is changed on a component. */
 typealias PropertyChangedEvent = (PropertyChangedEventArgs) -> Unit
 
-class PropertyChangedEventArgs(val sender: Any?, val propertyName: String?)
+/** Provides data for the PropertyChanged event. */
+class PropertyChangedEventArgs(
+    val sender: Any?,
+    /** The name of the property that changed.
+     * An Empty value or null for the propertyName parameter indicates that all of the properties have changed. */
+    val propertyName: String?
+)
 
-class ChangesNotifierDc : NotifyPropertyChanged {
-    override val propertyChangedEventHandlers = mutableSetOf<PropertyChangedEvent>()
-    override fun notifyPropertyChangedEvent(event: PropertyChangedEventArgs) =
-        propertyChangedEventHandlers.forEach { it(event) }
+class ChangesNotifierDc : ChangesNotifier {
+    override val changesListeners = mutableSetOf<PropertyChangedEvent>()
+    override fun notifyChange(event: PropertyChangedEventArgs) =
+        changesListeners.forEach { it(event) }
 }
 
+/**
+ * https://docs.microsoft.com/en-us/dotnet/desktop/wpf/data/?view=netdesktop-6.0&redirectedfrom=MSDN#direction-of-the-data-flow
+ */
 enum class Mode { OneWay }
