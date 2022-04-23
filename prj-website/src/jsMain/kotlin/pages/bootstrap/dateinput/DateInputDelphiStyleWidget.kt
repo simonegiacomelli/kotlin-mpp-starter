@@ -1,9 +1,9 @@
 package pages.bootstrap.dateinput
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDate
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.*
+import kotlinx.datetime.DateTimeUnit.Companion.DAY
+import kotlinx.datetime.DateTimeUnit.Companion.MONTH
+import kotlinx.datetime.DateTimeUnit.Companion.YEAR
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.events.KeyboardEvent
@@ -63,10 +63,61 @@ class HTMLInputDateModify(private val input: HTMLInputElement) {
         }
     }
 
-    private fun onKeydown(event: KeyboardEvent) = when (event.key) {
-        "ArrowLeft" -> run { moveSelection(-1); event.preventDefault() }
-        "ArrowRight" -> run { moveSelection(+1); event.preventDefault() }
-        else -> {}
+    private fun HTMLInputElement.onKeydown(event: KeyboardEvent) = when (event.key) {
+        "ArrowLeft" -> run { moveSelection(-1); true }
+        "ArrowRight" -> run { moveSelection(+1); true }
+        "ArrowUp" -> run { addDatePart(+1); true }
+        "ArrowDown" -> run { addDatePart(-1); true }
+        else -> run { false }
+    }.let {
+        if (it) event.preventDefault() else {
+            if (selectionLength > 1) {
+                val (range, unit) = currentRangeDateTimeUnit() ?: return
+                blockCaretIndex = range.first
+            }
+        }
+    }
+
+    private fun HTMLInputElement.keepSelection(block: HTMLInputElement.() -> Unit) {
+        val start = selectionStartIndex
+        val end = selectionEndIndex
+        block()
+        selectionStartIndex = start
+        selectionEndIndex = end
+    }
+
+    private val unitOrder = listOf(YEAR, MONTH, DAY)
+    private val rangeToUnit = mapOf(
+        (0..3) to YEAR,
+        (5..6) to MONTH,
+        (8..9) to DAY,
+    )
+    private val unitToRange = rangeToUnit.entries.associate { (k, v) -> v to k }
+
+    private fun HTMLInputElement.addDatePart(amount: Int) {
+
+        val date = dateOrNull() ?: return
+
+        val (range, unit) = currentRangeDateTimeUnit() ?: return
+        value = date.plus(amount, unit).toString()
+        selectRange(range)
+        saveState()
+    }
+
+    private fun HTMLInputElement.selectRange(unit: DateTimeUnit) {
+        val range = unitToRange[unit] ?: return
+        selectRange(range)
+    }
+
+    private fun HTMLInputElement.selectRange(range: IntRange) {
+        selectionStartIndex = range.first
+        selectionEndIndex = range.last + 1
+    }
+
+    private fun HTMLInputElement.currentRangeDateTimeUnit(): Pair<IntRange, DateTimeUnit.DateBased>? {
+        val range = rangeToUnit.keys.firstOrNull { selectionStart in it } ?: return null
+        val unit = rangeToUnit[range] ?: return null
+        return Pair(range, unit)
     }
 
     private fun doInput(): Unit = input.run {
@@ -79,13 +130,16 @@ class HTMLInputDateModify(private val input: HTMLInputElement) {
         selectionLength = 1
     }
 
-    private fun HTMLInputElement.isValidDate(): Boolean = runCatching { value.toLocalDate() }.isSuccess
+    private fun HTMLInputElement.isValidDate(): Boolean = dateOrNull() != null
+    private fun HTMLInputElement.dateOrNull(): LocalDate? = runCatching { value.toLocalDate() }.getOrNull()
 
     private fun HTMLInputElement.moveNextIfNotDigit() {
         if (!currentChar.isDigit()) moveSelection(+1)
     }
 
     private fun moveSelection(offset: Int): Unit = input.run {
+        if (selectionLength > 1) return moveSelectionBlock(offset)
+
         val newIndex = selectionStartIndex + offset
         if (newIndex !in value.indices) {
             println("$newIndex not in ${value.indices}")
@@ -96,6 +150,12 @@ class HTMLInputDateModify(private val input: HTMLInputElement) {
             println("recursing!")
             moveSelection(offset)
         }
+    }
+
+    private fun moveSelectionBlock(offset: Int): Unit = input.run {
+        val (range, unit) = currentRangeDateTimeUnit() ?: return
+        val nextUnit = unitOrder.elementAtOrNull(unitOrder.indexOf(unit) + offset) ?: return
+        selectRange(nextUnit)
     }
 
 }
