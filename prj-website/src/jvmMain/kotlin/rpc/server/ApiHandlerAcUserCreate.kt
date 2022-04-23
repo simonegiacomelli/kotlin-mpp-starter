@@ -1,9 +1,7 @@
 package rpc.server
 
 import accesscontrol.Role
-import api.names.ApiAcUserCreateRequest
-import api.names.ApiAcUserCreateResponse
-import api.names.Credential
+import api.names.*
 import database.schema.ac_user_roles
 import database.schema.ac_users
 import database.time.nowAtDefault
@@ -20,11 +18,24 @@ private val reg1 = contextHandler.register { req: ApiAcUserCreateRequest, _ ->
         else {
             userCreate(username)
             userPasswd(Credential(username, password))
-            "User $username created succesfully"
+            "User $username created successfully"
         }
     }
 
     ApiAcUserCreateResponse(msg)
+}
+private val reg2 = contextHandler.register { req: ApiAcUserPasswdRequest, _ ->
+    val msg = req.run {
+        println("Auth create request, user=$username pw=$password")
+        val exists = transaction { ac_users.select { ac_users.username eq username }.count() >= 1 }
+        if (!exists) "User $username do not exists!"
+        else {
+            userPasswd(Credential(username, password))
+            "User $username password set successfully"
+        }
+    }
+
+    ApiAcUserPasswdResponse(msg)
 }
 
 fun userCreate(username: String): Unit = transaction {
