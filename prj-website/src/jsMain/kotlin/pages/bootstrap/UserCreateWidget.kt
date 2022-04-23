@@ -30,8 +30,8 @@ class UserCreateWidget : Widget(//language=HTML
         bind(this, Credential::password, StringBridge(div2.input))
         btnCreate.onclick = {
             state.spinner {
-                ApiAcUserCreateRequest(username, password).send()
-                state.toast("User $username created succesfully")
+                val msg = ApiAcUserCreateRequest(username, password).send().message
+                state.toast(msg)
             }
         }
     }

@@ -2,6 +2,7 @@ package rpc.server
 
 import accesscontrol.Role
 import api.names.ApiAcUserCreateRequest
+import api.names.ApiAcUserCreateResponse
 import api.names.Credential
 import database.schema.ac_user_roles
 import database.schema.ac_users
@@ -9,17 +10,21 @@ import database.time.nowAtDefault
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
-import rpc.VoidResponse
 import security.saltedHash
 
 private val reg1 = contextHandler.register { req: ApiAcUserCreateRequest, _ ->
-    req.run {
+    val msg = req.run {
         println("Auth create request, user=$username pw=$password")
-        userCreate(username)
-        userPasswd(Credential(username, password))
+        val exists = transaction { ac_users.select { ac_users.username eq username }.count() >= 1 }
+        if (exists) "User $username already exists!"
+        else {
+            userCreate(username)
+            userPasswd(Credential(username, password))
+            "User $username created succesfully"
+        }
     }
 
-    VoidResponse
+    ApiAcUserCreateResponse(msg)
 }
 
 fun userCreate(username: String): Unit = transaction {
