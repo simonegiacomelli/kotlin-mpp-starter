@@ -1,21 +1,32 @@
 package pages.bootstrap.dateinput
 
-import keyboard.Hotkey
-import kotlinx.browser.window
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDate
+import kotlinx.datetime.toLocalDateTime
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.events.KeyboardEvent
 import pages.bootstrap.commonwidgets.InputGroupWidget
 import widget.Widget
 
 class DateInputDelphiStyleWidget : Widget(//language=HTML
     """
-<div id='id1'></div>    
+<div id='id1'></div>
+<textarea id='idt' rows='30'></textarea>
 """
 ) {
     private val id1 by this { InputGroupWidget() }
+    private val idt: HTMLTextAreaElement by this
 
     override fun afterRender() {
         id1.input.setupDateInsert()
+        id1.input.onkeydown = {
+            idt.value = "${it.key}\n" + idt.value
+            0
+        }
+        idt.style.fontSize = "x-small"
+        idt.rows = 30
     }
 
 }
@@ -23,31 +34,54 @@ class DateInputDelphiStyleWidget : Widget(//language=HTML
 fun HTMLInputElement.setupDateInsert() = HTMLInputDateModify(this)
 
 class HTMLInputDateModify(private val input: HTMLInputElement) {
+    private var oldValue: String = ""
+    private var oldIndex: Int = 0
+
+    private fun HTMLInputElement.saveState() {
+        oldValue = value
+        oldIndex = blockCaretIndex
+    }
+
+    private fun HTMLInputElement.restoreState() {
+        value = oldValue
+        blockCaretIndex = oldIndex
+    }
 
     init {
         with(input) {
-            value = "18/01/2022"
+            value = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
+            blockCaretIndex = 0
+            saveState()
 //            type = "date" not good because the browser changes it's behaviour
             input.style.fontFamily = "monospace"
-            onkeypress = { doKeypress(it) }
-            Hotkey(this).add("ArrowLeft") { moveSelection(-1); it.preventDefault() }
-            Hotkey(this).add("ArrowRight") { moveSelection(+1); it.preventDefault() }
+            oninput = { doInput() }
+            addEventListener("beforeinput", { saveState() })
+            addEventListener("keydown", { if (it is KeyboardEvent) onKeydown(it) })
 
+
+            onfocus = { selectionLength = 1; 0 }
         }
     }
 
-    private fun doKeypress(it: KeyboardEvent): Unit = input.run {
-        if (selectionStartIndex == value.length) {
-            it.preventDefault()
-            return
-        }
-        moveNextIfDigit()
+    private fun onKeydown(event: KeyboardEvent) = when (event.key) {
+        "ArrowLeft" -> run { moveSelection(-1); event.preventDefault() }
+        "ArrowRight" -> run { moveSelection(+1); event.preventDefault() }
+        else -> {}
+    }
+
+    private fun doInput(): Unit = input.run {
+        if (!isValidDate())
+            return restoreState()
+
+
+        if (selectionStartIndex == value.length) return
+        moveNextIfNotDigit()
         selectionLength = 1
-        // let the char into the value buffer
-        window.setTimeout({ selectionLength = 1; moveNextIfDigit(); }, 1)
     }
 
-    private fun HTMLInputElement.moveNextIfDigit() {
+    private fun HTMLInputElement.isValidDate(): Boolean = runCatching { value.toLocalDate() }.isSuccess
+
+    private fun HTMLInputElement.moveNextIfNotDigit() {
         if (!currentChar.isDigit()) moveSelection(+1)
     }
 
