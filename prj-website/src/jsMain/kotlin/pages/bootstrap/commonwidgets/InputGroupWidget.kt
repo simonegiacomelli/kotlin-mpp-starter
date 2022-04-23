@@ -8,7 +8,7 @@ class InputGroupWidget : Widget(//language=HTML
     """
 <div class="input-group mb-3">
     <span id='addon' class="input-group-text" id="basic-addon1">A</span>
-    <input id='input' type="text" class="form-control" placeholder="an integer A" aria-label="Username"
+    <input id='input' type="text" class="form-control" placeholder="" aria-label=""
            aria-describedby="basic-addon1">
 </div>
 """

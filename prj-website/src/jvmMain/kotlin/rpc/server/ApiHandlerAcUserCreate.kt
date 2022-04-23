@@ -15,12 +15,8 @@ import security.saltedHash
 private val reg1 = contextHandler.register { req: ApiAcUserCreateRequest, _ ->
     req.run {
         println("Auth create request, user=$username pw=$password")
-    }
-    transaction {
-        ac_users.insert {
-            it[username] = req.username
-            it[password_hash] = saltedHash(req.password)
-        }
+        userCreate(username)
+        userPasswd(Credential(username, password))
     }
 
     VoidResponse
