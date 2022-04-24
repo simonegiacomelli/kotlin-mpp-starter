@@ -7,7 +7,7 @@ import pages.bootstrap.dateinput.setupDateInsert
 import widget.Widget
 import kotlin.reflect.KMutableProperty1
 
-class DataBindingWidget : Widget(//language=HTML
+class TwoWayBindingDemoWidget : Widget(//language=HTML
     """
 <h1>data binding modeling/prototyping</h1> 
 

@@ -6,7 +6,7 @@ import pages.bootstrap.UserChangeWidget
 import pages.bootstrap.UserCreateWidget
 import pages.bootstrap.UserPasswdWidget
 import pages.bootstrap.databinding.demo.DataBindingDemoWidget
-import pages.bootstrap.databinding.demo.DataBindingWidget
+import pages.bootstrap.databinding.demo.TwoWayBindingDemoWidget
 import pages.bootstrap.dateinput.DateInputDelphiStyleWidget
 import pages.forms.HtmlDisplayWidget
 import pages.forms.HtmlEditorWidget
@@ -33,7 +33,7 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
             spinner onClick { spinner { delay(3000) } }
             html_editor onClick { show(HtmlEditorWidget()) }
             html_display onClick { show(HtmlDisplayWidget.shared) }
-            two_way_data_binding onClick { show(DataBindingWidget()) }
+            two_way_data_binding onClick { show(TwoWayBindingDemoWidget()) }
             data_binding_demo onClick { show(DataBindingDemoWidget()) }
         }
         logoff onClick { logoffApplication() }
