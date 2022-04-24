@@ -29,7 +29,7 @@ private val css =//language=CSS
         overflow: hidden;
     }
     .$cssSelector th {
-         background-color: var(--mColHeader);
+        background-color: #3E4D65;
         color: white;
         height: 2em;
         text-align: start;
