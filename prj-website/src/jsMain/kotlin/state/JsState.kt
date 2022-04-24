@@ -38,6 +38,8 @@ class JsState : ClientState {
         }
 
     override fun spinner(function: suspend CoroutineScope.() -> Unit) = widgets.spinner.spinner(function)
+    override suspend fun <T> spinnerSuspend(function: suspend CoroutineScope.() -> T): T =
+        widgets.spinner.spinnerSuspend(function)
 
     val widgets = Widgets()
 }

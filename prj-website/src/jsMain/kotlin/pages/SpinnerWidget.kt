@@ -1,9 +1,10 @@
 package pages
 
 import coroutine.launch
+import coroutine.waitAnimationFrame
 import extensions.extVisible
-import kotlinx.browser.window
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import org.w3c.dom.HTMLElement
 import utils.forward
 import widget.Widget
@@ -53,25 +54,24 @@ class SpinnerWidget : Widget(//language=HTML
     private var counter = 0
 
     fun spinner(function: suspend CoroutineScope.() -> Unit) {
+        launch { spinnerSuspend(function) }
+    }
+
+    suspend fun <T> spinnerSuspend(function: suspend CoroutineScope.() -> T): T = coroutineScope {
         if (counter == 0)
             visible = true
         counter++
         console.log("after increment $counter")
-        window.requestAnimationFrame {
-            window.setTimeout({
-                launch {
-                    kotlin.runCatching {
-                        function()
-                    }.exceptionOrNull()?.apply {
-                        console.log("runcatching", this)
-                    }
-                    counter--
-                    console.log("after decrement $counter")
-                    if (counter == 0)
-                        visible = false
-                }
-            })
+        waitAnimationFrame()
+        try {
+            return@coroutineScope function()
+        } finally {
+            counter--
+            console.log("after decrement $counter")
+            if (counter == 0)
+                visible = false
         }
+
     }
 
 }

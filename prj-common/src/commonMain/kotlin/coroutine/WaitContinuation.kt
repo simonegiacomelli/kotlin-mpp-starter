@@ -10,7 +10,7 @@ class WaitContinuation<T>(private val description: String = "") {
         val c = continuation
         if (c == null) {
             val msg = "Error, continuation is null ($description)"
-            console.log(msg)
+            println(msg)
             error(msg)
         }
         c.resume(value)

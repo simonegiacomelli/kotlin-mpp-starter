@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 interface ClientState {
     fun toast(message: String)
     fun spinner(function: suspend CoroutineScope.() -> Unit)
+    suspend fun <T> spinnerSuspend(function: suspend CoroutineScope.() -> T): T
     val ApiBaseUrl: String
     val session_id: String?
     val user: UserAbs
