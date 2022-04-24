@@ -21,7 +21,13 @@ class MapperTest {
             TmEvent::arguments to TmEventsSchema.arguments,
             TmEvent::created_at to TmEventsSchema.created_at,
         )
-        val mapper = mapper3(association, ::TmEvent)
+//        val mapper = mapper3(association, ::TmEvent)
+        val mapper4 = mapper4(::TmEvent)
+    }
+
+    @Test
+    fun test_dynamicKFunctionInvoke() {
+        val mapper4 = funMapper(::TmEvent)
     }
 }
 
