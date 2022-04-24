@@ -1,8 +1,11 @@
 package state
 
+import api.names.ApiAcVerifySessionRequest
 import api.names.ApiTmNewEventRequest
+import controller.login.sessionOk
 import coroutine.WaitContinuation
 import forms.login.LoginWidget
+import forms.login.SessionCheckWidget
 import keyboard.HotkeyWindow
 import kotlinx.browser.document
 import kotlinx.dom.clear
@@ -31,9 +34,7 @@ private suspend fun JsState.addLoginComponents() = widgets.apply {
 
     HotkeyWindow.log_prefix = "HotkeyWindow"
 
-    WaitContinuation<Unit>("wait login").apply {
-        runWaitResume { rootHolder.show(LoginWidget { resume(Unit) }) }
-    }
+    authenticate()
 
     fun noMenuBinding(menu: Menu) = run { if (menu.parent != menuRoot) toast("No binding for menu: ${menu.name}") }
 
@@ -76,6 +77,22 @@ private suspend fun JsState.addLoginComponents() = widgets.apply {
         if (menuName.isNotBlank())
             menuNameMap.getOrElse(menuName) { toast("Menu `$menuName` not found"); null }
                 ?.also { menuClick(it) }
+    }
+
+}
+
+private suspend fun JsState.authenticate(): Unit = widgets.run {
+
+    val sessionId = session_id
+    if (sessionId != null) {
+        rootHolder.show(SessionCheckWidget())
+        val session = spinnerSuspend { ApiAcVerifySessionRequest(sessionId).send().session }
+        if (session != null)
+            return@run sessionOk(session)
+    }
+
+    WaitContinuation<Unit>("wait login").apply {
+        runWaitResume { rootHolder.show(LoginWidget { resume(Unit) }) }
     }
 
 }

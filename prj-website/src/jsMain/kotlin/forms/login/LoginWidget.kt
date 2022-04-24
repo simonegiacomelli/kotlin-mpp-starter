@@ -2,7 +2,6 @@ package forms.login
 
 import api.names.Credential
 import controller.login.LoginController
-import coroutine.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -17,9 +16,11 @@ class LoginWidget(val onSessionOk: () -> Unit) : Widget(html) {
     private val btnSubmit: HTMLButtonElement by this
 
     override fun afterRender() {
-        val controller =
-            LoginController(state = state, onCredential = { getCredential() }, onSessionOk = { onSessionOk() })
-        launch { controller.verifySessionState() }
+        val controller = LoginController(
+            state = state,
+            onCredential = { getCredential() },
+            onSessionOk = { onSessionOk() }
+        )
         btnSubmit.onclick = { it.preventDefault(); it.stopPropagation(); controller.loginClick() }
     }
 
