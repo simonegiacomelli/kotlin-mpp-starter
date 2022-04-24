@@ -59,6 +59,8 @@ kotlin {
 
                 implementation("org.postgresql:postgresql:42.3.3")
                 implementation("org.xerial:sqlite-jdbc:3.36.0.3")
+                implementation("org.mariadb.jdbc:mariadb-java-client:3.0.4")
+
 
                 implementation("org.slf4j:slf4j-simple:1.7.30")
             }

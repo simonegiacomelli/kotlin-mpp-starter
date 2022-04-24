@@ -45,7 +45,7 @@ class KotlinxLocalDateTimeColumnType(val highResolution: Boolean) : ColumnType()
         fun sqlite(value: LocalDateTime): Any = format(value)
         when (currentDialect.name) {
             "postgresql" -> ::postgresql
-            "sqlite", "mysql" -> ::sqlite
+            "sqlite", "mysql", "mariadb" -> ::sqlite
             else -> error("dialect not supported `${currentDialect.name}`")
         }
     }
