@@ -5,6 +5,7 @@ import kotlinx.dom.addClass
 import kotlinx.dom.clear
 import org.w3c.dom.HTMLTableElement
 import org.w3c.dom.HTMLTableRowElement
+import org.w3c.dom.HTMLTableSectionElement
 import widget.Widget
 
 open class GridWidget<E>(
@@ -122,10 +123,7 @@ open class GridWidget<E>(
         val head = table1.theadFirst()
         head.clear()
 
-        head.tr().th().apply { addClass("toolbar") }.apply {
-            toolbar.forEach { tool -> append(tool.container) }
-            setAttribute("colspan", "999")
-        }
+        if (toolbar.isNotEmpty()) appendToolbar(head)
 
         val tr = head.tr()
 
@@ -143,6 +141,13 @@ open class GridWidget<E>(
             property.onHeadRender?.invoke(propertyEvent)
         }
 
+    }
+
+    private fun appendToolbar(head: HTMLTableSectionElement) {
+        head.tr().th().apply { addClass("toolbar") }.apply {
+            toolbar.forEach { tool -> append(tool.container) }
+            setAttribute("colspan", "999")
+        }
     }
 
     fun orderElements(elements: List<E>): List<E> {

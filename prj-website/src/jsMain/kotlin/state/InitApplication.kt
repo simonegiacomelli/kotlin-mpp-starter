@@ -1,6 +1,6 @@
 package state
 
-import api.names.ApiTmEventRequest
+import api.names.ApiTmNewEventRequest
 import coroutine.WaitContinuation
 import forms.login.LoginWidget
 import keyboard.HotkeyWindow
@@ -60,7 +60,7 @@ private suspend fun JsState.addLoginComponents() = widgets.apply {
     navbar.onHamburgerClick = { offcanvas.toggle() }
     HotkeyWindow
         .add("SHIFT-F3") { holder.show(HtmlDisplayWidget.shared) }
-        .add("F8") { coroutine.launch { ApiTmEventRequest(1234, "Esc was pressed").send() } }
+        .add("F8") { coroutine.launch { ApiTmNewEventRequest(1234, "Esc was pressed").send() } }
         .add("F3") { holder.show(SearchWidget()) }
         .add("F4") {
             ToastWidget().apply {

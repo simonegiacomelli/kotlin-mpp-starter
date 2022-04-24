@@ -5,4 +5,4 @@ import rpc.Request
 import rpc.VoidResponse
 
 @Serializable
-class ApiTmEventRequest(val type_id: Int, val arguments: String = "") : Request<VoidResponse>
+class ApiTmNewEventRequest(val type_id: Int, val arguments: String = "") : Request<VoidResponse>
