@@ -8,9 +8,9 @@ import org.w3c.dom.events.KeyboardEvent
 val HotkeyWindow by lazy { Hotkey(window) }
 
 fun Hotkey(element: EventTarget, log_prefix: String? = null) =
-    Hotkey({ element.addEventListener("keydown", it) }, log_prefix)
+    HotkeyHandler({ element.addEventListener("keydown", it) }, log_prefix)
 
-class Hotkey(
+class HotkeyHandler(
     addKeydownHandler: ((Event) -> Unit) -> Unit,
     var log_prefix: String? = null,
 ) {
@@ -24,7 +24,7 @@ class Hotkey(
     /**
      * See https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/key/Key_Values
      */
-    fun add(vararg hotkey: String, callback: (KeyboardEvent) -> Unit): Hotkey {
+    fun add(vararg hotkey: String, callback: (KeyboardEvent) -> Unit): HotkeyHandler {
         hotkey.forEach { handlers[it] = callback }
         return this
     }

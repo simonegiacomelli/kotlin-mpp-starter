@@ -14,6 +14,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import rpc.VoidResponse
 import security.randomString
 import security.verifySaltedHash
+import telemetry.newEvent
 
 private val nullSession = ApiAcSessionResponse(null)
 
@@ -23,7 +24,9 @@ private val reg1 = contextHandler.register { req: ApiAcLoginRequest, context ->
 }
 
 private val reg2 = contextHandler.register { req: ApiAcVerifySessionRequest, context ->
-    context.database.getApiSessionForId(req.id)
+    val response = context.database.getApiSessionForId(req.id)
+    newEvent(context.database, 2, "restoreSession=${response.session != null}")
+    response
 }
 
 private val reg3 = contextHandler.register { req: ApiAcLogoffRequest, context ->

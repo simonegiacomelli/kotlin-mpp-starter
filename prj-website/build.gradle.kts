@@ -7,7 +7,7 @@ plugins {
 }
 
 val ktor_version = "1.6.4"
-val exposed_version: String = "0.37.3"
+val exposed_version: String = "0.38.2"
 
 repositories {
 }
