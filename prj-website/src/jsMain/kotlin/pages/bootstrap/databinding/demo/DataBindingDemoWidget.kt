@@ -1,9 +1,6 @@
 package pages.bootstrap.databinding.demo
 
-import databinding.Bindable
-import databinding.IntBridge
-import databinding.LocalDateBridge
-import databinding.bind
+import databinding.*
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
@@ -36,7 +33,7 @@ class DataBindingDemoWidget : Widget(//language=HTML
     private val user1 = User1().apply { name = "simo"; age = 42; birthday = "2022-01-31".toLocalDate() }
 
     override fun afterRender() {
-        bind(user1, User1::name, div1.input, div1.input::value)
+        bind(user1, User1::name, StringBridge(div1.input))
         bind(user1, User1::age, IntBridge(div2.input))
         bind(user1, User1::birthday, LocalDateBridge(div3.input.also { it.setupDateInsert() }))
 

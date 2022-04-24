@@ -1,5 +1,6 @@
 package menu
 
+import forms.telemetry.TmEventsWidget
 import kotlinx.coroutines.delay
 import pages.bootstrap.CalculatorWidget
 import pages.bootstrap.UserChangeWidget
@@ -27,6 +28,9 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
         }
         math.apply {
             calculator onClick { show(CalculatorWidget()) }
+        }
+        telemetry.apply {
+            tm_events onClick { show(TmEventsWidget()) }
         }
         development.apply {
             date_input_delphi_style onClick { show(DateInputDelphiStyleWidget()) }
