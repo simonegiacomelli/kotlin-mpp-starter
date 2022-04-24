@@ -16,6 +16,6 @@ open class Table(tableName: String) {
     fun datetime(name: String, highResolution: Boolean = false) =
         DatetimeColumn(ColumnBaseDc(name, false), highResolution).register()
 
-    protected fun Column.register() = run { columnMap[name] = this }
+    protected fun <C : Column> C.register(): C = apply { columnMap[name] = this }
 }
 

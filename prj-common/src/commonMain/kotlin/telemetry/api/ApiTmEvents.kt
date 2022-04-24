@@ -10,7 +10,7 @@ class ApiTmListEventsRequest() : Request<ApiTmListEventsResponse>
 
 
 @Serializable
-class TmEvent(val id: Long, val type_id: Int, val arguments: String, val created_at: LocalDateTime)
+data class TmEvent(val id: Long, val type_id: Int, val arguments: String, val created_at: LocalDateTime)
 
 @Serializable
 class ApiTmListEventsResponse(val events: List<TmEvent>)
