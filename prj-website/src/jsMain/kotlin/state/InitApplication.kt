@@ -89,7 +89,10 @@ private suspend fun JsState.authenticate(): Unit = widgets.run {
         val session = spinnerSuspend { ApiAcVerifySessionRequest(sessionId).send().session }
         if (session != null)
             return@run sessionOk(session)
+        else
+            sessionOrNull = null // remove invalid sessionId
     }
+
 
     WaitContinuation<Unit>("wait login").apply {
         runWaitResume { rootHolder.show(LoginWidget { resume(Unit) }) }
