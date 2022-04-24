@@ -123,7 +123,7 @@ open class GridWidget<E>(
         val head = table1.theadFirst()
         head.clear()
 
-        if (toolbar.isNotEmpty()) appendToolbar(head)
+        appendToolbar(head)
 
         val tr = head.tr()
 
@@ -144,7 +144,9 @@ open class GridWidget<E>(
     }
 
     private fun appendToolbar(head: HTMLTableSectionElement) {
-        head.tr().th().apply { addClass("toolbar") }.apply {
+        val tr = head.tr()
+        if (toolbar.isEmpty()) return
+        tr.th().apply { addClass("toolbar") }.apply {
             toolbar.forEach { tool -> append(tool.container) }
             setAttribute("colspan", "999")
         }
