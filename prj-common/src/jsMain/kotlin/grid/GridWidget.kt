@@ -49,6 +49,7 @@ open class GridWidget<E>(
     var onDataClick: (ValueEvent<E>.() -> Unit)? = null
 
     var onElementClick: (ElementEvent<E>.() -> Unit)? = null
+    var onElementRender: (ElementEvent<E>.() -> Unit)? = null
 
     var onProperties: (GridEvent<E>.() -> List<Property<E, *>>)? = null
     protected val propertiesInternal = mutableListOf<Property<E, *>>()
@@ -103,6 +104,7 @@ open class GridWidget<E>(
 
         val elementEvent = ElementEventDc(gridEvent, element, elementIndex, tr)
         tr.addEventListener("click", { elementClick(elementEvent) })
+        onElementRender?.invoke(elementEvent)
         propertiesInternal.forEachIndexed { propertyIndex, property ->
             val value = property.get(element)
             val td = tr.td(value.toStr())

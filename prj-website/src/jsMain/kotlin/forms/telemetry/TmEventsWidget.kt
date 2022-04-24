@@ -28,6 +28,13 @@ class TmEventsWidget : Widget(//language=HTML
         ).map { it.asProperty() }.toMutableList()
         table1.onDataRender = { cell.contentEditable = "true" }
         table1.focusedElementChangeOnClick = true
+        table1.onElementRender = {
+//            tr.tabIndex = -1
+            tr.addEventListener("focusin", {
+                console.log("focusin event", it)
+                grid.focusedElement = element
+            })
+        }
         table1.table.apply {
             tabIndex = -1
             Hotkey(this).add("F1") { table1.focusNext(+1) }
