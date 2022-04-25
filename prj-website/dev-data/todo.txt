@@ -2,11 +2,11 @@ todo logging
 
 todo data-binding server-side: bind source-exposed and implement
      insert/update/delete?
-todo data-binding collectionChangesNotifier
-todo data-binding client-side: setup localDateTarget/HtmlInputTarget to write date delphi-style
-todo data-binding analyze Fabrizio idea of (source eq target). Should they just implement the same interface?
-todo data-binding / basic widget edit: text, number, date, boolean
-     with options: boolean/tristate, date/format, number/decimals etc.
+todo data-binding / basic widget edit: boolean/tristate, number/decimals, date-time/ux
+todo data-binding: implement
+    * bind(BooleanObserver(input1)).to(user1,User::isActive)
+    * formBuilder(container).add(user1,User::isActive)
+    * formBuilder(container).add(user1,User::isActive.asProperty( caption = "User active" ) )
 
 todo DOM
 todo clean/fix oneway messages (auth and structure)

@@ -1,6 +1,6 @@
 package menu
 
-import forms.settings.SettingsWidget
+import forms.settings.AppSettingsWidget
 import forms.telemetry.TmEventsWidget
 import kotlinx.coroutines.delay
 import pages.bootstrap.CalculatorWidget
@@ -31,7 +31,7 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
             calculator onClick { show(CalculatorWidget()) }
         }
         settings.apply {
-            settings onClick { show(SettingsWidget()) }
+            app_settings onClick { show(AppSettingsWidget()) }
         }
         telemetry.apply {
             tm_events onClick { show(TmEventsWidget()) }

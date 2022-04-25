@@ -1,13 +1,14 @@
 package forms.settings
 
+import databinding.Bindable
 import grid.GridWidget
 import widget.containerElement
 
 
 val UiSettings = UiSettingsClass()
 
-class UiSettingsClass {
-    var gridTableResponsive: Boolean = true
+class UiSettingsClass : Bindable() {
+    var gridTableResponsive: Boolean by this(true)
 
     fun install() {
         GridWidget.defaultInit = {
