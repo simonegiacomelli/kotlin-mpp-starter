@@ -1,7 +1,6 @@
 package forms.accesscontrol
 
 import api.names.ApiAcUserCreateRequest
-import databinding.Bindable
 import org.w3c.dom.HTMLElement
 import rpc.send
 import state.state
@@ -17,11 +16,6 @@ class UserCreateWidget : Widget(//language=HTML
 ) {
     private val divForm by this { FormBuilderWidget() }
     private val btnCreate: HTMLElement by this
-
-    private class Credential : Bindable() {
-        var username: String by this("")
-        var password: String by this("")
-    }
 
     private val credential = Credential()
 
