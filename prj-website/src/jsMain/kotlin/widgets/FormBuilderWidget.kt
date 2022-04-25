@@ -31,14 +31,14 @@ class FormBuilderWidget : Widget(//language=HTML
 }
 
 class BindableBooleanWidget : Widget(//language=HTML
-    """<div class="row mb-3">
-    <label for="input1234" class="col-sm-2 col-form-label" id='labelElement'></label>
+    """<fieldset class="row mb-3">
+    <legend class="col-form-label col-sm-2 pt-0" id='labelElement'></legend>
     <div class="col-sm-10">
         <div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" id="inputElement">
         </div>
     </div>
-</div>    
+</fieldset>
 """
 ) {
     val inputElement: HTMLInputElement by this
