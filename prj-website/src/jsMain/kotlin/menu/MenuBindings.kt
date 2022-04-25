@@ -1,9 +1,6 @@
 package menu
 
-import forms.accesscontrol.UserChangeWidget
-import forms.accesscontrol.UserCreateWidget
-import forms.accesscontrol.UserListWidget
-import forms.accesscontrol.UserPasswdWidget
+import forms.accesscontrol.*
 import forms.settings.AppSettingsWidget
 import forms.telemetry.TmEventsWidget
 import kotlinx.coroutines.delay
@@ -25,6 +22,7 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
     RootMenu.apply {
         accessControl.apply {
             userList onClick { show(UserListWidget()) }
+            userSessions onClick { show(UserSessionsWidget()) }
             userChange onClick { show(UserChangeWidget()) }
             userCreate onClick { show(UserCreateWidget()) }
             userPasswd onClick { show(UserPasswdWidget()) }

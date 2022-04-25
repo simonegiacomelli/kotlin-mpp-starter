@@ -3,7 +3,6 @@ package api.names
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 import rpc.Request
-import kotlin.reflect.KMutableProperty1
 
 @Serializable
 class ApiAcUserListRequest : Request<ApiAcUserListResponse>
@@ -19,7 +18,7 @@ data class AcUser(
     var access_failed_count: Int = 0
 ) {
     companion object {
-        fun properties(): List<KMutableProperty1<AcUser, *>> = listOf(
+        fun properties() = listOf(
             AcUser::id,
             AcUser::username,
             AcUser::email,
