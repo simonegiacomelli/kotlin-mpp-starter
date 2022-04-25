@@ -18,11 +18,11 @@ fun <S, T, P> bind(
 
     sourceToTarget()
 
-    if (targetInstance is ChangesNotifier)
-        targetInstance.addChangeListener { targetToSource() }
+    if (targetInstance is Observable)
+        targetInstance.addObserver { targetToSource() }
 
-    if (sourceInstance is ChangesNotifier) {
-        sourceInstance.addChangeListener { if (it.name == sourceProperty.name) sourceToTarget() }
+    if (sourceInstance is Observable) {
+        sourceInstance.addObserver { if (it.name == sourceProperty.name) sourceToTarget() }
     }
 }
 

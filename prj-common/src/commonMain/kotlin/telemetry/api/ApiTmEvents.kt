@@ -13,6 +13,7 @@ import rpc.Request
 @Serializable
 class ApiTmListEventsRequest() : Request<ApiTmListEventsResponse>
 
+object TmEventSerializer : BindableSerializer<TmEvent>(::TmEvent)
 
 @Serializable(with = TmEventSerializer::class)
 class TmEvent : Bindable() {
@@ -22,7 +23,6 @@ class TmEvent : Bindable() {
     var created_at: LocalDateTime by this(now())
 }
 
-object TmEventSerializer : BindableSerializer<TmEvent>(::TmEvent)
 
 private fun now() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
