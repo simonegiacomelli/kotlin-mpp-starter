@@ -1,3 +1,4 @@
+import forms.settings.UiSettings
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.datetime.Clock
@@ -9,6 +10,7 @@ suspend fun main() {
     println("ok $version " + (Clock.System.now()))
     println(window.location.href)
     console.log(document.currentScript)
+    UiSettings.install()
     startupApplication()
 
     val l = window.location

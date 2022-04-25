@@ -3,7 +3,7 @@ package databinding
 import org.w3c.dom.HTMLElement
 import kotlin.reflect.KProperty
 
-interface HtmlInputChangesNotifier : Observable {
+interface HtmlElementObservable : Observable {
     val target: HTMLElement
 
     override fun addObserver(observer: (property: KProperty<*>) -> Unit) {

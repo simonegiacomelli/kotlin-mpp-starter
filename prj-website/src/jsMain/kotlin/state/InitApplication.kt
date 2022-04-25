@@ -10,9 +10,9 @@ import keyboard.HotkeyWindow
 import kotlinx.browser.document
 import kotlinx.dom.clear
 import menu.Menu
+import menu.RootMenu
 import menu.acceptedSet
 import menu.menuBindings
-import menu.menuRoot
 import pages.bootstrap.CalculatorWidget
 import pages.bootstrap.SearchWidget
 import pages.bootstrap.ToastWidget
@@ -36,21 +36,21 @@ private suspend fun JsState.addLoginComponents() = widgets.apply {
 
     authenticate()
 
-    fun noMenuBinding(menu: Menu) = run { if (menu.parent != menuRoot) toast("No binding for menu: ${menu.name}") }
+    fun noMenuBinding(menu: Menu) = run { if (menu.parent != RootMenu) toast("No binding for menu: ${menu.name}") }
 
     val menuBindings = menuBindings()
     fun menuClick(menu: Menu) {
         val function = menuBindings[menu] ?: return noMenuBinding(menu)
         offcanvas.close()
-        if (menu != menuRoot.logoff) document.location?.apply { hash = "#${menu.name}" }
+        if (menu != RootMenu.logoff) document.location?.apply { hash = "#${menu.name}" }
         function()
     }
 
     menu.onElementClick = { menuClick(it) }
     menu.onCaption = { it.caption }
-    val availableMenu = menuRoot.acceptedSet(user.roles)
+    val availableMenu = RootMenu.acceptedSet(user.roles)
     val childrenMap = availableMenu.groupBy { it.parent }
-    menu.onGetChildren = { childrenMap[it ?: menuRoot] ?: emptyList() }
+    menu.onGetChildren = { childrenMap[it ?: RootMenu] ?: emptyList() }
     menu.onCellRender = { if (depth > 0) cell.classList.add("py-0") }
     menu.render()
 

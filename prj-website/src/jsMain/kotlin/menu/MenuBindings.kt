@@ -1,5 +1,6 @@
 package menu
 
+import forms.settings.SettingsWidget
 import forms.telemetry.TmEventsWidget
 import kotlinx.coroutines.delay
 import pages.bootstrap.CalculatorWidget
@@ -20,7 +21,7 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
     val map = this
     infix fun Menu.onClick(func: () -> Unit) =
         run { if (map[this] != null) error("menu $name already bound"); map[this] = func }
-    menuRoot.apply {
+    RootMenu.apply {
         accessControl.apply {
             userChange onClick { show(UserChangeWidget()) }
             userCreate onClick { show(UserCreateWidget()) }
@@ -28,6 +29,9 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
         }
         math.apply {
             calculator onClick { show(CalculatorWidget()) }
+        }
+        settings.apply {
+            settings onClick { show(SettingsWidget()) }
         }
         telemetry.apply {
             tm_events onClick { show(TmEventsWidget()) }

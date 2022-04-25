@@ -2,7 +2,7 @@ package databinding
 
 import org.w3c.dom.HTMLElement
 
-class LongBridge(override val target: HTMLElement) : PropertyBridge<Long>, HtmlInputChangesNotifier {
+class LongBridge(override val target: HTMLElement) : PropertyBridge<Long>, HtmlElementObservable {
     private val pb = HTMLElementBridge(target)
 
     override var value: Long

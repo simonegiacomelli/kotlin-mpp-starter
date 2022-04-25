@@ -3,7 +3,7 @@ package databinding
 import org.w3c.dom.HTMLElement
 
 
-class StringBridge(override val target: HTMLElement) : PropertyBridge<String>, HtmlInputChangesNotifier {
+class StringBridge(override val target: HTMLElement) : PropertyBridge<String>, HtmlElementObservable {
     private val pb = HTMLElementBridge(target)
     override var value: String
         get() = pb.value

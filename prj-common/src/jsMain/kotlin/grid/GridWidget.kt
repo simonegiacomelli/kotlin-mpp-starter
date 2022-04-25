@@ -10,6 +10,7 @@ import widget.Widget
 
 open class GridWidget<E>(
     preHtml: String = "", postHtml: String = "",
+    init: (GridWidget<E>) -> Unit = { defaultInit(it) },
     createToolbar: (GridWidget<E>) -> MutableList<Widget> = { defaultToolbar(it) }
 ) : Widget(//language=HTML
     """ $preHtml        
@@ -20,6 +21,7 @@ open class GridWidget<E>(
     private val table1: HTMLTableElement by this
 
     companion object {
+        var defaultInit: (GridWidget<*>) -> Unit = {}
         var defaultToolbar: (GridWidget<*>) -> MutableList<Widget> = { mutableListOf() }
     }
 
@@ -70,6 +72,7 @@ open class GridWidget<E>(
     open var elements: List<E> = listOf()
 
     val toolbar: MutableList<Widget> by lazy { createToolbar(this) }
+    private val initOnce by lazy { init(this) }
 
     protected fun beforeRender() {
         table.ensureCssStyle()
@@ -79,6 +82,7 @@ open class GridWidget<E>(
     }
 
     open fun render() = apply {
+        initOnce
         beforeRender()
         renderInternal()
     }
