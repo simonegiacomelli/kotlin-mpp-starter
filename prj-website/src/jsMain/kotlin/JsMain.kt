@@ -4,7 +4,7 @@ import kotlinx.browser.window
 import kotlinx.datetime.Clock
 import state.startupApplication
 
-const val version = "v0.1.6"
+const val version = "v0.2.0"
 
 suspend fun main() {
     println("ok $version " + (Clock.System.now()))

@@ -76,6 +76,13 @@ fun Application.module() {
 //        }
 //    }
     routing {
+        get("/index.html") {
+            val file = webDir.resolve("index.html")
+            val content = file.readText()
+            val hash = content.hashCode().toString() + "-" + file.lastModified()
+            val text = content.replace("prj-website.js", "prj-website.js?t=$hash")
+            call.respondText(text, ContentType.Text.Html)
+        }
         static("/") {
             files(webDir)
             default(webDir.resolve("index.html"))
