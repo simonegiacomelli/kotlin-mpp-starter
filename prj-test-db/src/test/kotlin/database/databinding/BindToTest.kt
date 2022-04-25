@@ -1,8 +1,8 @@
 package database.databinding
 
 import database.exposed.DatabaseTest
-import database.schema.IntIdTable
-import database.schema.Table
+import org.jetbrains.exposed.dao.id.IntIdTable
+import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction

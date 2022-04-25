@@ -2,6 +2,7 @@ package menu
 
 import forms.accesscontrol.UserChangeWidget
 import forms.accesscontrol.UserCreateWidget
+import forms.accesscontrol.UserListWidget
 import forms.accesscontrol.UserPasswdWidget
 import forms.settings.AppSettingsWidget
 import forms.telemetry.TmEventsWidget
@@ -23,6 +24,7 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
         run { if (map[this] != null) error("menu $name already bound"); map[this] = func }
     RootMenu.apply {
         accessControl.apply {
+            userList onClick { show(UserListWidget()) }
             userChange onClick { show(UserChangeWidget()) }
             userCreate onClick { show(UserCreateWidget()) }
             userPasswd onClick { show(UserPasswdWidget()) }
