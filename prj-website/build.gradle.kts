@@ -1,4 +1,3 @@
-import git.scriviGitInfoSourceFile
 import java.nio.file.Paths
 
 plugins {
@@ -48,8 +47,6 @@ kotlin {
                 implementation("io.ktor:ktor-server-core:$ktor_version")
                 implementation("io.ktor:ktor-server-cio:$ktor_version")
                 implementation("io.ktor:ktor-websockets:$ktor_version")
-                implementation("io.ktor:ktor-html-builder:$ktor_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.2")
 
                 implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
                 implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
@@ -145,11 +142,11 @@ fun TaskContainer.createJavaExec(
 // 2) with harness, a double compilation should enjoy cache effects
 // 3) with harness, (a) after a compilation , (b) touch a file,
 //    (c) look at correct gitinfo (d) next compile should not benefit on cache
-tasks.register<Copy>("copyDocsTestGitinfo") {
-    group = "app-" + project.name
-    from("dev-data/auth")
-    into("dev-data/auth-test-gitinfo")
-    outputs.cacheIf { true }
-}
+//tasks.register<Copy>("copyDocsTestGitinfo") {
+//    group = "app-" + project.name
+//    from("dev-data/auth")
+//    into("dev-data/auth-test-gitinfo")
+//    outputs.cacheIf { true }
+//}
 
-scriviGitInfoSourceFile()
+//scriviGitInfoSourceFile()

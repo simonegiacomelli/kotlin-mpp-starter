@@ -44,7 +44,9 @@ fun Application.module() {
     HeapDumper.enableHeapDump(folders.data.heapdump)
 
     environment.monitor.subscribe(ApplicationStopped) { state.destroy() }
-
+    environment.monitor.subscribe(ApplicationStarted) {
+        println("version 0.0.2")
+    }
     val webDir = folders.data.resolve("wwwroot")
     install(WebSockets)
     install(Compression)
