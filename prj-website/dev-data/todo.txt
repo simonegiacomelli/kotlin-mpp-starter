@@ -4,9 +4,8 @@ todo data-binding server-side: bind source-exposed and implement
      insert/update/delete?
 todo data-binding / basic widget edit: boolean/tristate, number/decimals, date-time/ux
 todo data-binding: implement
-    * bind(BooleanObserver(input1)).to(user1,User::isActive)
-    * formBuilder(container).add(user1,User::isActive)
-    * formBuilder(container).add(user1,User::isActive.asProperty( caption = "User active" ) )
+    * FormBuilderWidget addButton
+
 
 todo DOM
 todo clean/fix oneway messages (auth and structure)

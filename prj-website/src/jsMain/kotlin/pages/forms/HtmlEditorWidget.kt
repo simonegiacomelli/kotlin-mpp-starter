@@ -9,11 +9,10 @@ import widget.Widget
 
 class HtmlEditorWidget : Widget(    //language=HTML
     """<h2>I'm designer</h2>
-        |<textarea id="input" style="width: 100%"></textarea>
-        |<br>
-        |<button id="btn">send</button>
-        |<br>
-    """.trimMargin()
+<textarea id="input" style="width: 100%; height: 100vw"></textarea>
+<br>
+<button id="btn">send</button>
+<br>"""
 ) {
     private val input: HTMLTextAreaElement by this
     private val btn: HTMLButtonElement by this
