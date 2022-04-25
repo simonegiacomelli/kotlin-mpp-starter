@@ -9,7 +9,6 @@ todo data-binding / basic widget edit: text, number, date, boolean
      with options: boolean/tristate, date/format, number/decimals etc.
 
 todo DOM
-todo html editor/display do not work on mobile! why?
 todo clean/fix oneway messages (auth and structure)
 todo spinner(wholeScreen=true){}
 todo good localStorage wrapper (map delegate?)
