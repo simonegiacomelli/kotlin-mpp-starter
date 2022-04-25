@@ -55,7 +55,7 @@ private suspend fun JsState.addLoginComponents() = widgets.apply {
     menu.render()
 
     offcanvas.setBody(menu)
-    offcanvas.title = "Select one menu option"
+    offcanvas.title = "Menu"
     rootHolder.show(navbar)
 
     navbar.onHamburgerClick = { offcanvas.toggle() }
