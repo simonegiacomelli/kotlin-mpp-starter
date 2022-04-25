@@ -9,9 +9,3 @@ class ApiAcUserCreateRequest(val username: String, val password: String) : Reque
 
 @Serializable
 class ApiAcUserCreateResponse(val message: String)
-
-@Serializable
-class ApiAcUserPasswdRequest(val username: String, val password: String) : Request<ApiAcUserPasswdResponse>
-
-@Serializable
-class ApiAcUserPasswdResponse(val message: String)
