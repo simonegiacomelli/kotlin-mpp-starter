@@ -16,7 +16,7 @@ import state.logoffApplication
 import widget.Widget
 
 fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
-    fun show(widget: Widget) = widgets.holder.show(widget)
+    fun show(widget: Widget): Unit = widgets.holder.let { it.clear(); it.show(widget) }
     val map = this
     infix fun Menu.onClick(func: () -> Unit) =
         run { if (map[this] != null) error("menu $name already bound"); map[this] = func }

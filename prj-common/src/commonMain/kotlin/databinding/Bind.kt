@@ -11,7 +11,7 @@ fun <S, T, P> bind(
 
     fun targetGet() = run { targetProperty.get() }
     fun sourceGet() = run { sourceProperty.get(sourceInstance) }
-    fun changed() = (targetGet() != sourceGet()).also { println("prop-new:${sourceProperty.name} changed:" + it) }
+    fun changed() = (targetGet() != sourceGet())
 
     fun sourceToTarget() = run { if (changed()) targetProperty.set(sourceGet()) }
     fun targetToSource() = run { if (changed()) sourceProperty.set(sourceInstance, targetGet()) }
