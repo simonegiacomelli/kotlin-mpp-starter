@@ -50,7 +50,7 @@ class BindableStringWidget : Widget(//language=HTML
     """ <div class="row mb-3">
     <label for="inputElement" class="col-sm-2 col-form-label pt-0" id='labelElement'></label>
     <div class="col-sm-10">
-      <input type="email" class="form-control" id="inputElement">
+      <input type="text" class="form-control" id="inputElement">
     </div>
   </div> 
 """
