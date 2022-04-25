@@ -1,12 +1,12 @@
 package menu
 
+import forms.accesscontrol.UserChangeWidget
+import forms.accesscontrol.UserCreateWidget
+import forms.accesscontrol.UserPasswdWidget
 import forms.settings.AppSettingsWidget
 import forms.telemetry.TmEventsWidget
 import kotlinx.coroutines.delay
 import pages.bootstrap.CalculatorWidget
-import pages.bootstrap.UserChangeWidget
-import pages.bootstrap.UserCreateWidget
-import pages.bootstrap.UserPasswdWidget
 import pages.bootstrap.databinding.demo.DataBindingDemoWidget
 import pages.bootstrap.databinding.demo.TwoWayBindingDemoWidget
 import pages.bootstrap.dateinput.DateInputDelphiStyleWidget

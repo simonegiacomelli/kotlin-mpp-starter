@@ -1,6 +1,6 @@
-package pages.bootstrap
+package forms.accesscontrol
 
-import api.names.ApiAcUserCreateRequest
+import api.names.ApiAcUserPasswdRequest
 import databinding.StringBridge
 import databinding.bind
 import org.w3c.dom.HTMLElement
@@ -9,9 +9,9 @@ import rpc.send
 import state.state
 import widget.Widget
 
-class UserCreateWidget : Widget(//language=HTML
+class UserPasswdWidget : Widget(//language=HTML
     """
-<h5>Create User</h5>    
+<h5>Set User password</h5>    
 <div id='div1'></div>
 <div id='div2'></div>
 <button id='btnCreate' type="submit" class="btn btn-primary">Create user</button>
@@ -30,7 +30,7 @@ class UserCreateWidget : Widget(//language=HTML
         bind(this, Credential::password, StringBridge(div2.input))
         btnCreate.onclick = {
             state.spinner {
-                val msg = ApiAcUserCreateRequest(username, password).send().message
+                val msg = ApiAcUserPasswdRequest(username, password).send().message
                 state.toast(msg)
             }
         }
