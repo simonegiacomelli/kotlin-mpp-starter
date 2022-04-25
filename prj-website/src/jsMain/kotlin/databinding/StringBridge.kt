@@ -1,12 +1,13 @@
 package databinding
 
-import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLElement
 
 
-class StringBridge(override val target: HTMLInputElement) : PropertyBridge<String>, HtmlInputChangesNotifier {
+class StringBridge(override val target: HTMLElement) : PropertyBridge<String>, HtmlInputChangesNotifier {
+    private val pb = HTMLElementBridge(target)
     override var value: String
-        get() = target.value
-        set(value) = run { target.value = value }
+        get() = pb.value
+        set(value) = run { pb.value = value }
 }
 
 

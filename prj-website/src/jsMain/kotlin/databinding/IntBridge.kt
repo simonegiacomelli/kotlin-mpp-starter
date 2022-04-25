@@ -1,9 +1,13 @@
 package databinding
 
-import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLElement
 
-class IntBridge(override val target: HTMLInputElement) : PropertyBridge<Int>, HtmlInputChangesNotifier {
+class IntBridge(override val target: HTMLElement) : PropertyBridge<Int>, HtmlInputChangesNotifier {
+    private val pb = HTMLElementBridge(target)
+
     override var value: Int
-        get() = target.value.toIntOrNull() ?: -1
-        set(value) = run { target.value = "$value" }
+        get() = pb.value.toIntOrNull() ?: -1
+        set(value) = run { pb.value = "$value" }
 }
+
+

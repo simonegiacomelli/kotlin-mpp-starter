@@ -1,5 +1,6 @@
 package forms.telemetry
 
+import databinding.*
 import extensions.cells
 import grid.GridWidget
 import grid.asProperty
@@ -12,44 +13,72 @@ import widget.Widget
 import widget.containerElement
 
 class TmEventsWidget : Widget(//language=HTML
-    """
-<h5>Telemetry Events</h5>
-<div id='table1'></div>
+    """<h5>Telemetry Events</h5>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div id='table1'></div>
+        </div>
+        <div class="col">
+            <div id='table2'></div>
+        </div>
+    </div>
+</div>
 """
 ) {
     private val table1 by this{ GridWidget<TmEvent>() }
+    private val table2 by this{ GridWidget<TmEvent>() }
 
     override fun afterRender() {
-        table1.properties = listOf(
+        setupTable(table1)
+        setupTable(table2)
+        refresh()
+    }
+
+    private fun refresh() = state.spinner {
+        val tables = listOf(table1, table2)
+        val events = ApiTmListEventsRequest().send().events
+        tables.forEach {
+            it.elements = events
+            it.render()
+        }
+    }
+
+    private fun setupTable(tab: GridWidget<TmEvent>) {
+        tab.properties = listOf(
             TmEvent::id,
             TmEvent::type_id,
             TmEvent::arguments,
             TmEvent::created_at,
         ).map { it.asProperty() }.toMutableList()
-        table1.onDataRender = { cell.contentEditable = "true" }
-        table1.focusedElementChangeOnClick = true
-        table1.onElementRender = {
-//            tr.tabIndex = -1
+        tab.onDataRender = {
+            cell.contentEditable = "true"
+            when (propertyIndex) {
+                0 -> bind(element, TmEvent::id, LongBridge(cell))
+                1 -> bind(element, TmEvent::type_id, IntBridge(cell))
+                2 -> bind(element, TmEvent::arguments, StringBridge(cell))
+                3 -> bind(element, TmEvent::created_at, LocalDateTimeBridgeNN(cell))
+            }
+        }
+        tab.focusedElementChangeOnClick = true
+        tab.onElementRender = {
             tr.addEventListener("focusin", {
                 console.log("focusin event", it)
                 grid.focusedElement = element
             })
         }
-        table1.table.apply {
+        tab.table.apply {
             tabIndex = -1
-            Hotkey(this).add("F1") { table1.focusNext(+1) }
-            Hotkey(this).add("F2") { table1.focusNext(-1) }
+            Hotkey(this).add("F1") { tab.focusNext(+1) }
+            Hotkey(this).add("F2") { tab.focusNext(-1) }
         }
-        table1.toolbar.add(Widget("<span>\uD83D\uDD04 refresh</span>").apply {
+        tab.toolbar.add(Widget("<span>\uD83D\uDD04 refresh</span>").apply {
             containerElement.onclick = { refresh() }
         })
-        refresh()
+
     }
 
-    private fun refresh() = state.spinner {
-        table1.elements = ApiTmListEventsRequest().send().events
-        table1.render()
-    }
+
 }
 
 private fun <E> GridWidget<E>.focusNext(amount: Int) {

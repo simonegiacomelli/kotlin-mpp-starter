@@ -2,14 +2,15 @@ package databinding
 
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toLocalDate
-import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLElement
 
 
-class LocalDateBridge(override val target: HTMLInputElement) : PropertyBridge<LocalDate?>, HtmlInputChangesNotifier {
+class LocalDateBridge(override val target: HTMLElement) : PropertyBridge<LocalDate?>, HtmlInputChangesNotifier {
+    private val pb = HTMLElementBridge(target)
     override var value: LocalDate?
-        get() = runCatching { target.value.toLocalDate() }.run {
+        get() = runCatching { pb.value.toLocalDate() }.run {
             if (isFailure) console.log(exceptionOrNull())
             getOrNull()
         }
-        set(value) = run { target.value = "$value" }
+        set(value) = run { pb.value = "$value" }
 }

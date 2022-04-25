@@ -30,16 +30,16 @@ private val reg2 = contextHandler.register { req: ApiTmListEventsRequest, _ ->
         TmEvent::arguments to tm_events.arguments,
         TmEvent::created_at to tm_events.created_at,
     )
-    val map = funMapperL4(::TmEvent, tm_events.id, tm_events.type_id, tm_events.arguments, tm_events.created_at)
+//    val map = funMapperL4(::TmEvent, tm_events.id, tm_events.type_id, tm_events.arguments, tm_events.created_at)
     val events = transaction {
         tm_events.selectAll().orderBy(tm_events.id, SortOrder.DESC).limit(50).map {
-            map(it)
-//            TmEvent(
-//                it[tm_events.id].value,
-//                it[tm_events.type_id],
-//                it[tm_events.arguments],
-//                it[tm_events.created_at],
-//            )
+//            map(it)
+            val e = TmEvent()
+            e.id = it[tm_events.id].value
+            e.type_id = it[tm_events.type_id]
+            e.arguments = it[tm_events.arguments]
+            e.created_at = it[tm_events.created_at]
+            e
         }
     }
     ApiTmListEventsResponse(events)
