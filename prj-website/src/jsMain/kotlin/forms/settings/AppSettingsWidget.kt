@@ -6,14 +6,15 @@ import widgets.FormBuilderWidget
 class AppSettingsWidget : Widget(//language=HTML
     """
 <h5>settings</h5>   
-
+<div id='divForm'></div>
 """
 ) {
+    private val divForm by this { FormBuilderWidget() }
     override fun afterRender() {
-        FormBuilderWidget().also {
-            it.add(UiSettings, UiSettingsClass::gridTableResponsive)
-            container.append(it.container)
+        divForm.apply {
+            bind(UiSettings, UiSettingsClass::gridTableResponsive).label = "Responsive tables"
         }
+
     }
 
 

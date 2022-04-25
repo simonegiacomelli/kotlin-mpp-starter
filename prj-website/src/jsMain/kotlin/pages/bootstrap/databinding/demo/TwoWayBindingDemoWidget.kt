@@ -41,7 +41,7 @@ class TwoWayBindingDemoWidget : Widget(//language=HTML
             fun InputGroupWidget.bind2(
                 bridge: (HTMLInputElement) -> PropertyBridge<T>
             ) {
-                bind(instance, source, bridge(this.input))
+                bind(instance, source, bridge(input))
                 this.input.oninput = { inputResult.value = instance.toString(); 0 }
                 this.addon.innerHTML = source.name
             }

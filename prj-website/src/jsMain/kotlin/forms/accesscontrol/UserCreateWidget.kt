@@ -1,38 +1,40 @@
 package forms.accesscontrol
 
 import api.names.ApiAcUserCreateRequest
-import databinding.StringBridge
-import databinding.bind
+import databinding.Bindable
 import org.w3c.dom.HTMLElement
-import pages.bootstrap.commonwidgets.InputGroupWidget
 import rpc.send
 import state.state
 import widget.Widget
+import widgets.FormBuilderWidget
 
 class UserCreateWidget : Widget(//language=HTML
     """
 <h5>Create User</h5>    
-<div id='div1'></div>
-<div id='div2'></div>
+<div id='divForm'></div>
 <button id='btnCreate' type="submit" class="btn btn-primary">Create user</button>
 """
 ) {
-    private val div1 by this { InputGroupWidget() }
-    private val div2 by this { InputGroupWidget() }
+    private val divForm by this { FormBuilderWidget() }
     private val btnCreate: HTMLElement by this
 
-    private class Credential(var username: String, var password: String)
+    private class Credential : Bindable() {
+        var username: String by this("")
+        var password: String by this("")
+    }
 
-    override fun afterRender() = Credential("", "").run {
-        div1.addon.innerHTML = "Username"
-        div2.addon.innerHTML = "Password"
-        bind(this, Credential::username, StringBridge(div1.input))
-        bind(this, Credential::password, StringBridge(div2.input))
+    private val credential = Credential()
+
+    override fun afterRender(): Unit = run {
         btnCreate.onclick = {
             state.spinner {
-                val msg = ApiAcUserCreateRequest(username, password).send().message
+                val msg = credential.run { ApiAcUserCreateRequest(username, password).send().message }
                 state.toast(msg)
             }
+        }
+        divForm.apply {
+            bind(credential, Credential::username).label = "Username"
+            bind(credential, Credential::password).label = "Password"
         }
     }
 }
