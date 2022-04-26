@@ -1,4 +1,5 @@
 todo logging
+todo master companion object properties. see ktor install(CORS){}
 
 todo data-binding server-side: bind source-exposed and implement
      insert/update/delete?
