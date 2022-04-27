@@ -5,6 +5,7 @@ todo data-binding server-side: bind source-exposed and implement
      insert/update/delete?
 todo data-binding / basic widget edit: boolean/tristate, number/decimals, date-time/ux
 todo data-binding: implement
+    * FormBuilderWidget refactoring
     * FormBuilderWidget addButton
 
 

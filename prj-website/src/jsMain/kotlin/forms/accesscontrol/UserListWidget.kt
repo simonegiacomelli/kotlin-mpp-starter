@@ -4,9 +4,11 @@ import api.names.AcUser
 import api.names.ApiAcUserListRequest
 import grid.GridWidget
 import grid.asProperty
+import org.w3c.dom.HTMLElement
 import rpc.send
 import state.state
 import widget.Widget
+import widgets.FormBuilderWidget
 
 class UserListWidget : Widget(//language=HTML
     """<h5>Users list</h5>
@@ -18,7 +20,30 @@ class UserListWidget : Widget(//language=HTML
     override fun afterRender() = state.spinner {
         table1.properties = AcUser.properties().map { it.asProperty() }.toMutableList()
         table1.elements = ApiAcUserListRequest().send().users
+        table1.onElementClick = { show(UserWidget(element) { table1.render() }) }
         table1.render()
     }
 
+}
+
+class UserWidget(private val user: AcUser, private val onClose: () -> Unit) : Widget(//language=HTML
+    """
+<h5>User</h5>    
+<div id='divForm'></div>
+<button id='btnClose' type="submit" class="btn btn-primary">Close</button>
+"""
+) {
+    private val divForm by this { FormBuilderWidget() }
+    private val btnClose: HTMLElement by this
+
+
+    override fun afterRender(): Unit = run {
+        btnClose.onclick = { close(); onClose() }
+        divForm.apply {
+            bind(user, AcUser::username)
+            bind(user, AcUser::email)
+            bind(user, AcUser::lockout_enabled)
+            bind(user, AcUser::access_failed_count)
+        }
+    }
 }
