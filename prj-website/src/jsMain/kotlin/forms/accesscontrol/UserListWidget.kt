@@ -21,6 +21,7 @@ class UserListWidget : Widget(//language=HTML
         table1.properties = AcUser.properties().map { it.asProperty() }.toMutableList()
         table1.elements = ApiAcUserListRequest().send().users
         table1.onElementClick = { show(UserWidget(element) { table1.render() }) }
+        table1.focusedElementChangeOnClick = true
         table1.render()
     }
 
