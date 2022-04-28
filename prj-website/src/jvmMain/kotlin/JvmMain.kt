@@ -5,6 +5,7 @@ import java.io.File
 fun main(args: Array<String>) {
     println("=".repeat(50))
     println("Working folder ${File(".").canonicalPath}")
-    cli(*args) { defaultHandlers() }
+    val actualArgs = if (args.isEmpty()) arrayOf("start") else args
+    cli(*actualArgs) { defaultHandlers() }
 }
 
