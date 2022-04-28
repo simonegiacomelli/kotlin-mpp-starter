@@ -27,14 +27,15 @@ class OnewayContextHandlers<Context> {
         noinline function: (Req, Context) -> Unit,
     ): OnewwayContextHandler<Context> {
         val handlerName = nameOf(Req::class)
-        if (handlers.containsKey(handlerName)) error("Handler gia' registrato `$handlerName`")
-
+        if (handlers.containsKey(handlerName)) error("Oneway handler already registered: $handlerName")
         val onewwayContextHandler = OnewwayContextHandler(
             name = handlerName,
             requestSerializer = serializers<Req>(),
             handler = function as (Any, Context) -> Unit
         )
         handlers[handlerName] = onewwayContextHandler
+
+        println("Registered oneway $handlerName")
         return onewwayContextHandler
     }
 

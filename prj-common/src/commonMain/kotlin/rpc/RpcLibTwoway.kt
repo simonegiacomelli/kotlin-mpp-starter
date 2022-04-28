@@ -14,24 +14,30 @@ class ContextHandlers<Context> {
         val handler: (Any, Context) -> Any,
     )
 
-    val contextHandlers = mutableMapOf<String, ContextHandler<Context>>()
+    val handlers = mutableMapOf<String, ContextHandler<Context>>()
 
     inline fun <reified Req : Request<Resp>, reified Resp> register(
         noinline function: (Req, Context) -> Resp,
     ) {
-        val handlerName = nameOf(Req::class)
-        contextHandlers[handlerName] = ContextHandler(
+        val handlerName = Req::class.simpleName ?: error("no class name")
+        if (handlers.containsKey(handlerName)) error("Twoway handler already registered: $handlerName")
+        val handler = ContextHandler(
             requestSerializer = serializers<Req>(),
             responseSerializer = serializers<Resp>(),
             handler = function as (Any, Context) -> Any
         )
+
+
+        handlers[handlerName] = handler
+
+        println("Twoway registered  $handlerName")
     }
 
     fun dispatch(payload: String, context: Context) = dispatch(RpcMessage.decode(payload), context)
     fun dispatch(m: RpcMessage, context: Context) = dispatch(m.name, m.payload, context)
     fun dispatch(simpleName: String, payload: String, context: Context): String {
 
-        val handler = contextHandlers[simpleName] ?: throw MissingHandler(
+        val handler = handlers[simpleName] ?: throw MissingHandler(
             "no handler registered for `$simpleName`\n" +
                     "    " + registeredHandlerString()
         )
@@ -44,7 +50,7 @@ class ContextHandlers<Context> {
     }
 
     fun registeredHandlerString() =
-        "registered handlers are: ${contextHandlers.map { "\n   " + it.key }.joinToString("")}"
+        "registered handlers are: ${handlers.map { "\n   " + it.key }.joinToString("")}"
 
 }
 

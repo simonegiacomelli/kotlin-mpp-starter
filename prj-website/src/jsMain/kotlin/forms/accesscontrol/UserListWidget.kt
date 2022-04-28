@@ -2,10 +2,12 @@ package forms.accesscontrol
 
 import api.names.AcUser
 import api.names.ApiAcUserListRequest
+import api.names.ApiAcUserSaveRequest
 import grid.GridWidget
 import grid.asProperty
 import org.w3c.dom.HTMLElement
 import rpc.send
+import state.spinner
 import state.state
 import widget.Widget
 import widgets.FormBuilderWidget
@@ -31,19 +33,36 @@ class UserWidget(private val user: AcUser, private val onClose: () -> Unit) : Wi
     """
 <h5>User</h5>    
 <div id='divForm'></div>
-<button id='btnClose' type="submit" class="btn btn-primary">Close</button>
+<button id='btnSave' type="submit" class="btn btn-primary">Save</button>
+&nbsp;
+<button id='btnCancel' type="submit" class="btn btn-primary">Cancel</button>
 """
 ) {
     private val divForm by this { FormBuilderWidget() }
-    private val btnClose: HTMLElement by this
+    private val btnSave: HTMLElement by this
+    private val btnCancel: HTMLElement by this
 
 
     override fun afterRender(): Unit = run {
-        btnClose.onclick = { close(); onClose() }
+        btnCancel.onclick = { doClose() }
+        btnSave.onclick = { doSave() }
         divForm.apply {
             bind(user, AcUser::username)
             bind(user, AcUser::email)
+            bind(user, AcUser::phone_number)
             bind(user, AcUser::lockout_enabled)
+            bind(user, AcUser::lockout_end_date_utc)
         }
+    }
+
+    private fun doSave() = spinner {
+        if (ApiAcUserSaveRequest(user).send().ok)
+            return@spinner doClose()
+
+        state.toast("User update FAILED!")
+    }
+
+    private fun doClose() {
+        close(); onClose()
     }
 }

@@ -80,8 +80,6 @@ fun setupTopicInfrastructure(contextOnewayHandlerJvm: OnewayContextHandlers<Onew
             changed()
         }
     }
-
-    L.i("registration done")
 }
 
 private class Logger {

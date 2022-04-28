@@ -33,5 +33,4 @@ class LoginController(
 
 fun ClientState.sessionOk(session: Session) {
     sessionOrNull = session
-    toast("Welcome ${session.user.username}")
 }

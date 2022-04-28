@@ -44,6 +44,8 @@ class JsState : ClientState {
     val widgets = Widgets()
 }
 
+fun spinner(function: suspend CoroutineScope.() -> Unit) = state.spinner(function)
+
 class Widgets {
     val rootHolder = HolderWidget()
     val navbar = NavbarWidget()

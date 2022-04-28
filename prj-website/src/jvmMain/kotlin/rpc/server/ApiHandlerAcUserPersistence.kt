@@ -38,6 +38,21 @@ private val reg2 = contextHandler.register { req: ApiAcUserPasswdRequest, _ ->
     ApiAcUserPasswdResponse(msg)
 }
 
+private val reg3 = contextHandler.register { req: ApiAcUserSaveRequest, _ ->
+    val affectedRecordCount = transaction {
+        val u = req.user
+        ac_users.update({ ac_users.id.eq(u.id) }) {
+            it[username] = u.username
+            it[email] = u.email
+            it[phone_number] = u.phone_number
+            it[lockout_end_date_utc] = u.lockout_end_date_utc
+            it[lockout_enabled] = lockout_enabled
+        }
+    }
+
+    ApiAcUserSaveResponse(affectedRecordCount == 1)
+}
+
 fun userCreate(username: String): Unit = transaction {
     ac_users.insert {
         it[ac_users.username] = username

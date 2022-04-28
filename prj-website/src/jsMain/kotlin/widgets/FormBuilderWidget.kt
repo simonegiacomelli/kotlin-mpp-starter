@@ -1,6 +1,7 @@
 package widgets
 
 import databinding.*
+import kotlinx.datetime.LocalDateTime
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
 import utils.forward
@@ -40,6 +41,14 @@ class FormBuilderWidget : Widget(//language=HTML
     fun <S> bind(sourceInstance: S, sourceProperty: KMutableProperty1<S, String?>): BindableStringWidget {
         val w = BindableStringWidget()
         bind(sourceInstance, sourceProperty, StringBridgeN(w.inputElement))
+        idForm.append(w.container)
+        w.label = sourceProperty.name.capitalize()
+        return w
+    }
+
+    fun <S> bind(sourceInstance: S, sourceProperty: KMutableProperty1<S, LocalDateTime?>): BindableStringWidget {
+        val w = BindableStringWidget()
+        bind(sourceInstance, sourceProperty, LocalDateTimeBridge(w.inputElement))
         idForm.append(w.container)
         w.label = sourceProperty.name.capitalize()
         return w
