@@ -7,6 +7,7 @@ import database.schema.ac_users
 import database.time.nowAtDefault
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.neq
 import org.jetbrains.exposed.sql.transactions.transaction
 import security.saltedHash
 
@@ -39,19 +40,34 @@ private val reg2 = contextHandler.register { req: ApiAcUserPasswdRequest, _ ->
 }
 
 private val reg3 = contextHandler.register { req: ApiAcUserSaveRequest, _ ->
-    val affectedRecordCount = transaction {
-        val u = req.user
-        ac_users.update({ ac_users.id.eq(u.id) }) {
-            it[username] = u.username
-            it[email] = u.email
-            it[phone_number] = u.phone_number
-            it[lockout_end_date_utc] = u.lockout_end_date_utc
-            it[lockout_enabled] = lockout_enabled
-        }
+
+    transaction { acUserSave(req) }
+
+}
+
+private fun acUserSave(req: ApiAcUserSaveRequest): ApiAcUserSaveResponse {
+    fun failed(msg: String) = ApiAcUserSaveResponse(false, msg)
+
+    val u = req.user
+    if (u.username.isBlank()) return failed("The username cannot be blank")
+    if (u.username.trim() != u.username) return failed("The username cannot start or end with spaces")
+    val usernameAlready = ac_users.select(ac_users.id.neq(u.id) and ac_users.username.eq(u.username)).count()
+    if (usernameAlready > 0) {
+        val message = "Username already in use"
+        return failed(message)
+    }
+    val updateCount = ac_users.update({ ac_users.id.eq(u.id) }) {
+        it[username] = u.username
+        it[email] = u.email
+        it[phone_number] = u.phone_number
+        it[lockout_end_date_utc] = u.lockout_end_date_utc
+        it[lockout_enabled] = lockout_enabled
     }
 
-    ApiAcUserSaveResponse(affectedRecordCount == 1)
+    val ok = updateCount == 1
+    return ApiAcUserSaveResponse(ok, if (ok) "" else "Update failed with $updateCount record updated")
 }
+
 
 fun userCreate(username: String): Unit = transaction {
     ac_users.insert {

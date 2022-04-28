@@ -19,12 +19,16 @@ class UserListWidget : Widget(//language=HTML
 ) {
     private val table1 by this{ GridWidget<AcUser>() }
 
-    override fun afterRender() = state.spinner {
+    override fun afterRender() = load()
+
+    private fun load(userId: Int? = null): Unit = state.spinner {
         table1.properties = AcUser.properties().map { it.asProperty() }.toMutableList()
         table1.elements = ApiAcUserListRequest().send().users
-        table1.onElementClick = { show(UserWidget(element) { table1.render() }) }
+        table1.onElementClick = { show(UserWidget(element) { load(element.id) }) }
         table1.focusedElementChangeOnClick = true
+        table1.focusedElement = table1.elements.firstOrNull { it.id == userId }
         table1.render()
+
     }
 
 }
@@ -56,10 +60,11 @@ class UserWidget(private val user: AcUser, private val onClose: () -> Unit) : Wi
     }
 
     private fun doSave() = spinner {
-        if (ApiAcUserSaveRequest(user).send().ok)
+        val response = ApiAcUserSaveRequest(user).send()
+        if (response.ok)
             return@spinner doClose()
 
-        state.toast("User update FAILED!")
+        state.toast(response.message)
     }
 
     private fun doClose() {

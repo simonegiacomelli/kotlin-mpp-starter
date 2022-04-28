@@ -7,4 +7,4 @@ import rpc.Request
 class ApiAcUserSaveRequest(val user: AcUser) : Request<ApiAcUserSaveResponse>
 
 @Serializable
-class ApiAcUserSaveResponse(val ok: Boolean)
+class ApiAcUserSaveResponse(val ok: Boolean, val message: String)
