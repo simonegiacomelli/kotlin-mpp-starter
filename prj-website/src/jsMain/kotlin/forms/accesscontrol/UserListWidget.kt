@@ -44,7 +44,6 @@ class UserWidget(private val user: AcUser, private val onClose: () -> Unit) : Wi
             bind(user, AcUser::username)
             bind(user, AcUser::email)
             bind(user, AcUser::lockout_enabled)
-            bind(user, AcUser::access_failed_count)
         }
     }
 }
