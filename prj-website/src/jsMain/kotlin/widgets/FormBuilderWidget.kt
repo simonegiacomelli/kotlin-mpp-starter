@@ -48,7 +48,7 @@ class FormBuilderWidget : Widget(//language=HTML
 
     fun <S> bind(sourceInstance: S, sourceProperty: KMutableProperty1<S, LocalDateTime?>): BindableStringWidget {
         val w = BindableStringWidget()
-        bind(sourceInstance, sourceProperty, LocalDateTimeBridge(w.inputElement))
+        bind(sourceInstance, sourceProperty, LocalDateTimeBridgeN(w.inputElement))
         idForm.append(w.container)
         w.label = sourceProperty.name.capitalize()
         return w

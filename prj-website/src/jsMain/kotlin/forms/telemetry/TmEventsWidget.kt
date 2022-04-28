@@ -1,6 +1,9 @@
 package forms.telemetry
 
-import databinding.*
+import databinding.IntBridge
+import databinding.LocalDateTimeBridge
+import databinding.StringBridge
+import databinding.bind
 import extensions.cells
 import grid.GridWidget
 import grid.asProperty
@@ -38,10 +41,7 @@ class TmEventsWidget : Widget(//language=HTML
     private fun refresh() = state.spinner {
         val tables = listOf(table1, table2)
         val events = ApiTmListEventsRequest().send().events
-        tables.forEach {
-            it.elements = events
-            it.render()
-        }
+        tables.forEach { it.elements = events; it.render() }
     }
 
     private fun setupTable(tab: GridWidget<TmEvent>) {
@@ -52,13 +52,14 @@ class TmEventsWidget : Widget(//language=HTML
             TmEvent::created_at,
         ).map { it.asProperty() }.toMutableList()
         tab.onDataRender = {
-            cell.contentEditable = "true"
-            when (propertyIndex) {
-                0 -> bind(element, TmEvent::id, LongBridge(cell))
+            val op = when (propertyIndex) {
+                0 -> false //bind(element, TmEvent::id, LongBridge(cell))
                 1 -> bind(element, TmEvent::type_id, IntBridge(cell))
                 2 -> bind(element, TmEvent::arguments, StringBridge(cell))
-                3 -> bind(element, TmEvent::created_at, LocalDateTimeBridgeNN(cell))
+                3 -> bind(element, TmEvent::created_at, LocalDateTimeBridge(cell))
+                else -> false
             }
+            if (op != false) cell.contentEditable = "true"
         }
         tab.focusedElementChangeOnClick = true
         tab.onElementRender = {
