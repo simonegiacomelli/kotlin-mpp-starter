@@ -15,6 +15,7 @@ private val reg1 = contextHandler.register { req: ApiAcUserListRequest, _ ->
         ac_users.id bindTo AcUser::id,
         ac_users.username bindTo AcUser::username,
         ac_users.email bindTo AcUser::email,
+        ac_users.phone_number bindTo AcUser::phone_number,
         ac_users.lockout_end_date_utc bindTo AcUser::lockout_end_date_utc,
         ac_users.lockout_enabled bindTo AcUser::lockout_enabled,
         ac_users.access_failed_count bindTo AcUser::access_failed_count

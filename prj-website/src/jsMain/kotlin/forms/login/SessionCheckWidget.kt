@@ -33,7 +33,6 @@ private val html = //language=HTML
 </style>
 <div class="form-signin">
     <form>
-        <img class="top-image" src="img/login.png" alt="">
         <h1 class="h3 mb-3 fw-normal">Logging in...</h1>
 
         <p class="mt-5 mb-3 text-muted">&copy; 2021–${Clock.System.now().toLocalDateTime(TimeZone.UTC).year} v0.4.0</p>

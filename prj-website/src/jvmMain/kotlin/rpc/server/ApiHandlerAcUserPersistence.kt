@@ -56,12 +56,13 @@ private fun acUserSave(req: ApiAcUserSaveRequest): ApiAcUserSaveResponse {
         val message = "Username already in use"
         return failed(message)
     }
+    println("user: `$u`")
     val updateCount = ac_users.update({ ac_users.id.eq(u.id) }) {
         it[username] = u.username
         it[email] = u.email
         it[phone_number] = u.phone_number
         it[lockout_end_date_utc] = u.lockout_end_date_utc
-        it[lockout_enabled] = lockout_enabled
+        it[lockout_enabled] = u.lockout_enabled
     }
 
     val ok = updateCount == 1

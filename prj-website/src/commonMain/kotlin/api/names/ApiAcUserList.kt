@@ -12,7 +12,7 @@ data class AcUser(
     var id: Int = -1,
     var username: String = "",
     var email: String? = null,
-    var phone_number: String = "",
+    var phone_number: String? = null,
     var lockout_end_date_utc: LocalDateTime? = null,
     var lockout_enabled: Boolean = true,
     var access_failed_count: Int = 0

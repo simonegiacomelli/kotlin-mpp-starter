@@ -12,10 +12,9 @@ class StringBridge(override val target: HTMLElement) : PropertyBridge<String>, H
 
 class StringBridgeN(override val target: HTMLElement) : PropertyBridge<String?>, HtmlElementObservable {
     private val pb = HTMLElementBridge(target)
-    private var isNull: Boolean = true
     override var value: String?
-        get() = if (isNull) null else pb.value
-        set(value) = run { pb.value = value ?: ""; isNull = value == null; }
+        get() = pb.value.ifEmpty { null }
+        set(value) = run { pb.value = value ?: "" }
 }
 
 

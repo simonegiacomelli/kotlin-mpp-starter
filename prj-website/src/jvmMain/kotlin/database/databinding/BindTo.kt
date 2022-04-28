@@ -20,7 +20,8 @@ infix fun <E, V> Column<V>.bindTo(property: KMutableProperty1<E, V>): ColumnBind
     val column = this
     return object : ColumnBind<E, V> {
         override fun databaseToElement(element: E, resultRow: ResultRow) {
-            property.set(element, resultRow[column])
+            val value = resultRow[column]
+            property.set(element, value)
         }
 
         override val column: Column<*> = column
@@ -32,7 +33,8 @@ infix fun <E, V : Comparable<V>> Column<EntityID<V>>.bindTo(property: KMutablePr
     val column = this
     return object : ColumnBind<E, EntityID<V>> {
         override fun databaseToElement(element: E, resultRow: ResultRow) {
-            property.set(element, resultRow[column].value)
+            val value = resultRow[column].value
+            property.set(element, value)
         }
 
         override val column: Column<*> = column
