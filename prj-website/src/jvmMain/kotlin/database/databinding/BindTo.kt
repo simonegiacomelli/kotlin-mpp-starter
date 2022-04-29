@@ -17,7 +17,7 @@ interface ColumnBind<E, V> {
 interface ColumnsMapper<E> {
     fun map(resultRow: ResultRow): E
     fun columns(): List<Column<*>>
-    fun mapAll(table: Table): ColumnsMapper<E> = TODO()
+    fun bindTo(table: Table, errorIfUnmappedProperties: Boolean = false): ColumnsMapper<E> = TODO()
 }
 
 infix fun <E, V> Column<V>.bindTo(property: KMutableProperty1<E, V>): ColumnBind<E, V> {
@@ -64,17 +64,25 @@ inline fun <reified E : Any> exposedMapper(noinline constructor: () -> E): Colum
     return object : ColumnsMapper<E> {
         override fun map(resultRow: ResultRow): E = constructor()
         override fun columns(): List<Column<*>> = emptyList()
-        override fun mapAll(table: Table): ColumnsMapper<E> =
-            E::class.memberProperties.map { columnBind(it, table) }.toMapper(constructor)
+        override fun bindTo(table: Table, errorIfUnmappedProperties: Boolean): ColumnsMapper<E> =
+            E::class.memberProperties
+                .mapNotNull { columnBind(it, table, errorIfUnmappedProperties) }
+                .toMapper(constructor)
 
     }
 }
 
-fun <E> columnBind(property: KProperty1<E, *>, table: Table): ColumnBind<E, *> {
-    val column = table.columns.first { col -> col.name == property.name }
-    val col = column as Column<Any?>
-    val prop = property as KMutableProperty1<E, Any?>
-    return col.bindTo(prop)
+fun <E> columnBind(property: KProperty1<E, *>, table: Table, errorIfUnmappedProperties: Boolean): ColumnBind<E, *>? {
+    val column = table.columns.firstOrNull { col -> col.name == property.name }
+    if (column != null) {
+        val col = column as Column<Any?>
+        val prop = property as KMutableProperty1<E, Any?>
+        return column.bindTo(prop)
+    }
+    if (errorIfUnmappedProperties)
+        error("Column name ${property.name} not found in table ${table.tableName}\n" +
+                "Table columns available are:\n" + table.columns.joinToString("\n") { "  " + it.name })
+    return null
 }
 
 

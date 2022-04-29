@@ -45,9 +45,9 @@ class BindToTest : DatabaseTest() {
     }
 
     @Test
-    fun test_bind_mapAll() {
+    fun test_bind_bindAllTo() {
         db_users_Insert()
-        val target = exposedMapper { User() }.mapAll(db_users)
+        val target = exposedMapper { User() }.bindTo(db_users)
         db_users_asserts(target)
     }
 
