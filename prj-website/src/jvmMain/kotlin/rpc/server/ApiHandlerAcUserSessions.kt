@@ -20,10 +20,10 @@ private val reg1 = contextHandler.register { req: ApiAcUserSessionsRequest, _ ->
         ac_sessions.updated_at bindTo AcSession::updated_at,
         ac_users.username bindTo AcSession::username,
     ).toMapper { AcSession() }
-    mapper.columns().forEach { println("${it.table.tableName}  ${it.name}") }
+    mapper.columns.forEach { println("${it.table.tableName}  ${it.name}") }
     val sessions = transaction {
         ac_sessions.join(ac_users, JoinType.LEFT, ac_sessions.user_id, ac_users.id)
-            .slice(mapper.columns()).selectAll().map { mapper.map(it) }
+            .slice(mapper.columns).selectAll().map { mapper.map(it) }
     }
     ApiAcUserSessionsResponse(sessions)
 }

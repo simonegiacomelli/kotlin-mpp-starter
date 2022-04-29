@@ -22,7 +22,7 @@ private val reg2 = contextHandler.register { req: ApiTmListEventsRequest, _ ->
     val mapper = exposedMapper { TmEvent() }.bindTo(tm_events)
 
     val events = transaction {
-        val selectAll = tm_events.slice(mapper.columns()).selectAll()
+        val selectAll = tm_events.slice(mapper.columns).selectAll()
         val orderBy = selectAll.orderBy(tm_events.id, SortOrder.DESC)
         orderBy.limit(10).map { mapper.map(it) }
     }

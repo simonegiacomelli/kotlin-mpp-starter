@@ -16,9 +16,24 @@ interface ColumnBind<E, V> {
 }
 
 interface ColumnsMapper<E> {
-    fun map(resultRow: ResultRow): E
-    fun columns(): List<Column<*>>
-    fun bindTo(table: Table, errorIfUnmappedProperties: Boolean = false): ColumnsMapper<E> = TODO()
+    fun new(): E
+    val mapping: MutableCollection<ColumnBind<E, *>>
+
+    fun map(resultRow: ResultRow): E {
+        val res = new()
+        mapping.forEach { it.databaseToElement(res, resultRow) }
+        return res
+    }
+
+    val columns: List<Column<*>> get() = mapping.map { it.column }
+}
+
+interface ReifiedMapper<E> : ColumnsMapper<E> {
+    val memberProperties: Collection<KProperty1<E, *>>
+    fun bindTo(table: Table, errorIfUnmappedProperties: Boolean = false): ReifiedMapper<E> {
+        mapping.addAll(memberProperties.mapNotNull { columnBind(it, table, errorIfUnmappedProperties) })
+        return this
+    }
 }
 
 infix fun <E, V> Column<V>.bindTo(property: KMutableProperty1<E, V>): ColumnBind<E, V> {
@@ -47,41 +62,32 @@ infix fun <E, V : Comparable<V>> Column<EntityID<V>>.bindTo(property: KMutablePr
 }
 
 
-fun <E> Collection<ColumnBind<E, *>>.toMapper(new: () -> E): ColumnsMapper<E> {
-    val cb = this
+fun <E> Collection<ColumnBind<E, *>>.toMapper(constructor: () -> E): ColumnsMapper<E> {
+    val mapping = this
     return object : ColumnsMapper<E> {
-        override fun map(resultRow: ResultRow): E {
-            val res = new()
-            forEach { it.databaseToElement(res, resultRow) }
-            return res
-        }
-
-        override fun columns(): List<Column<*>> = cb.map { it.column }
+        override fun new(): E = constructor()
+        override val mapping = mapping.toMutableList()
     }
 }
 
-
-inline fun <reified E : Any> exposedMapper(noinline constructor: () -> E): ColumnsMapper<E> {
-    return object : ColumnsMapper<E> {
-        override fun map(resultRow: ResultRow): E = constructor()
-        override fun columns(): List<Column<*>> = emptyList()
-        override fun bindTo(table: Table, errorIfUnmappedProperties: Boolean): ColumnsMapper<E> =
-            E::class.memberProperties
-                .mapNotNull { columnBind(it, table, errorIfUnmappedProperties) }
-                .toMapper(constructor)
-
+inline fun <reified E : Any> exposedMapper(noinline constructor: () -> E): ReifiedMapper<E> {
+    val mutableListOf = mutableListOf<ColumnBind<E, *>>()
+    return object : ReifiedMapper<E> {
+        override val memberProperties: Collection<KProperty1<E, *>> = E::class.memberProperties
+        override fun new(): E = constructor()
+        override val mapping: MutableCollection<ColumnBind<E, *>> get() = mutableListOf
     }
 }
 
 fun <E> columnBind(property: KProperty1<E, *>, table: Table, errorIfUnmappedProperties: Boolean): ColumnBind<E, *>? {
-    println("prop name: ${property.name}")
-    property.parameters.forEach {
-        println(" $it")
-    }
+//    println("prop name: ${property.name}")
+//    property.parameters.forEach { println(" $it") }
     val column = table.columns.firstOrNull { col -> col.name == property.name }
     if (column != null) {
 
-        println("  colType=${column.columnType.javaClass.name}")
+//        println("  colType=${column.columnType.javaClass.name}")
+
+        // todo should check column<-->property type matches
         return if (column.columnType is EntityIDColumnType<*>) {
             val prop = property as KMutableProperty1<E, Comparable<Any>>
             val col = column as Column<EntityID<Comparable<Any>>>
