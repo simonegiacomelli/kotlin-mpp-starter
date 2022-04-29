@@ -1,8 +1,7 @@
 package rpc.server
 
 import api.names.ApiTmNewEventRequest
-import database.databinding.bindTo
-import database.databinding.toMapper
+import database.databinding.exposedMapper
 import database.schema.tm_events
 import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.selectAll
@@ -19,12 +18,8 @@ private val reg1 = contextHandler.register { req: ApiTmNewEventRequest, _ ->
 }
 
 private val reg2 = contextHandler.register { req: ApiTmListEventsRequest, _ ->
-    val mapper = listOf(
-        tm_events.id bindTo TmEvent::id,
-        tm_events.type_id bindTo TmEvent::type_id,
-        tm_events.arguments bindTo TmEvent::arguments,
-        tm_events.created_at bindTo TmEvent::created_at,
-    ).toMapper { TmEvent() }
+
+    val mapper = exposedMapper { TmEvent() }.bindTo(tm_events)
 
     val events = transaction {
         val selectAll = tm_events.slice(mapper.columns()).selectAll()
