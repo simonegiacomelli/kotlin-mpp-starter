@@ -20,6 +20,6 @@ private val reg1 = contextHandler.register { req: ApiAcUserListRequest, _ ->
         ac_users.lockout_enabled bindTo AcUser::lockout_enabled,
         ac_users.access_failed_count bindTo AcUser::access_failed_count
     ).toMapper { AcUser() }
-    val users = transaction { ac_users.selectAll().map { mapper.map(it) } }
+    val users = transaction { ac_users.slice(mapper.columns()).selectAll().map { mapper.map(it) } }
     ApiAcUserListResponse(users)
 }
