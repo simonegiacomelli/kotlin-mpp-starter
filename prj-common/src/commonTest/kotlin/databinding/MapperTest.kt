@@ -22,7 +22,7 @@ class MapperTest {
             TmEvent::created_at to TmEventsSchema.created_at,
         )
 //        val mapper = mapper3(association, ::TmEvent)
-        val mapper4 = mapper4(::TmEvent)
+//        val mapper4 = mapper4(::TmEvent)
     }
 
     @Test
