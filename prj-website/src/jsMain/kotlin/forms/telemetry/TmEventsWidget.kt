@@ -1,8 +1,8 @@
 package forms.telemetry
 
-import databinding.IntBridge
+import databinding.IntTarget
 import databinding.LocalDateTimeBridge
-import databinding.StringBridge
+import databinding.StringTarget
 import databinding.bind
 import extensions.cells
 import grid.GridWidget
@@ -54,8 +54,8 @@ class TmEventsWidget : Widget(//language=HTML
         tab.onDataRender = {
             val op = when (propertyIndex) {
                 0 -> false //bind(element, TmEvent::id, LongBridge(cell))
-                1 -> bind(element, TmEvent::type_id, IntBridge(cell))
-                2 -> bind(element, TmEvent::arguments, StringBridge(cell))
+                1 -> bind(element, TmEvent::type_id, IntTarget(cell))
+                2 -> bind(element, TmEvent::arguments, StringTarget(cell))
                 3 -> bind(element, TmEvent::created_at, LocalDateTimeBridge(cell))
                 else -> false
             }

@@ -5,7 +5,7 @@ import kotlinx.datetime.toLocalDateTime
 import org.w3c.dom.HTMLElement
 
 
-class LocalDateTimeBridgeN(override val target: HTMLElement) : PropertyBridge<LocalDateTime?>, HtmlElementObservable {
+class LocalDateTimeTargetN(override val target: HTMLElement) : TargetProperty<LocalDateTime?>, HtmlElementObservable {
     private val pb = HTMLElementBridge(target)
     override var value: LocalDateTime?
         get() = runCatching { pb.value.toLocalDateTime() }.run {
@@ -15,7 +15,7 @@ class LocalDateTimeBridgeN(override val target: HTMLElement) : PropertyBridge<Lo
         set(value) = run { pb.value = "$value" }
 }
 
-class LocalDateTimeBridge(override val target: HTMLElement) : PropertyBridge<LocalDateTime>,
+class LocalDateTimeBridge(override val target: HTMLElement) : TargetProperty<LocalDateTime>,
     HtmlElementObservable {
     private val pb = HTMLElementBridge(target)
     override var value: LocalDateTime

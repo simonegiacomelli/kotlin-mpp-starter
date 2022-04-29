@@ -1,5 +1,5 @@
 package databinding
 
-interface PropertyBridge<T> {
+interface TargetProperty<T> {
     var value: T
 }

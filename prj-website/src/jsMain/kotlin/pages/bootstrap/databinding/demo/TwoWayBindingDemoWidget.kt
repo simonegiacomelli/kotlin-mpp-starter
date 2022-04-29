@@ -24,22 +24,22 @@ class TwoWayBindingDemoWidget : Widget(//language=HTML
     private val user3 = User3()
 
     override fun afterRender() {
-        doubleBinding(user1, User1::name) { StringBridge(it) }
-        doubleBinding(user1, User1::age) { IntBridge(it) }
+        doubleBinding(user1, User1::name) { StringTarget(it) }
+        doubleBinding(user1, User1::age) { IntTarget(it) }
 
-        doubleBinding(user3, User3::degree) { StringBridge(it) }
-        doubleBinding(user3, User3::age) { IntBridge(it) }
-        doubleBinding(user3, User3::birthday) { it.setupDateInsert(); LocalDateBridge(it) }
+        doubleBinding(user3, User3::degree) { StringTarget(it) }
+        doubleBinding(user3, User3::age) { IntTarget(it) }
+        doubleBinding(user3, User3::birthday) { it.setupDateInsert(); LocalDateTarget(it) }
     }
 
     fun <E, T> doubleBinding(
         instance: E,
-        source: KMutableProperty1<E, T>, bridge: (HTMLInputElement) -> PropertyBridge<T>
+        source: KMutableProperty1<E, T>, bridge: (HTMLInputElement) -> TargetProperty<T>
     ) {
 
         val hw = DoubleInputResultWidget().apply {
             fun InputGroupWidget.bind2(
-                bridge: (HTMLInputElement) -> PropertyBridge<T>
+                bridge: (HTMLInputElement) -> TargetProperty<T>
             ) {
                 bind(instance, source, bridge(input))
                 this.input.oninput = { inputResult.value = instance.toString(); 0 }
