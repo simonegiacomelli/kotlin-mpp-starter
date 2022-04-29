@@ -3,6 +3,7 @@ package database.databinding
 
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.Column
+import org.jetbrains.exposed.sql.EntityIDColumnType
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
 import kotlin.reflect.KMutableProperty1
@@ -73,11 +74,23 @@ inline fun <reified E : Any> exposedMapper(noinline constructor: () -> E): Colum
 }
 
 fun <E> columnBind(property: KProperty1<E, *>, table: Table, errorIfUnmappedProperties: Boolean): ColumnBind<E, *>? {
+    println("prop name: ${property.name}")
+    property.parameters.forEach {
+        println(" $it")
+    }
     val column = table.columns.firstOrNull { col -> col.name == property.name }
     if (column != null) {
-        val col = column as Column<Any?>
-        val prop = property as KMutableProperty1<E, Any?>
-        return column.bindTo(prop)
+
+        println("  colType=${column.columnType.javaClass.name}")
+        return if (column.columnType is EntityIDColumnType<*>) {
+            val prop = property as KMutableProperty1<E, Comparable<Any>>
+            val col = column as Column<EntityID<Comparable<Any>>>
+            col.bindTo(prop)
+        } else {
+            val prop = property as KMutableProperty1<E, Any?>
+            val col = column as Column<Any?>
+            column.bindTo(prop)
+        }
     }
     if (errorIfUnmappedProperties)
         error("Column name ${property.name} not found in table ${table.tableName}\n" +
