@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm")
+    kotlin("plugin.serialization")
 }
 
 val exposed_version: String = "0.37.3"

@@ -1,6 +1,8 @@
 package database.databinding
 
 import database.exposed.DatabaseTest
+import kotlinx.serialization.InternalSerializationApi
+import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert
@@ -31,18 +33,9 @@ class BindToTest : DatabaseTest() {
 
     @Test
     fun test_bind() {
-
         transaction {
-            db_users.insert {
-                it[id] = 1
-                it[name] = "foo"
-                it[counter] = 42
-            }
-            db_users.insert {
-                it[id] = 2
-                it[name] = "bar"
-                it[counter] = 43
-            }
+            db_usersInsert(1, "foo", 42)
+            db_usersInsert(2, "bar", 43)
         }
         val mapper = listOf(
             db_users.id bindTo User::id,
@@ -53,7 +46,14 @@ class BindToTest : DatabaseTest() {
             .sortedBy { it.id }
 
         assertEquals(listOf(User(1, "foo", 42), User(2, "bar", 43)), users)
+    }
 
+    private fun db_usersInsert(i: Int, s: String, i1: Int) {
+        db_users.insert {
+            it[id] = i
+            it[name] = s
+            it[counter] = i1
+        }
     }
 
 
@@ -64,20 +64,9 @@ class BindToTest : DatabaseTest() {
 
     @Test
     fun test_bind_autoPrimaryKey() {
+        val fooId = db_users_autopk_Insert("foo", 42)
+        val barId = db_users_autopk_Insert("bar", 43)
 
-        val fooId = transaction {
-            (db_users_autopk.insert {
-                it[name] = "foo"
-                it[counter] = 42
-            } get (db_users_autopk.id)).value
-        }
-        val barId = transaction {
-            (db_users_autopk.insert {
-                it[name] = "bar"
-                it[counter] = 43
-            } get db_users_autopk.id).value
-
-        }
         val mapper = listOf(
             db_users_autopk.id bindTo User::id,
             db_users_autopk.name bindTo User::name,
@@ -89,5 +78,30 @@ class BindToTest : DatabaseTest() {
         assertEquals(listOf(User(fooId, "foo", 42), User(barId, "bar", 43)), users)
 
     }
+
+    private fun db_users_autopk_Insert(s: String, i: Int) = transaction {
+        (db_users_autopk.insert {
+            it[name] = s
+            it[counter] = i
+        } get (db_users_autopk.id)).value
+    }
+
+    @Test
+    fun test_bindToSerializable() {
+        @Serializable
+        data class SUser(
+            var id: Int = 0,
+            var name: String = "",
+            var counter: Int = 0,
+        )
+
+//        exposedMapper { SUser() }.mapAll(db_users)
+    }
+}
+
+@OptIn(InternalSerializationApi::class)
+inline fun <reified T : Any> exposedMapper(constructor: () -> T) {
+//    val s = T::class.
+//    s.descriptor.elementNames
 }
 
