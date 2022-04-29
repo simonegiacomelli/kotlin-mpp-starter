@@ -31,7 +31,9 @@ interface ColumnsMapper<E> {
 interface ReifiedMapper<E> : ColumnsMapper<E> {
     val memberProperties: Collection<KProperty1<E, *>>
     fun bindTo(table: Table, errorIfUnmappedProperties: Boolean = false): ReifiedMapper<E> {
-        mapping.addAll(memberProperties.mapNotNull { columnBind(it, table, errorIfUnmappedProperties) })
+        val alreadyMapped = mapping.map { it.column.name }.toSet()
+        val leftProperties = memberProperties.filterNot { alreadyMapped.contains(it.name) }
+        mapping.addAll(leftProperties.mapNotNull { columnBind(it, table, errorIfUnmappedProperties) })
         return this
     }
 }
