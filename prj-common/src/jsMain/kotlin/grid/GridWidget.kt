@@ -53,18 +53,21 @@ open class GridWidget<E>(
     var onElementClick: (ElementEvent<E>.() -> Unit)? = null
     var onElementRender: (ElementEvent<E>.() -> Unit)? = null
 
-    var onProperties: (GridEvent<E>.() -> List<Property<E, *>>)? = null
     protected val propertiesInternal = mutableListOf<Property<E, *>>()
 
     protected fun refreshPropertiesMapped() {
-        val p = onProperties?.invoke(GridEventDc(this)) ?: properties
         propertiesInternal.clear()
-        propertiesInternal.addAll(p)
+        propertiesInternal.addAll(properties)
+
+        val event: MapPropertiesEvent<E> = object : MapPropertiesEvent<E> {
+            override val properties: MutableList<Property<E, *>> get() = propertiesInternal
+            override val grid: GridWidget<E> get() = this@GridWidget
+        }
+
+        observers.notifyEvent(event)
     }
 
-    /** chiamato dagli event-handler interni (e.g., row click) per rilanciare il render
-     *  usato dalle extension function che non possono fare l'override di render() */
-    var onInternalRender: () -> Unit = { render() }
+    val observers = mutableListOf<GridObserver<E, *>>()
 
     protected val elementsInfo = mutableListOf<ElementInfo>()
     protected val elementsInfoMap = mutableMapOf<E, ElementInfo>()
@@ -76,15 +79,16 @@ open class GridWidget<E>(
 
     protected fun beforeRender() {
         table.ensureCssStyle()
-        refreshPropertiesMapped()
         elementsInfo.clear()
         elementsInfoMap.clear()
+        refreshPropertiesMapped()
     }
 
     open fun render() = apply {
         initOnce
         beforeRender()
         renderInternal()
+//        onBeforeRender.forEach { it() }
     }
 
     private fun renderInternal() {
@@ -140,7 +144,7 @@ open class GridWidget<E>(
             th.onclick = {
                 if (sortableHead) ordering = ordering.loop(property.name)
                 onHeadClick?.invoke(propertyEvent)
-                onInternalRender()
+                render()
             }
 
             onHeadRender?.invoke(propertyEvent)
@@ -217,3 +221,16 @@ open class GridWidget<E>(
 
     protected fun Any?.toStr() = (this ?: "").toString()
 }
+
+private inline fun <E, reified Ev : GridEvent<E>> Collection<GridObserver<E, *>>.notifyEvent(event: Ev) {
+    filterIsInstance<GridObserver<E, Ev>>().forEach { it.notify(event) }
+}
+
+fun interface GridObserver<E, Ev : GridEvent<E>> {
+    fun notify(event: Ev)
+}
+
+interface MapPropertiesEvent<E> : GridEvent<E> {
+    val properties: MutableList<Property<E, *>>
+}
+

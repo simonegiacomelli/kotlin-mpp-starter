@@ -282,6 +282,13 @@ class GridWidgetTest : Shared() {
             assertBodyIs(elementsOriginalOrder.map { it.drop(1) })
         }
 
+        // test sort by click, expect age sorted ascending
+        target.htmlHeadRow().cells()[0].click()
+        target.table.apply {
+            assertHeadIs(listOf("age↑"))
+            assertBodyIs(elementsAscending.map { it.drop(1) })
+        }
+
         target.ordering = null
         target.render(Settings())
         assertSimpleRender(target)

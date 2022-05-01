@@ -2,15 +2,19 @@ package grid
 
 import sort.sortAccording
 
-fun <E> GridWidget<E>.render(settings: Settings) {
-    val op = onProperties
-    if (op != null) error("l'evento onProperties non puo' essere usato contemporaneamente a questa funzione")
-    onProperties = {
-        val props = properties.filterNot { settings.hidden.contains(it.name) }.toMutableList()
-        props.sortAccording(settings.order) { it.name }
+private class SettingsObserver<E>(private val settings: Settings) : GridObserver<E, MapPropertiesEvent<E>> {
+
+    override fun notify(event: MapPropertiesEvent<E>) {
+        val props = event.properties.filterNot { settings.hidden.contains(it.name) }.toMutableList()
+        val newProps = props.sortAccording(settings.order) { it.name }
+        event.properties.clear()
+        event.properties.addAll(newProps)
     }
-    onInternalRender = { render(settings) }
+}
+
+fun <E> GridWidget<E>.render(settings: Settings) {
+    observers.removeAll { it is SettingsObserver }
+    observers.add(SettingsObserver(settings))
     render()
-    onProperties = null
 }
 
