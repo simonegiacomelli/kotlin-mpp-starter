@@ -88,7 +88,6 @@ open class GridWidget<E>(
         initOnce
         beforeRender()
         renderInternal()
-//        onBeforeRender.forEach { it() }
     }
 
     private fun renderInternal() {
@@ -97,6 +96,7 @@ open class GridWidget<E>(
         orderElements(elements).forEachIndexed { elementIndex, element ->
             appendElement(elementIndex, element)
         }
+        observers.notifyEvent(object : AfterRenderEvent<E>, GridEvent<E> by gridEvent {})
     }
 
     private val gridEvent = GridEventDc(this)
@@ -223,7 +223,11 @@ open class GridWidget<E>(
 }
 
 private inline fun <E, reified Ev : GridEvent<E>> Collection<GridObserver<E, *>>.notifyEvent(event: Ev) {
-    filterIsInstance<GridObserver<E, Ev>>().forEach { it.notify(event) }
+    filterIsInstance<GridObserver<E, Ev>>()
+        .forEach {
+            // it seems filterIsInstance is not filtering as I would expect
+            kotlin.runCatching { it.notify(event) }
+        }
 }
 
 fun interface GridObserver<E, Ev : GridEvent<E>> {
@@ -234,3 +238,4 @@ interface MapPropertiesEvent<E> : GridEvent<E> {
     val properties: MutableList<Property<E, *>>
 }
 
+interface AfterRenderEvent<E> : GridEvent<E>

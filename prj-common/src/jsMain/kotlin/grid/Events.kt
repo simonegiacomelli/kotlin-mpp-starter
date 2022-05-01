@@ -24,8 +24,7 @@ interface ValueEvent<E> : PropertyEvent<E>, ElementEvent<E> {
     val value: Any?
 }
 
-interface LazyLoadEvent<E> {
-    val grid: GridWidget<E>
+interface LazyLoadEvent<E> : GridEvent<E> {
     val pagination: GridPagination
     var elements: List<E>
     fun loadDone()
@@ -64,7 +63,7 @@ data class LazyLoadEventDc<E>(
     override val pagination: GridPagination,
     override var elements: List<E> = emptyList(),
     private val loadDoneCallback: (LazyLoadEvent<E>) -> Unit
-) : LazyLoadEvent<E>, GridEvent<E> {
+) : LazyLoadEvent<E> {
     override fun loadDone() {
         loadDoneCallback(this)
     }
