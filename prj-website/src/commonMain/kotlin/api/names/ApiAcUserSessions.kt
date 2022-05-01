@@ -14,6 +14,9 @@ data class AcSession(
     var id: String = "",
     var user_id: Int = -1,
     var username: String = "",
+    var screen: String = "",
+    var platform: String = "",
+    var user_agent: String = "",
     var created_at: LocalDateTime = epoch,
     var updated_at: LocalDateTime = epoch,
 ) {
@@ -22,6 +25,9 @@ data class AcSession(
             AcSession::id,
             AcSession::user_id,
             AcSession::username,
+            AcSession::screen,
+            AcSession::platform,
+//            AcSession::user_agent,
             AcSession::created_at,
             AcSession::updated_at,
         )

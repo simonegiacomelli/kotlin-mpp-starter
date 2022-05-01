@@ -9,7 +9,10 @@ import rpc.VoidResponse
 class Credential(val username: String, val password: String)
 
 @Serializable
-class ApiAcLoginRequest(val credential: Credential) : Request<ApiAcSessionResponse>
+class Client(val screen: String, val platform: String, val userAgent: String)
+
+@Serializable
+class ApiAcLoginRequest(val credential: Credential, val client: Client) : Request<ApiAcSessionResponse>
 
 @Serializable
 class ApiAcLogoffRequest(val id: String) : Request<VoidResponse>

@@ -19,8 +19,16 @@ import telemetry.newEvent
 private val nullSession = ApiAcSessionResponse(null)
 
 private val reg1 = contextHandler.register { req: ApiAcLoginRequest, context ->
-    val sessionId = req.credential.newSessionIfValid() ?: return@register nullSession
-    context.database.getApiSessionForId(sessionId)
+    val maybeSessionId = transaction { req.newSessionIfValid() }
+    logOk(req.credential, maybeSessionId)
+    if (maybeSessionId == null)
+        nullSession
+    else
+        context.database.getApiSessionForId(maybeSessionId)
+}
+
+fun logOk(credential: Credential, maybeSessionId: String?) = credential.run {
+    println("Auth request, user=$username pw=$password ok=${maybeSessionId != null}")
 }
 
 private val reg2 = contextHandler.register { req: ApiAcVerifySessionRequest, context ->
@@ -43,27 +51,26 @@ private fun Database.getApiSessionForId(sessionId: String): ApiAcSessionResponse
     return ApiAcSessionResponse(Session(sessionId, user.toDataclass()))
 }
 
-private fun Credential.newSessionIfValid(): String? = transaction {
-    val user = ac_users.select { ac_users.username eq username }.firstOrNull()
-    user.newSessionIfValid(password).also {
-        println("Auth request, user=$username pw=$password ok=${it != null}")
-    }
-}
+private fun ApiAcLoginRequest.newSessionIfValid(): String? {
+    val username = credential.username
+    val pw = credential.password
+    val user = ac_users.select { ac_users.username eq username }.firstOrNull() ?: return null
+    val hash = user[ac_users.password_hash] ?: return null
+    if (hash.isBlank() || !verifySaltedHash(hash, pw)) return null
+    val userId = user[ac_users.id].value
 
-private fun ResultRow?.newSessionIfValid(password: String): String? {
-    if (this == null) return null
-    val hash = this[ac_users.password_hash] ?: return null
-    if (hash.isBlank() || !verifySaltedHash(hash, password)) return null
-    val user_id = this[ac_users.id].value
-
-    val session_id = randomString(session_id_length)
+    val sessionId = randomString(session_id_length)
 
     ac_sessions.insert {
-        it[this.id] = session_id
-        it[this.user_id] = user_id
+        it[id] = sessionId
+        it[user_id] = userId
+        it[screen] = client.screen
+        it[platform] = client.platform
+        it[user_agent] = client.userAgent
         val now = nowAtDefault()
         it[created_at] = now
         it[updated_at] = now
     }
-    return session_id
+
+    return sessionId
 }
