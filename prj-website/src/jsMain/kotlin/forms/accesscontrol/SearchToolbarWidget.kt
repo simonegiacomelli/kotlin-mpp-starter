@@ -2,7 +2,6 @@ package forms.accesscontrol
 
 import extensions.extVisible
 import grid.AfterRenderEvent
-import grid.GridObserver
 import grid.GridWidget
 import org.w3c.dom.HTMLInputElement
 import state.spinner
@@ -17,7 +16,7 @@ class SearchToolbarWidget<E>(private val grid: GridWidget<E>) :
     val value: String by forward { input::value }
     override fun afterRender() {
         input.oninput = { setVisibility() }
-        grid.observers.add(GridObserver { _: AfterRenderEvent<E> -> setVisibility() })
+        grid.addObserver { _: AfterRenderEvent<E> -> setVisibility() }
     }
 
     private fun setVisibility() = spinner {

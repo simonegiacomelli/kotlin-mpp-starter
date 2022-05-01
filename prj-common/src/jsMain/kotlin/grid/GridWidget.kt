@@ -64,7 +64,7 @@ open class GridWidget<E>(
             override val grid: GridWidget<E> get() = this@GridWidget
         }
 
-        observers.notifyEvent(event)
+        notifyEvent(event)
     }
 
     val observers = mutableListOf<GridObserver<E, *>>()
@@ -96,7 +96,7 @@ open class GridWidget<E>(
         orderElements(elements).forEachIndexed { elementIndex, element ->
             appendElement(elementIndex, element)
         }
-        observers.notifyEvent(object : AfterRenderEvent<E>, GridEvent<E> by gridEvent {})
+        notifyEvent(object : AfterRenderEvent<E>, GridEvent<E> by gridEvent {})
     }
 
     private val gridEvent = GridEventDc(this)
@@ -220,15 +220,25 @@ open class GridWidget<E>(
     }
 
     protected fun Any?.toStr() = (this ?: "").toString()
-}
 
-private inline fun <E, reified Ev : GridEvent<E>> Collection<GridObserver<E, *>>.notifyEvent(event: Ev) {
-    filterIsInstance<GridObserver<E, Ev>>()
-        .forEach {
-            // it seems filterIsInstance is not filtering as I would expect
-            kotlin.runCatching { it.notify(event) }
-        }
+    fun <Ev : GridEvent<E>> addObserver(eventHandler: (event: Ev) -> Unit) =
+        observers.add(GridObserver<E, Ev> { event -> eventHandler(event) })
+
+    /** public because (in principle) inheritors can use observers/notify infrastructure; e.g., LazyGridWidget? */
+    inline fun <E, reified Ev : GridEvent<E>> notifyEvent(event: Ev) {
+        observers.filterIsInstance<GridObserver<E, Ev>>()
+            .forEach {
+                // it seems filterIsInstance is not filtering as I would expect
+                // because it raises class cast exception anyway
+                kotlin.runCatching { it.notify(event) }
+            }
+    }
 }
+//
+//fun <E, Ev : GridEvent<E>> MutableList<GridObserver<E, *>>.add(block: (Ev) -> Unit) =
+//    add(GridObserver<E, Ev> { event -> block(event) })
+//
+
 
 fun interface GridObserver<E, Ev : GridEvent<E>> {
     fun notify(event: Ev)
