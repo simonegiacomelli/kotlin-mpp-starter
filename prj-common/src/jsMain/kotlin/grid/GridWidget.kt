@@ -6,7 +6,12 @@ import kotlinx.dom.clear
 import org.w3c.dom.HTMLTableElement
 import org.w3c.dom.HTMLTableRowElement
 import org.w3c.dom.HTMLTableSectionElement
+import rpc.nameOf
 import widget.Widget
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KClass
+import kotlin.reflect.KProperty
+import kotlin.reflect.KType
 
 open class GridWidget<E>(
     preHtml: String = "", postHtml: String = "",
@@ -40,18 +45,18 @@ open class GridWidget<E>(
     var properties: MutableList<Property<E, *>> = mutableListOf()
 
     var ordering: Ordering? = null
-    var onCustomOrder: (CustomOrderEvent<E>.() -> Unit)? = null
+    var onCustomOrder: (CustomOrderEvent<E>.() -> Unit)? by propDele()
 
     open var sortableHead: Boolean = true
 
-    var onHeadRender: (PropertyEvent<E>.() -> Unit)? = null
-    var onHeadClick: (PropertyEvent<E>.() -> Unit)? = null
+    var onHeadRender: (PropertyEvent<E>.() -> Unit)? by propDele()
+    var onHeadClick: (PropertyEvent<E>.() -> Unit)? by propDele()
 
-    var onDataRender: (ValueEvent<E>.() -> Unit)? = null
-    var onDataClick: (ValueEvent<E>.() -> Unit)? = null
+    var onDataRender: (ValueEvent<E>.() -> Unit)? by propDele()
+    var onDataClick: (ValueEvent<E>.() -> Unit)? by propDele()
 
-    var onElementClick: (ElementEvent<E>.() -> Unit)? = null
-    var onElementRender: (ElementEvent<E>.() -> Unit)? = null
+    var onElementClick: (ElementEvent<E>.() -> Unit)? by propDele()
+    var onElementRender: (ElementEvent<E>.() -> Unit)? by propDele()
 
     protected val propertiesInternal = mutableListOf<Property<E, *>>()
 
@@ -67,7 +72,29 @@ open class GridWidget<E>(
         notifyEvent(event)
     }
 
-    val observers = mutableListOf<GridObserver<E, *>>()
+    val observers = mutableMapOf<KClass<*>, MutableSet<GridObserver<E, *>>>()
+
+
+    inline fun <reified Ev : GridEvent<E>, reified Ha : (Ev) -> Unit> propDele(): ReadWriteProperty<Any?, Ha?> {
+
+        return object : ReadWriteProperty<Any?, Ha?> {
+            var backing: Ha? = null
+            var observer: GridObserver<E, Ev>? = null
+
+            override fun getValue(thisRef: Any?, property: KProperty<*>): Ha? = backing
+
+            override fun setValue(thisRef: Any?, property: KProperty<*>, value: Ha?) {
+                backing = value
+                observer?.let { observersFor<Ev>().remove(it) }
+                observer = null
+                if (value != null) {
+                    val element = GridObserver<E, Ev> { event -> value(event) }
+                    observer = element
+                    addObserver(element)
+                }
+            }
+        }
+    }
 
     protected val elementsInfo = mutableListOf<ElementInfo>()
     protected val elementsInfoMap = mutableMapOf<E, ElementInfo>()
@@ -96,7 +123,8 @@ open class GridWidget<E>(
         orderElements(elements).forEachIndexed { elementIndex, element ->
             appendElement(elementIndex, element)
         }
-        notifyEvent(object : AfterRenderEvent<E>, GridEvent<E> by gridEvent {})
+        val event: AfterRenderEvent<E> = object : AfterRenderEvent<E>, GridEvent<E> by gridEvent {}
+        notifyEvent(event)
     }
 
     private val gridEvent = GridEventDc(this)
@@ -124,7 +152,7 @@ open class GridWidget<E>(
         }
     }
 
-    private fun elementClick(elementEvent: ElementEventDc<E>) {
+    private fun elementClick(elementEvent: ElementEvent<E>) {
         onElementClick?.invoke(elementEvent)
         if (focusedElementChangeOnClick) focusedElement = elementEvent.element
     }
@@ -221,18 +249,44 @@ open class GridWidget<E>(
 
     protected fun Any?.toStr() = (this ?: "").toString()
 
-    fun <Ev : GridEvent<E>> addObserver(eventHandler: (event: Ev) -> Unit) =
-        observers.add(GridObserver<E, Ev> { event -> eventHandler(event) })
+
+    inline fun <reified Ev : GridEvent<E>> addObserver(crossinline eventHandler: (event: Ev) -> Unit): GridObserver<E, Ev> {
+        return addObserver(GridObserver { event -> eventHandler(event) })
+
+    }
+
+    inline fun <reified Ev : GridEvent<E>> addObserver(element: GridObserver<E, Ev>): GridObserver<E, Ev> {
+        observersFor<Ev>().add(element)
+        return element
+    }
+
+    inline fun <reified Ev : GridEvent<E>> observersFor(): MutableSet<GridObserver<E, Ev>> {
+        val orPut = observers.getOrPut(Ev::class) { mutableSetOf() } as MutableSet<GridObserver<E, Ev>>
+        return orPut
+    }
 
     /** public because (in principle) inheritors can use observers/notify infrastructure; e.g., LazyGridWidget? */
-    inline fun <E, reified Ev : GridEvent<E>> notifyEvent(event: Ev) {
-        observers.filterIsInstance<GridObserver<E, Ev>>()
-            .forEach {
-                // it seems filterIsInstance is not filtering as I would expect
-                // because it raises class cast exception anyway
-                kotlin.runCatching { it.notify(event) }
-            }
+    inline fun <reified Ev : GridEvent<E>> notifyEvent(event: Ev) {
+        println("nameOf=${nameOf(Ev::class)}")
+        observersFor<Ev>().forEach { it.notify(event) }
+//        map[Ev::class]?.also {
+//            it.filterIsInstance<GridObserver<E, Ev>>().forEach {
+//                it.notify(event)
+//            }
+//        }
+//
+//        h.forEach {
+//            // it seems filterIsInstance is not filtering as I would expect
+//            // because it raises class cast exception anyway
+//            kotlin.runCatching { it.notify(event) }
+//        }
     }
+}
+
+fun KType.print() {
+    println("classifier=$classifier")
+    println("isMarkedNullable=$isMarkedNullable")
+    println("classifier=${arguments.joinToString("\n") { "  $it" }}")
 }
 //
 //fun <E, Ev : GridEvent<E>> MutableList<GridObserver<E, *>>.add(block: (Ev) -> Unit) =

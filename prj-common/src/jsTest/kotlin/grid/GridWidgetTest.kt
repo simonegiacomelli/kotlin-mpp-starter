@@ -98,10 +98,10 @@ class GridWidgetTest : Shared() {
         target.render()
 
         val events = mutableListOf<PropertyEvent<User>>()
-        target.onHeadClick = { events.add(this) }
+        target.onHeadClick = { println("handler onHeadClick"); events.add(this) }
 
         fun assertHeadClickOnAge() {
-            assertEquals(1, events.size)
+            assertEquals(1, events.size, "expected 1 but ${events.size} found. ```$events```")
             assertEquals("age", events.first().property.name)
             events.clear()
         }

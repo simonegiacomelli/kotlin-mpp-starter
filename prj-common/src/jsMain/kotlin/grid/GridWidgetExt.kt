@@ -13,8 +13,8 @@ private class SettingsObserver<E>(private val settings: Settings) : GridObserver
 }
 
 fun <E> GridWidget<E>.render(settings: Settings) {
-    observers.removeAll { it is SettingsObserver }
-    observers.add(SettingsObserver(settings))
+    observersFor<MapPropertiesEvent<E>>().removeAll { it is SettingsObserver }
+    addObserver(SettingsObserver(settings))
     render()
 }
 
