@@ -8,6 +8,9 @@ import state.spinner
 import utils.forward
 import widget.Widget
 
+fun <E> GridWidget<E>.addSearchToolbar() = apply { toolbar.add(SearchToolbarWidget(this)) }
+
+
 class SearchToolbarWidget<E>(private val grid: GridWidget<E>) :
     Widget( //language=HTML
         """<input id="input" type="search" class="form-control" placeholder="Search..." style="min-width: 8em; width:30vw"> """

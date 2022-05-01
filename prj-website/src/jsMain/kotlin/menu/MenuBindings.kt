@@ -22,6 +22,7 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
     RootMenu.apply {
         accessControl.apply {
             userList onClick { show(UserListWidget()) }
+            roleList onClick { show(RolesWidget()) }
             userSessions onClick { show(UserSessionsWidget()) }
             userChange onClick { show(UserChangeWidget()) }
             userCreate onClick { show(UserCreateWidget()) }
