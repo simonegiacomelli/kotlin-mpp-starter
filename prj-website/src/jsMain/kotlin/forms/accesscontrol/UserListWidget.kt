@@ -15,17 +15,21 @@ class UserListWidget : Widget(//language=HTML
 ) {
     private val table1 by this{ GridWidget<AcUser>() }
 
-    override fun afterRender() = load()
+    override fun afterRender() {
+        table1.toolbar.add(SearchToolbarWidget(table1))
+        load()
+    }
 
-    private fun load(userId: Int? = null): Unit = state.spinner {
-        table1.properties = AcUser.properties().map { it.asProperty() }.toMutableList()
+    private fun load(): Unit = state.spinner {
+        val focusedId = table1.focusedElement?.id
         table1.elements = ApiAcUserListRequest().send().users
-        table1.onElementClick = { show(UserEditWidget(element) { load(element.id) }) }
+        table1.focusedElement = table1.elements.firstOrNull { it.id == focusedId }
+        table1.properties = AcUser.properties().map { it.asProperty() }.toMutableList()
+        table1.onElementClick = { show(UserEditWidget(element) { load() }) }
         table1.focusedElementChangeOnClick = true
-        table1.focusedElement = table1.elements.firstOrNull { it.id == userId }
         table1.render()
-
     }
 
 }
+
 

@@ -7,13 +7,17 @@ todo data-binding / basic widget edit: boolean/tristate, number/decimals, date-t
 todo data-binding: implement
     * FormBuilderWidget refactoring
     * FormBuilderWidget addButton
+    * FormBuilderWidget new form in one shot
+todo data-binding lookup
 
+
+todo GridWidget, filter elements
 
 todo DOM
 todo clean/fix oneway messages (auth and structure)
 todo spinner(wholeScreen=true){}
 todo good localStorage wrapper (map delegate?)
-todo remove <main> from BootstrapHomeWidget
+todo rem    ove <main> from BootstrapHomeWidget
 
 todo rationalize client/server/common state.
 todo session expire cleanup job (more generally a service?)
