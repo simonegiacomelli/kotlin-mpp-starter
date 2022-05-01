@@ -14,49 +14,48 @@ class FormBuilderWidget : Widget(//language=HTML
 ) {
     private val idForm: HTMLElement by this
 
-    fun <S> bind(sourceInstance: S, sourceProperty: KMutableProperty1<S, Boolean>): BindableBooleanWidget {
-        val w = BindableBooleanWidget()
-        bind(sourceInstance, sourceProperty, BooleanBridgeNN(w.inputElement))
-        idForm.append(w.container)
-        w.label = sourceProperty.name.capitalize()
-        return w
-    }
+    fun <S> bind(sourceInstance: S, sourceProperty: KMutableProperty1<S, Boolean>): WithLabel =
+        BindableBooleanWidget().bindTo(sourceInstance, sourceProperty) { BooleanTarget(it) }
 
-    fun <S> bind(sourceInstance: S, sourceProperty: KMutableProperty1<S, Int>): BindableStringWidget {
-        val w = BindableStringWidget()
-        bind(sourceInstance, sourceProperty, IntTarget(w.inputElement))
-        idForm.append(w.container)
-        w.label = sourceProperty.name.capitalize()
-        return w
-    }
+    fun <S> bind(sourceInstance: S, sourceProperty: KMutableProperty1<S, Int>): WithLabel =
+        BindableStringWidget().bindTo(sourceInstance, sourceProperty) { IntTarget(it) }
 
-    fun <S> bind(sourceInstance: S, sourceProperty: KMutableProperty1<S, String>): BindableStringWidget {
-        val w = BindableStringWidget()
-        bind(sourceInstance, sourceProperty, StringTarget(w.inputElement))
-        idForm.append(w.container)
-        w.label = sourceProperty.name.capitalize()
-        return w
-    }
 
-    fun <S> bind(sourceInstance: S, sourceProperty: KMutableProperty1<S, String?>): BindableStringWidget {
-        val w = BindableStringWidget()
-        bind(sourceInstance, sourceProperty, StringTargetN(w.inputElement))
-        idForm.append(w.container)
-        w.label = sourceProperty.name.capitalize()
-        return w
-    }
+    fun <S> bind(sourceInstance: S, sourceProperty: KMutableProperty1<S, String>): WithLabel =
+        BindableStringWidget().bindTo(sourceInstance, sourceProperty) { StringTarget(it) }
 
-    fun <S> bind(sourceInstance: S, sourceProperty: KMutableProperty1<S, LocalDateTime?>): BindableStringWidget {
-        val w = BindableStringWidget()
-        bind(sourceInstance, sourceProperty, LocalDateTimeTargetN(w.inputElement))
-        idForm.append(w.container)
-        w.label = sourceProperty.name.capitalize()
-        return w
+
+    fun <S> bind(sourceInstance: S, sourceProperty: KMutableProperty1<S, String?>): WithLabel =
+        BindableStringWidget().bindTo(sourceInstance, sourceProperty) { StringTargetN(it) }
+
+
+    fun <S> bind(sourceInstance: S, sourceProperty: KMutableProperty1<S, LocalDateTime?>): WithLabel =
+        BindableStringWidget().bindTo(sourceInstance, sourceProperty) { LocalDateTimeTargetN(it) }
+
+
+    private fun <T, S, W> W.bindTo(
+        sourceInstance: S,
+        sourceProperty: KMutableProperty1<S, T>,
+        target: (HTMLInputElement) -> TargetProperty<T>
+    ): W where W : Widget, W : WithLabel, W : WithInput {
+        bind(sourceInstance, sourceProperty, target(inputElement))
+        idForm.append(container)
+        label = sourceProperty.name.capitalize()
+        return this
     }
 }
 
-class BindableBooleanWidget : Widget(//language=HTML
-    """<fieldset class="row mb-3">
+interface WithLabel {
+    var label: String
+}
+
+interface WithInput {
+    val inputElement: HTMLInputElement
+}
+
+private class BindableBooleanWidget : WithLabel, WithInput, Widget(//language=HTML
+    """
+<fieldset class="row mb-3">
     <legend class="col-form-label col-sm-2 pt-0" id='labelElement'></legend>
     <div class="col-sm-10">
         <div class="form-check form-switch">
@@ -66,21 +65,22 @@ class BindableBooleanWidget : Widget(//language=HTML
 </fieldset>
 """
 ) {
-    val inputElement: HTMLInputElement by this
+    override val inputElement: HTMLInputElement by this
     val labelElement: HTMLElement by this
-    var label: String by forward { labelElement::innerHTML }
+    override var label: String by forward { labelElement::innerHTML }
 }
 
-class BindableStringWidget : Widget(//language=HTML
-    """ <div class="row mb-3">
+private class BindableStringWidget : WithLabel, WithInput, Widget(//language=HTML
+    """
+<div class="row mb-3">
     <label for="inputElement" class="col-sm-2 col-form-label pt-0" id='labelElement'></label>
     <div class="col-sm-10">
       <input type="text" class="form-control" id="inputElement">
     </div>
-  </div> 
+</div> 
 """
 ) {
-    val inputElement: HTMLInputElement by this
+    override val inputElement: HTMLInputElement by this
     val labelElement: HTMLElement by this
-    var label: String by forward { labelElement::innerHTML }
+    override var label: String by forward { labelElement::innerHTML }
 }
