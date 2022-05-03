@@ -110,6 +110,7 @@ tasks.createJavaExec(
 
 tasks.createJavaExec(
     "JvmMainKt", "appCli",
+    args = listOf("interactive")
 ).apply {
     dependsOn(appEtcCopy)
 }

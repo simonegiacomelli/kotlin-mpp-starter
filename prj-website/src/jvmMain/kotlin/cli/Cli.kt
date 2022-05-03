@@ -12,8 +12,21 @@ fun cli(vararg arguments: String, init: Cli.() -> Unit) = with(Cli()) {
         no_arguments()
         return@with
     }
+
     val args = arguments.toList()
-    fun match(vararg a: String) = args.take(a.size) == a.toList()
+    if (!args.match("interactive"))
+        return process(args)
+    while (true) {
+        print("Type your command: ")
+        val line = readln()
+        if (line.isBlank()) return@with
+        process(line.split(" "))
+    }
+}
+
+private fun List<String>.match(vararg a: String) = take(a.size) == a.toList()
+private fun Cli.process(args: List<String>) {
+    fun match(vararg a: String) = args.match(*a)
 
     if (match("start")) start()
     if (match("user", "create")) user_create(args[2])
