@@ -12,39 +12,32 @@ import widget.Widget
 class SpinnerWidget : Widget(//language=HTML
     """
 <style>
-    #div_loader2 {
+    .spinner_base {
         border: 4px solid #f3f3f3; /* Light grey */
         border-top: 4px solid #3498db; /* Blue */
         border-radius: 50%;
+        position: fixed;
         width: 30px;
         height: 30px;
         animation: spin 0.5s linear infinite;
-        position: fixed;
+    }
+    
+    #div_loader2 {
         left: 0px;
         top: 0px;
     }
 
     #div_loader {
-        border: 4px solid #f3f3f3; /* Light grey */
-        border-top: 4px solid #3498db; /* Blue */
-        border-radius: 50%;
-
-        position: fixed;
         bottom: 0;
         right: 0;
-        width: 30px;
-        height: 30px;
-     
-        animation: spin 0.5s linear infinite;
     }
-
 
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
     }
 </style>
-<div id="div_loader" style="display: none"></div>
+<div id="div_loader" class="spinner_base" style="display: none"></div>
 
     """
 ) {
