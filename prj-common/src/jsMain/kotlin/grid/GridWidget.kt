@@ -6,7 +6,6 @@ import kotlinx.dom.clear
 import org.w3c.dom.HTMLTableElement
 import org.w3c.dom.HTMLTableRowElement
 import org.w3c.dom.HTMLTableSectionElement
-import rpc.nameOf
 import widget.Widget
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KClass
@@ -267,7 +266,7 @@ open class GridWidget<E>(
 
     /** public because (in principle) inheritors can use observers/notify infrastructure; e.g., LazyGridWidget? */
     inline fun <reified Ev : GridEvent<E>> notifyEvent(event: Ev) {
-        println("nameOf=${nameOf(Ev::class)}")
+//        println("nameOf=${nameOf(Ev::class)}")
         observersFor<Ev>().forEach { it.notify(event) }
 //        map[Ev::class]?.also {
 //            it.filterIsInstance<GridObserver<E, Ev>>().forEach {
