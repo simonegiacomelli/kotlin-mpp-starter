@@ -70,6 +70,6 @@ data class LazyLoadEventDc<E>(
 }
 
 data class CustomOrderEvent<E>(
-    val grid: GridWidget<E>,
+    override val grid: GridWidget<E>,
     var comparators: MutableList<Comparator<E>>
-)
+) : GridEvent<E>
