@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    function interceptMethodCalls() {
+
+        function js_callback(target, prop) {
+            console.log('logger invoked', target, prop);
+            console.log('args', arguments);
+            return 'proxied x :)';
+        }
+
+        return new Proxy({}, {
+            get: function (target, prop) {
+                console.log('handler.get', target, prop)
+                return () => js_callback(target, prop);
+            }
+        });
+    }
+
+    let p = interceptMethodCalls();
+
+    p.foo(10)
+    p.bar(42)
+</script>
+</body>
+</html>

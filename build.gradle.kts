@@ -19,5 +19,6 @@ tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().configureEach
     kotlinOptions.freeCompilerArgs += listOf(
         "-Xopt-in=kotlin.time.ExperimentalTime",
         "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+        "-Xopt-in=InternalSerializationApi",
     )
 }
