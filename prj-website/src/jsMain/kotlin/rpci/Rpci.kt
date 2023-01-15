@@ -117,6 +117,8 @@ fun rpciHarness() {
     println("result is available")
     println("result=${result}")
 
+    calculation.default_params()
+
 }
 
 fun SerializersModuleBuilder.defaultSerializersModule() {

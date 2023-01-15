@@ -9,6 +9,7 @@ const val version = "v0.2.1"
 
 suspend fun main() {
     runCatching { rpciHarness() }
+//    return
     println("ok $version " + (Clock.System.now()))
     println(window.location.href)
     console.log(document.currentScript)

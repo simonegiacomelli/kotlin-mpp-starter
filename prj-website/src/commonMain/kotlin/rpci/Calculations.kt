@@ -14,4 +14,5 @@ data class SomeComplexType(val instant: Instant) : IRpc
 interface Calculations {
     fun sum(a: Int, b: Int): Any?
     fun complex1(a: Instant, b: StringBuilder, sct: SomeComplexType): Any?
+    fun default_params(a: Int = 50, b: String = "hello"): Any?
 }
