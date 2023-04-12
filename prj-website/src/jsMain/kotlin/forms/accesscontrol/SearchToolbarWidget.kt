@@ -5,7 +5,7 @@ import grid.AfterRenderEvent
 import grid.GridWidget
 import org.w3c.dom.HTMLInputElement
 import state.spinner
-import utils.forward
+import properties.forward
 import widget.Widget
 
 fun <E> GridWidget<E>.addSearchToolbar() = apply { toolbar.add(SearchToolbarWidget(this)) }

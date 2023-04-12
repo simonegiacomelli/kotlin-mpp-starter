@@ -3,7 +3,7 @@ package pages.bootstrap
 import keyboard.HotkeyWindow
 import kotlinx.dom.clear
 import org.w3c.dom.HTMLElement
-import utils.forward
+import properties.forward
 import widget.Widget
 import widget.containerElement
 

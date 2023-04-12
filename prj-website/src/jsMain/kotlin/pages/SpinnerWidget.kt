@@ -6,7 +6,7 @@ import extensions.extVisible
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import org.w3c.dom.HTMLElement
-import utils.forward
+import properties.forward
 import widget.Widget
 
 class SpinnerWidget : Widget(//language=HTML

@@ -1,4 +1,4 @@
-package utils
+package properties
 
 import kotlin.properties.PropertyDelegateProvider
 import kotlin.properties.ReadWriteProperty

@@ -4,7 +4,7 @@ import databinding.*
 import kotlinx.datetime.LocalDateTime
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
-import utils.forward
+import properties.forward
 import widget.Widget
 import kotlin.reflect.KMutableProperty1
 

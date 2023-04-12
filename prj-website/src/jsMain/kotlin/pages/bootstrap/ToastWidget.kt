@@ -1,7 +1,7 @@
 package pages.bootstrap
 
 import org.w3c.dom.HTMLElement
-import utils.forward
+import properties.forward
 import widget.Widget
 
 
