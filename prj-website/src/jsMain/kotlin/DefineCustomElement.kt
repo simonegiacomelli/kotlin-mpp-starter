@@ -5,7 +5,7 @@ import org.w3c.dom.OPEN
 import org.w3c.dom.ShadowRootInit
 import org.w3c.dom.ShadowRootMode
 
-fun defineCustomElemenTest() {
+fun defineCustomElementTest() {
     defineCustomElement("my-element2") { MyElement2() }
     document.body?.append(document.createElement("my-element2"))
     console.log("defineCustomElemenTest")
