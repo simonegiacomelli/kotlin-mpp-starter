@@ -34,8 +34,12 @@ class MyElement2(element: HTMLElement) : AbsCustomElement(element) {
     }
 }
 
-fun <T : AbsCustomElement> defineCustomElement(tagName: String, clazz: KClass<T>, constr: (HTMLElement) -> T) {
-    val className = clazz::class.simpleName
+inline fun <reified T : AbsCustomElement> defineCustomElement(
+    tagName: String,
+    clazz: KClass<T>,
+    noinline constr: (HTMLElement) -> T
+) {
+    val className = T::class.simpleName
     window.asDynamic()["kotlin_constructor_$className"] = constr
     val code = _customElement.replace("#ClassName", className!!).replace("#tagName", tagName)
     console.log(code)
