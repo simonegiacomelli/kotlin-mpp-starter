@@ -6,25 +6,31 @@ import org.w3c.dom.ShadowRootInit
 import org.w3c.dom.ShadowRootMode
 
 fun defineCustomElementTest() {
-    defineCustomElement("my-element2", MyElement2)
+    defineCustomElement(MyElement2)
     document.body?.append(document.createElement("my-element2"))
+    document.body?.append(MyElement2.factory.createElement())
     console.log("defineCustomElemenTest")
 }
 
 interface CustomElementFactory<T : AbsCustomElement> {
+    val tagName: String
     val className: String
     val create: () -> T
     val observedAttributes: Array<String>
+    fun createElement(): HTMLElement
 }
 
 inline fun <reified T : AbsCustomElement> ceFactory(
+    tagName: String,
     noinline factory: () -> T,
     observedAttributes: Array<String> = emptyArray()
 ): CustomElementFactory<T> {
     return object : CustomElementFactory<T> {
+        override val tagName: String = tagName
         override val create: () -> T = factory
         override val observedAttributes: Array<String> get() = observedAttributes
         override val className: String = T::class.simpleName ?: error("simpleName not found")
+        override fun createElement(): HTMLElement = document.createElement(tagName) as HTMLElement
     }
 }
 
@@ -32,7 +38,7 @@ abstract class CustomElementMeta(val factory: CustomElementFactory<*>)
 
 class MyElement2 : AbsCustomElement() {
 
-    companion object : CustomElementMeta(ceFactory(::MyElement2, arrayOf("size", "color")))
+    companion object : CustomElementMeta(ceFactory("my-element2", ::MyElement2, arrayOf("size", "color")))
 
     override fun constr() {
         console.log("constructor MyElement2 - kotlin")
@@ -57,13 +63,13 @@ class MyElement2 : AbsCustomElement() {
     }
 }
 
-fun defineCustomElement(tagName: String, x: CustomElementMeta) {
-    val className = x.factory.className
-    window.asDynamic()["kotlin_constructor_$className"] = x.factory.create
+fun defineCustomElement(cem: CustomElementMeta) {
+    val className = cem.factory.className
+    window.asDynamic()["kotlin_constructor_$className"] = cem.factory.create
     val code = _customElement
-        .replace("#ClassName", className!!)
-        .replace("#tagName", tagName)
-        .replace("#observedAttributes", x.factory.observedAttributes.joinToString { "\"$it\"" })
+        .replace("#ClassName", className)
+        .replace("#tagName", cem.factory.tagName)
+        .replace("#observedAttributes", cem.factory.observedAttributes.joinToString { "\"$it\"" })
     console.log(code)
     eval(code)
 }
