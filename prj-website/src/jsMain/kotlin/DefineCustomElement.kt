@@ -4,6 +4,7 @@ import org.w3c.dom.HTMLElement
 import org.w3c.dom.OPEN
 import org.w3c.dom.ShadowRootInit
 import org.w3c.dom.ShadowRootMode
+import kotlin.reflect.KProperty
 
 fun defineCustomElementTest() {
     defineCustomElement(MyElement2)
@@ -40,6 +41,8 @@ class MyElement2 : AbsCustomElement() {
 
     companion object : CustomElementMeta(ceFactory("my-element2", ::MyElement2, arrayOf("size", "color")))
 
+    var size by attributes
+
     override fun constr() {
         console.log("constructor MyElement2 - kotlin")
         element.attachShadow(ShadowRootInit(ShadowRootMode.OPEN))
@@ -60,6 +63,7 @@ class MyElement2 : AbsCustomElement() {
 
     override fun attributeChangedCallback(name: String, oldValue: String, newValue: String) {
         console.log("attributeChangedCallback", name, oldValue, newValue)
+        console.log("size", size)
     }
 }
 
@@ -111,11 +115,33 @@ val _customElement = """
     window.#ClassName = #ClassName;
 """
 
+abstract class AbsCe {
+    abstract val element: HTMLElement
+
+    val attributes = Attributes()
+
+    inner class Attributes {
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): String? {
+            return element.getAttribute(property.name)
+        }
+
+        operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String?) {
+            if (value != null) {
+                element.setAttribute(property.name, value)
+            } else {
+                element.removeAttribute(property.name)
+            }
+        }
+    }
+
+}
+
 @JsExport
-open class AbsCustomElement {
+open class AbsCustomElement : AbsCe() {
 
     var _element: HTMLElement? = null
-    val element: HTMLElement get() = _element ?: error("element not set")
+    override val element: HTMLElement get() = _element ?: error("element not set")
+
 
     open fun constr() {}
 
