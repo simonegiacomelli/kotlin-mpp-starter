@@ -6,13 +6,33 @@ import org.w3c.dom.ShadowRootInit
 import org.w3c.dom.ShadowRootMode
 
 fun defineCustomElementTest() {
-    defineCustomElement("my-element2") { MyElement2() }
+    defineCustomElement("my-element2", MyElement2)
     document.body?.append(document.createElement("my-element2"))
     console.log("defineCustomElemenTest")
 }
 
+interface CustomElementFactory<T : AbsCustomElement> {
+    val className: String
+    val create: () -> T
+    val observedAttributes: Array<String>
+}
+
+inline fun <reified T : AbsCustomElement> ceFactory(
+    noinline factory: () -> T,
+    observedAttributes: Array<String> = emptyArray()
+): CustomElementFactory<T> {
+    return object : CustomElementFactory<T> {
+        override val create: () -> T = factory
+        override val observedAttributes: Array<String> get() = observedAttributes
+        override val className: String = T::class.simpleName ?: error("simpleName not found")
+    }
+}
+
+abstract class CustomElementMeta(val factory: CustomElementFactory<*>)
 
 class MyElement2 : AbsCustomElement() {
+
+    companion object : CustomElementMeta(ceFactory(::MyElement2, arrayOf("size", "color")))
 
     override fun constr() {
         console.log("constructor MyElement2 - kotlin")
@@ -37,10 +57,13 @@ class MyElement2 : AbsCustomElement() {
     }
 }
 
-inline fun <reified T : AbsCustomElement> defineCustomElement(tagName: String, noinline constr: () -> T) {
-    val className = T::class.simpleName
-    window.asDynamic()["kotlin_constructor_$className"] = constr
-    val code = _customElement.replace("#ClassName", className!!).replace("#tagName", tagName)
+fun defineCustomElement(tagName: String, x: CustomElementMeta) {
+    val className = x.factory.className
+    window.asDynamic()["kotlin_constructor_$className"] = x.factory.create
+    val code = _customElement
+        .replace("#ClassName", className!!)
+        .replace("#tagName", tagName)
+        .replace("#observedAttributes", x.factory.observedAttributes.joinToString { "\"$it\"" })
     console.log(code)
     eval(code)
 }
@@ -48,6 +71,8 @@ inline fun <reified T : AbsCustomElement> defineCustomElement(tagName: String, n
 //language=JavaScript
 val _customElement = """
     class #ClassName extends HTMLElement {
+        static observedAttributes = [ #observedAttributes ];
+        
         constructor() {
             super();
 //            this.attachShadow({ mode: "open" });
@@ -82,6 +107,7 @@ val _customElement = """
 
 @JsExport
 open class AbsCustomElement {
+
     var _element: HTMLElement? = null
     val element: HTMLElement get() = _element ?: error("element not set")
 
