@@ -1,6 +1,9 @@
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.OPEN
+import org.w3c.dom.ShadowRootInit
+import org.w3c.dom.ShadowRootMode
 
 fun defineCustomElemenTest() {
     defineCustomElement("my-element2") { MyElement2() }
@@ -13,7 +16,7 @@ class MyElement2 : AbsCustomElement() {
 
     override fun constr() {
         console.log("constructor MyElement2 - kotlin")
-//        element.attachShadow(json("mode" to "open"))
+        element.attachShadow(ShadowRootInit(ShadowRootMode.OPEN))
         element.shadowRoot.asDynamic().innerHTML = "<h1>Hello World2</h1>"
     }
 
@@ -47,7 +50,7 @@ val _customElement = """
     class #ClassName extends HTMLElement {
         constructor() {
             super();
-            this.attachShadow({ mode: "open" });
+//            this.attachShadow({ mode: "open" });
             console.log('constructor #ClassName - javascript');
             this._kt = window.kotlin_constructor_#ClassName();
             this._kt._element = this;
