@@ -1,9 +1,10 @@
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.w3c.dom.HTMLElement
+import kotlin.reflect.KClass
 
 fun defineCustomElemenTest() {
-    defineCustomElement("my-element2", MyElement2::class)
+    defineCustomElement("my-element2", MyElement2::class) { MyElement2(it) }
     document.body?.append(document.createElement("my-element2"))
     console.log("defineCustomElemenTest")
 }
@@ -33,9 +34,9 @@ class MyElement2(element: HTMLElement) : AbsCustomElement(element) {
     }
 }
 
-fun defineCustomElement(tagName: String, clazz: dynamic) {
+fun <T : AbsCustomElement> defineCustomElement(tagName: String, clazz: KClass<T>, constr: (HTMLElement) -> T) {
     val className = clazz::class.simpleName
-    window.asDynamic()["python_constructor_$className"] = clazz
+    window.asDynamic()["python_constructor_$className"] = constr
     val code = _customElement.replace("#ClassName", className!!).replace("#tagName", tagName)
     console.log(code)
     eval(code)
@@ -46,6 +47,7 @@ val _customElement = """
     class #ClassName extends HTMLElement {
         constructor() {
             super();
+            this.attachShadow({ mode: "open" });
             console.log('constructor #ClassName - javascript');
             this._py = window.python_constructor_#ClassName(this);
             console.log(this._py);
@@ -73,7 +75,8 @@ val _customElement = """
     window.#ClassName = #ClassName;
 """
 
-open class AbsCustomElement(val element: dynamic) {
+@JsExport
+open class AbsCustomElement(val element: HTMLElement) {
 
     open fun connectedCallback() {}
 
