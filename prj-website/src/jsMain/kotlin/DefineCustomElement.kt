@@ -31,14 +31,12 @@ inline fun <reified T : AbsCustomElement> ceFactory(
     tagName: String,
     noinline factory: () -> T,
     observedAttributes: Array<String> = emptyArray()
-): CustomElementFactory<T> {
-    return object : CustomElementFactory<T> {
-        override val tagName: String = tagName
-        override val create: () -> T = factory
-        override val observedAttributes: Array<String> get() = observedAttributes
-        override val className: String = T::class.simpleName ?: error("simpleName not found")
-        override fun createElement(): HTMLElement = document.createElement(tagName) as HTMLElement
-    }
+): CustomElementFactory<T> = object : CustomElementFactory<T> {
+    override val tagName: String = tagName
+    override val create: () -> T = factory
+    override val observedAttributes: Array<String> get() = observedAttributes
+    override val className: String = T::class.simpleName ?: error("simpleName not found")
+    override fun createElement(): HTMLElement = document.createElement(tagName) as HTMLElement
 }
 
 abstract class CustomElementMeta(val factory: CustomElementFactory<*>)
@@ -87,7 +85,6 @@ fun defineCustomElement(cem: CustomElementMeta) {
         .replace("#ClassName", className)
         .replace("#tagName", cem.factory.tagName)
         .replace("#observedAttributes", cem.factory.observedAttributes.joinToString { "\"$it\"" })
-    console.log(code)
     eval(code)
 }
 
@@ -98,29 +95,15 @@ class #ClassName extends HTMLElement {
     
     constructor() {
         super();
-        console.log('constructor #ClassName - javascript');
         this._kt = window.kotlin_constructor_#ClassName();
         this._kt._element = this;
         this._kt.constr();
-        console.log(this._kt);
     }
 
-    connectedCallback() {
-        console.log(this._kt);
-        this._kt.connectedCallback();
-    }
-
-    disconnectedCallback() {
-        this._kt.disconnectedCallback();
-    }
-
-    adoptedCallback() {
-        this._kt.adoptedCallback();
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        this._kt.attributeChangedCallback(name, oldValue, newValue);
-    }
+    connectedCallback() { this._kt.connectedCallback(); }
+    disconnectedCallback() { this._kt.disconnectedCallback(); }
+    adoptedCallback() { this._kt.adoptedCallback(); }
+    attributeChangedCallback(name, oldValue, newValue) { this._kt.attributeChangedCallback(name, oldValue, newValue); }
 }
 
 customElements.define('#tagName', #ClassName);
