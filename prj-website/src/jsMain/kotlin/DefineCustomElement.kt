@@ -93,39 +93,38 @@ fun defineCustomElement(cem: CustomElementMeta) {
 
 //language=JavaScript
 val _customElement = """
-    class #ClassName extends HTMLElement {
-        static observedAttributes = [ #observedAttributes ];
-        
-        constructor() {
-            super();
-//            this.attachShadow({ mode: "open" });
-            console.log('constructor #ClassName - javascript');
-            this._kt = window.kotlin_constructor_#ClassName();
-            this._kt._element = this;
-            this._kt.constr();
-            console.log(this._kt);
-        }
-
-        connectedCallback() {
-            console.log(this._kt);
-            this._kt.connectedCallback();
-        }
-
-        disconnectedCallback() {
-            this._kt.disconnectedCallback();
-        }
-
-        adoptedCallback() {
-            this._kt.adoptedCallback();
-        }
-
-        attributeChangedCallback(name, oldValue, newValue) {
-            this._kt.attributeChangedCallback(name, oldValue, newValue);
-        }
+class #ClassName extends HTMLElement {
+    static observedAttributes = [ #observedAttributes ];
+    
+    constructor() {
+        super();
+        console.log('constructor #ClassName - javascript');
+        this._kt = window.kotlin_constructor_#ClassName();
+        this._kt._element = this;
+        this._kt.constr();
+        console.log(this._kt);
     }
 
-    customElements.define('#tagName', #ClassName);
-    window.#ClassName = #ClassName;
+    connectedCallback() {
+        console.log(this._kt);
+        this._kt.connectedCallback();
+    }
+
+    disconnectedCallback() {
+        this._kt.disconnectedCallback();
+    }
+
+    adoptedCallback() {
+        this._kt.adoptedCallback();
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        this._kt.attributeChangedCallback(name, oldValue, newValue);
+    }
+}
+
+customElements.define('#tagName', #ClassName);
+window.#ClassName = #ClassName;
 """
 
 abstract class AbsCe {
