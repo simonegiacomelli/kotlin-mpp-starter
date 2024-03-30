@@ -1,3 +1,4 @@
+import extensions.div
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.w3c.dom.HTMLElement
@@ -10,6 +11,11 @@ fun defineCustomElementTest() {
     defineCustomElement(MyElement2)
     document.body?.append(document.createElement("my-element2"))
     document.body?.append(MyElement2.factory.createElement())
+    document.body?.append(div("ciao!") { id = "div1" })
+    val div2 = div("ciao!") { id = "div2" }
+    document.body?.append(div2)
+    div2.innerHTML = """<my-element2 id="me2" size="3" color="red"></my-element2>"""
+
     console.log("defineCustomElemenTest")
 }
 
@@ -46,7 +52,13 @@ class MyElement2 : AbsCustomElement() {
     override fun constr() {
         console.log("constructor MyElement2 - kotlin")
         element.attachShadow(ShadowRootInit(ShadowRootMode.OPEN))
-        element.shadowRoot.asDynamic().innerHTML = "<h1>Hello World2</h1>"
+        updateText()
+    }
+
+    private fun updateText() {
+        val size = size?.toIntOrNull() ?: 1
+        val s = size.coerceAtMost(10).coerceAtLeast(1)
+        element.shadowRoot.asDynamic().innerHTML = "<h$s>Hello World2</h$s>"
     }
 
     override fun connectedCallback() {
@@ -63,7 +75,8 @@ class MyElement2 : AbsCustomElement() {
 
     override fun attributeChangedCallback(name: String, oldValue: String, newValue: String) {
         console.log("attributeChangedCallback", name, oldValue, newValue)
-        console.log("size", size)
+        console.log("size", if (size == null) "<null>" else size)
+        updateText()
     }
 }
 
@@ -121,17 +134,17 @@ abstract class AbsCe {
     val attributes = Attributes()
 
     inner class Attributes {
-        operator fun getValue(thisRef: Any?, property: KProperty<*>): String? {
-            return element.getAttribute(property.name)
-        }
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): String? =
+            if (element.hasAttribute(property.name))
+                element.getAttribute(property.name)
+            else
+                null
 
-        operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String?) {
-            if (value != null) {
+        operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String?) =
+            if (value != null)
                 element.setAttribute(property.name, value)
-            } else {
+            else
                 element.removeAttribute(property.name)
-            }
-        }
     }
 
 }
