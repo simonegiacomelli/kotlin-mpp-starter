@@ -36,7 +36,7 @@ class MyElement2(element: HTMLElement) : AbsCustomElement(element) {
 
 fun <T : AbsCustomElement> defineCustomElement(tagName: String, clazz: KClass<T>, constr: (HTMLElement) -> T) {
     val className = clazz::class.simpleName
-    window.asDynamic()["python_constructor_$className"] = constr
+    window.asDynamic()["kotlin_constructor_$className"] = constr
     val code = _customElement.replace("#ClassName", className!!).replace("#tagName", tagName)
     console.log(code)
     eval(code)
@@ -49,25 +49,25 @@ val _customElement = """
             super();
             this.attachShadow({ mode: "open" });
             console.log('constructor #ClassName - javascript');
-            this._py = window.python_constructor_#ClassName(this);
-            console.log(this._py);
+            this._kt = window.kotlin_constructor_#ClassName(this);
+            console.log(this._kt);
         }
 
         connectedCallback() {
-            console.log(this._py);
-            this._py.connectedCallback();
+            console.log(this._kt);
+            this._kt.connectedCallback();
         }
 
         disconnectedCallback() {
-            this._py.disconnectedCallback();
+            this._kt.disconnectedCallback();
         }
 
         adoptedCallback() {
-            this._py.adoptedCallback();
+            this._kt.adoptedCallback();
         }
 
         attributeChangedCallback(name, oldValue, newValue) {
-            this._py.attributeChangedCallback(name, oldValue, newValue);
+            this._kt.attributeChangedCallback(name, oldValue, newValue);
         }
     }
 
