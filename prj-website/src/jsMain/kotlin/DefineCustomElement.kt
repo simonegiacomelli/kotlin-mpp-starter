@@ -10,40 +10,38 @@ import kotlin.reflect.KProperty
 fun defineCustomElementTest() {
     defineCustomElement(MyElement2)
     document.body?.append(document.createElement("my-element2"))
-    document.body?.append(MyElement2.factory.createElement())
+    document.body?.append(MyElement2.createElement())
     document.body?.append(div("ciao!") { id = "div1" })
     val div2 = div("ciao!") { id = "div2" }
     document.body?.append(div2)
-    div2.innerHTML = """<my-element2 id="me2" size="3" color="red"></my-element2>"""
+    div2.innerHTML = """<my-element2 id="me2" size="3" color="red">heeeeyyy</my-element2>"""
 
     console.log("defineCustomElemenTest")
 }
 
-interface CustomElementFactory<T : AbsCustomElement> {
+interface CEMeta<T : AbsCustomElement> {
     val tagName: String
     val className: String
-    val create: () -> T
+    val kotlinConstructor: () -> T
     val observedAttributes: Array<String>
     fun createElement(): HTMLElement
 }
 
-inline fun <reified T : AbsCustomElement> ceFactory(
+inline fun <reified T : AbsCustomElement> ceMeta(
     tagName: String,
-    noinline factory: () -> T,
+    noinline kotlinConstructor: () -> T,
     observedAttributes: Array<String> = emptyArray()
-): CustomElementFactory<T> = object : CustomElementFactory<T> {
+): CEMeta<T> = object : CEMeta<T> {
     override val tagName: String = tagName
-    override val create: () -> T = factory
+    override val kotlinConstructor: () -> T = kotlinConstructor
     override val observedAttributes: Array<String> get() = observedAttributes
     override val className: String = T::class.simpleName ?: error("simpleName not found")
     override fun createElement(): HTMLElement = document.createElement(tagName) as HTMLElement
 }
 
-abstract class CustomElementMeta(val factory: CustomElementFactory<*>)
-
 class MyElement2 : AbsCustomElement() {
 
-    companion object : CustomElementMeta(ceFactory("my-element2", ::MyElement2, arrayOf("size", "color")))
+    companion object : CEMeta<MyElement2> by ceMeta("my-element2", ::MyElement2, arrayOf("size", "color"))
 
     var size by attributes
 
@@ -78,13 +76,13 @@ class MyElement2 : AbsCustomElement() {
     }
 }
 
-fun defineCustomElement(cem: CustomElementMeta) {
-    val className = cem.factory.className
-    window.asDynamic()["kotlin_constructor_$className"] = cem.factory.create
+fun defineCustomElement(cem: CEMeta<*>) {
+    val className = cem.className
+    window.asDynamic()["kotlin_constructor_$className"] = cem.kotlinConstructor
     val code = _customElement
         .replace("#ClassName", className)
-        .replace("#tagName", cem.factory.tagName)
-        .replace("#observedAttributes", cem.factory.observedAttributes.joinToString { "\"$it\"" })
+        .replace("#tagName", cem.tagName)
+        .replace("#observedAttributes", cem.observedAttributes.joinToString { "\"$it\"" })
     eval(code)
 }
 
