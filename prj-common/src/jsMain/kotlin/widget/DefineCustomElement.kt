@@ -1,22 +1,26 @@
-import extensions.div
+package widget
+
 import kotlinx.browser.document
 import kotlinx.browser.window
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.OPEN
-import org.w3c.dom.ShadowRootInit
-import org.w3c.dom.ShadowRootMode
 import kotlin.reflect.KProperty
 
-fun defineCustomElementTest() {
-    defineCustomElement(MyElement2)
-    document.body?.append(document.createElement("my-element2"))
-    document.body?.append(MyElement2.createElement())
-    document.body?.append(div("ciao!") { id = "div1" })
-    val div2 = div("ciao!") { id = "div2" }
-    document.body?.append(div2)
-    div2.innerHTML = """<my-element2 id="me2" size="3" color="red">heeeeyyy</my-element2>"""
+@JsExport
+open class AbsCustomElement : AbsCe() {
 
-    console.log("defineCustomElemenTest")
+    var _element: HTMLElement? = null
+    override val element: HTMLElement get() = _element ?: error("element not set")
+
+
+    open fun constr() {}
+
+    open fun connectedCallback() {}
+
+    open fun disconnectedCallback() {}
+
+    open fun adoptedCallback() {}
+
+    open fun attributeChangedCallback(name: String, oldValue: String, newValue: String) {}
 }
 
 interface CEMeta<T : AbsCustomElement> {
@@ -37,43 +41,6 @@ inline fun <reified T : AbsCustomElement> ceMeta(
     override val observedAttributes: Array<String> get() = observedAttributes
     override val className: String = T::class.simpleName ?: error("simpleName not found")
     override fun createElement(): HTMLElement = document.createElement(tagName) as HTMLElement
-}
-
-class MyElement2 : AbsCustomElement() {
-
-    companion object : CEMeta<MyElement2> by ceMeta("my-element2", ::MyElement2, arrayOf("size", "color"))
-
-    var size by attributes
-
-    override fun constr() {
-        console.log("constructor MyElement2 - kotlin")
-        element.attachShadow(ShadowRootInit(ShadowRootMode.OPEN))
-        updateText()
-    }
-
-    private fun updateText() {
-        val size = size?.toIntOrNull() ?: 1
-        val s = size.coerceAtMost(10).coerceAtLeast(1)
-        element.shadowRoot.asDynamic().innerHTML = "<h$s>Hello World2</h$s>"
-    }
-
-    override fun connectedCallback() {
-        console.log("connectedCallback")
-    }
-
-    override fun disconnectedCallback() {
-        console.log("disconnectedCallback")
-    }
-
-    override fun adoptedCallback() {
-        console.log("adoptedCallback")
-    }
-
-    override fun attributeChangedCallback(name: String, oldValue: String, newValue: String) {
-        console.log("attributeChangedCallback", name, oldValue, newValue)
-        console.log("size", if (size == null) "<null>" else size)
-        updateText()
-    }
 }
 
 fun defineCustomElement(cem: CEMeta<*>) {
@@ -127,22 +94,4 @@ abstract class AbsCe {
                 element.removeAttribute(property.name)
     }
 
-}
-
-@JsExport
-open class AbsCustomElement : AbsCe() {
-
-    var _element: HTMLElement? = null
-    override val element: HTMLElement get() = _element ?: error("element not set")
-
-
-    open fun constr() {}
-
-    open fun connectedCallback() {}
-
-    open fun disconnectedCallback() {}
-
-    open fun adoptedCallback() {}
-
-    open fun attributeChangedCallback(name: String, oldValue: String, newValue: String) {}
 }

@@ -5,6 +5,7 @@ import forms.settings.AppSettingsWidget
 import forms.telemetry.TmEventsWidget
 import kotlinx.coroutines.delay
 import pages.bootstrap.CalculatorWidget
+import pages.bootstrap.databinding.demo.CustomElementsDemoWidget
 import pages.bootstrap.databinding.demo.DataBindingDemoWidget
 import pages.bootstrap.databinding.demo.TwoWayBindingDemoWidget
 import pages.bootstrap.dateinput.DateInputDelphiStyleWidget
@@ -44,6 +45,8 @@ fun JsState.menuBindings(): Map<Menu, () -> Unit> = buildMap {
             html_display onClick { show(HtmlDisplayWidget.shared) }
             two_way_data_binding onClick { show(TwoWayBindingDemoWidget()) }
             data_binding_demo onClick { show(DataBindingDemoWidget()) }
+            custom_elements_demo onClick { show(CustomElementsDemoWidget()) }
+
         }
         logoff onClick { logoffApplication() }
 

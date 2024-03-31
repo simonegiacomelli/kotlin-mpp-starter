@@ -8,5 +8,6 @@ class Development(parent: Menu) : Menu(parent, "development", "Development", Adm
     val html_display = menu("html_display", "Html display")
     val two_way_data_binding = menu("data_binding", "Two way data binding")
     val data_binding_demo = menu("data_binding_demo", "Data binding demo")
+    val custom_elements_demo = menu("custom_elements_demo", "Custom Elements demo")
     val spinner = menu("spinner3", "Spinner for 3 secs")
 }
