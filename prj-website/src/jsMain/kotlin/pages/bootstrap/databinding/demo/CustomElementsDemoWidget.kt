@@ -1,7 +1,10 @@
 package pages.bootstrap.databinding.demo
 
 import org.w3c.dom.*
-import widget.*
+import widget.AbsCustomElement
+import widget.CEMeta
+import widget.Widget
+import widget.ceMeta
 
 class CustomElementsDemoWidget : Widget(
     // language=HTML
@@ -16,14 +19,14 @@ class CustomElementsDemoWidget : Widget(
 """
 ) {
 
-    private val btn1: HTMLButtonElement by this
     private val div1: HTMLElement by this
     private val div2: HTMLElement by this
     private val ele1: HTMLElement by this
+    private val btn1: HTMLButtonElement by this
 
     companion object {
         init {
-            defineCustomElement(MyElement)
+            MyElement.register()
         }
     }
 
