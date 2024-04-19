@@ -1,9 +1,7 @@
 commands are
 
-`user create foo`
+`./gradlew prj-website:appcli --args='user create simone'`
 
-`user passwd foo secret`
+`./gradlew prj-website:appcli --args='user passwd simone secret'`
 
-`user add-role foo Admin`
-
-./gradlew prj-website:appcli --args='user passwd foo secret'
+`./gradlew prj-website:appcli --args='user add-role simone Admin'`
