@@ -29,6 +29,7 @@ interface CEMeta<T : AbsCustomElement> {
     val kotlinConstructor: () -> T
     val observedAttributes: Array<String>
     fun createElement(): HTMLElement
+    fun register() = run { defineCustomElement(this) }
 }
 
 inline fun <reified T : AbsCustomElement> ceMeta(
