@@ -1,11 +1,11 @@
 package widget
 
 import kotlinx.browser.document
-import kotlinx.browser.window
 import org.w3c.dom.HTMLElement
 import kotlin.reflect.KProperty
 
-const val custom_element_namespace = "kt_custom_elements"
+const val namespace_kotlin_constructors = "window.kotlin_custom_elements.kotlin_constructors"
+const val namespace_javascript_constructors = "window.kotlin_custom_elements.javascript_constructors"
 
 @JsExport
 abstract class AbsCustomElement : AbsCe() {
@@ -39,7 +39,8 @@ interface CEMeta<T : AbsCustomElement> {
 
     fun createElement(): HTMLElement = document.createElement(tagName) as HTMLElement
     fun createElementKotlinSide(ktInstance: T): HTMLElement =
-        eval("new window.$custom_element_namespace.$className(ktInstance)") as HTMLElement
+        eval("new $namespace_javascript_constructors.$className(ktInstance)") as HTMLElement
+
     fun register() = run { defineCustomElement(this) }
 }
 
@@ -55,10 +56,25 @@ inline fun <reified T : AbsCustomElement> ceMeta(
 }
 
 fun defineCustomElement(cem: CEMeta<*>) {
-    val className = cem.className
-    window.asDynamic()["kotlin_constructor_$className"] = cem.kotlinConstructor
+    listOf(namespace_kotlin_constructors, namespace_javascript_constructors)
+        .forEach { ns ->
+            eval(
+                // language=JavaScript
+                """
+                let inputString = '$ns';
+                let parts = inputString.split('.');
+                let current = window;
+                
+                for (let part of parts) {
+                    if (!current[part]) current[part] = {};
+                    current = current[part];
+                }
+            """.trimIndent()
+            )
+        }
+    eval(namespace_kotlin_constructors)[cem.className] = cem.kotlinConstructor
     val code = _customElement
-        .replace("#ClassName", className)
+        .replace("#ClassName", cem.className)
         .replace("#tagName", cem.tagName)
         .replace("#observedAttributes", cem.observedAttributes.joinToString { "\"$it\"" })
     eval(code)
@@ -74,7 +90,7 @@ class #ClassName extends HTMLElement {
         if(kotlin_instance) 
             this._kt = kotlin_instance;
         else
-            this._kt = window.kotlin_constructor_#ClassName();
+            this._kt = $namespace_kotlin_constructors.#ClassName();
             
         this._kt._element = this;
         this._kt.constr();
@@ -87,8 +103,7 @@ class #ClassName extends HTMLElement {
 }
 
 customElements.define('#tagName', #ClassName);
-if(!window.$custom_element_namespace) window.$custom_element_namespace = {};
-window.$custom_element_namespace.#ClassName = #ClassName;
+$namespace_javascript_constructors.#ClassName = #ClassName;
 """
 
 abstract class AbsCe {
