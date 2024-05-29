@@ -16,13 +16,20 @@ class CustomElementsDemoWidget : Widget(
     <div id="div2"></div>
     <br><br>
     <button id="btn1" class="btn btn-primary">Change div</button>
+    <br><br>
+    <button id="btn2" class="btn btn-primary">new MyElement() (kotlin)</button>
+    <br>
+    div3
+    <div id="div3"></div>
 """
 ) {
 
     private val div1: HTMLElement by this
     private val div2: HTMLElement by this
+    private val div3: HTMLElement by this
     private val ele1: HTMLElement by this
     private val btn1: HTMLButtonElement by this
+    private val btn2: HTMLButtonElement by this
 
     companion object {
         init {
@@ -36,6 +43,8 @@ class CustomElementsDemoWidget : Widget(
             empty.appendChild(ele1)
             Unit
         }
+
+        btn2.onclick = { div3.appendChild(MyElement().element) }
     }
 }
 
@@ -43,6 +52,8 @@ class CustomElementsDemoWidget : Widget(
 class MyElement : AbsCustomElement() {
 
     companion object : CEMeta<MyElement> by ceMeta("my-element", ::MyElement, arrayOf("size", "color"))
+
+    override fun createElement(): HTMLElement = createElementKotlinSide(this)
 
     var size by attributes
     var color by attributes

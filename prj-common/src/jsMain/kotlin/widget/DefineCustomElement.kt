@@ -5,12 +5,20 @@ import kotlinx.browser.window
 import org.w3c.dom.HTMLElement
 import kotlin.reflect.KProperty
 
+const val custom_element_namespace = "kt_custom_elements"
+
 @JsExport
-open class AbsCustomElement : AbsCe() {
+abstract class AbsCustomElement : AbsCe() {
 
     var _element: HTMLElement? = null
-    override val element: HTMLElement get() = _element ?: error("element not set")
 
+    override val element: HTMLElement
+        get() {
+            if (_element == null) createElement()
+            return _element ?: error("element not set")
+        }
+
+    abstract fun createElement(): HTMLElement
 
     open fun constr() {}
 
@@ -28,7 +36,10 @@ interface CEMeta<T : AbsCustomElement> {
     val className: String
     val kotlinConstructor: () -> T
     val observedAttributes: Array<String>
-    fun createElement(): HTMLElement
+
+    fun createElement(): HTMLElement = document.createElement(tagName) as HTMLElement
+    fun createElementKotlinSide(ktInstance: T): HTMLElement =
+        eval("new window.$custom_element_namespace.$className(ktInstance)") as HTMLElement
     fun register() = run { defineCustomElement(this) }
 }
 
@@ -41,7 +52,6 @@ inline fun <reified T : AbsCustomElement> ceMeta(
     override val kotlinConstructor: () -> T = kotlinConstructor
     override val observedAttributes: Array<String> get() = observedAttributes
     override val className: String = T::class.simpleName ?: error("simpleName not found")
-    override fun createElement(): HTMLElement = document.createElement(tagName) as HTMLElement
 }
 
 fun defineCustomElement(cem: CEMeta<*>) {
@@ -59,9 +69,13 @@ val _customElement = """
 class #ClassName extends HTMLElement {
     static observedAttributes = [ #observedAttributes ];
     
-    constructor() {
+    constructor(kotlin_instance) {
         super();
-        this._kt = window.kotlin_constructor_#ClassName();
+        if(kotlin_instance) 
+            this._kt = kotlin_instance;
+        else
+            this._kt = window.kotlin_constructor_#ClassName();
+            
         this._kt._element = this;
         this._kt.constr();
     }
@@ -73,7 +87,8 @@ class #ClassName extends HTMLElement {
 }
 
 customElements.define('#tagName', #ClassName);
-window.#ClassName = #ClassName;
+if(!window.$custom_element_namespace) window.$custom_element_namespace = {};
+window.$custom_element_namespace.#ClassName = #ClassName;
 """
 
 abstract class AbsCe {
